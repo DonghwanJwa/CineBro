@@ -17,21 +17,23 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.movie.panel.MoviePanel;
+import com.movie.panel.ReservationPanel;
 
 public class MainFrame extends JFrame implements ActionListener{
 	private final CardLayout card=new CardLayout();
 	private JPanel menu,movie,main,info,info_movie,card_panel;
-	private JPanel now_movieP,reservationP,checkP,myPageP;
+	private JPanel now_movieP,checkP,myPageP;
 	private JButton home,now_movie,reservation,check,myPage;
 	static Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize(); // 화면해상도 가져옴
 	static int width=screenSize.width;
 	static int height=screenSize.height;
 	MoviePanel home_P=new MoviePanel();
 	LogoPanel logo=new LogoPanel();
+	ReservationPanel reservationP=new ReservationPanel();
 	
 	public MainFrame() {
 		Font font=new Font("맑은 고딕",Font.BOLD,20);
-		setSize(650,650); // 프레임 사이즈 설정
+		setSize(800,700); // 프레임 사이즈 설정
 		
 		/* 메인패널 설정 */
 		main=new JPanel();
@@ -104,7 +106,6 @@ public class MainFrame extends JFrame implements ActionListener{
 		/* 카드패널에 넣을 패널 생성&설정 */
 		now_movieP=new JPanel();
 		now_movieP.setBackground(Color.BLUE);
-		reservationP=new JPanel();
 		reservationP.setBackground(Color.CYAN);
 		checkP=new JPanel();
 		checkP.setBackground(Color.GREEN);
