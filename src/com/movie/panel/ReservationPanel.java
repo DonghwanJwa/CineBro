@@ -88,7 +88,6 @@ public class ReservationPanel extends JPanel{
 		
 		public TimeButton() {
 			for(int i=0;i<8;i++) {
-				button[i].
 			}
 		}
 	}//TimeButton inner class
