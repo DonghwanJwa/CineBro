@@ -24,6 +24,8 @@ import javax.swing.border.LineBorder;
  * 2. 이름, 생년월일
  * 3. 성별, 본인 확인 이메일(코드전송)
  */
+
+////
 public class SignUP extends JFrame {
 	JPanel panelLogo;
 	JLabel logo;
