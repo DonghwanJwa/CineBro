@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -24,23 +26,29 @@ import javax.swing.border.LineBorder;
  * 2. 이름, 생년월일
  * 3. 성별, 본인 확인 이메일(코드전송)
  */
-
-////
-public class SignUP extends JFrame {
+public class SignUp extends JFrame {
 	JPanel panelLogo;
 	JLabel logo;
 
-	public SignUP() {
+	public SignUp() {
 		/* 프레임 설정*/
 		setSize(550,750);//프레임 크기 지정
 		setLayout(new BorderLayout());//그리드 레이아웃 : 1열 정렬
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		/* 로고 넣을 패널 및 라벨 만들기 */
-		ImageIcon image = new ImageIcon("logo.jpg");//사진을 이미지 객채화
+		ImageIcon preImg = new ImageIcon("logo.png");//포스터 넣는란
+		Image originImg = preImg.getImage();//ImageIcon을 Image로 전환
+		Image changeImg = originImg.getScaledInstance(490,100,java.awt.Image.SCALE_SMOOTH);
+		//이미지 사이즈 가로150,세로214
+		ImageIcon image = new ImageIcon(changeImg);
+		
 		logo = new JLabel();//라벨 객체 생성
 		logo.setIcon(image);//라벨에 이미지 넣기
-		panelLogo = new JPanel();//panel 객체 생성
+		logo.setOpaque(false);
+		
+		panelLogo = new JPanel() ;//panel 객체 생성
+		
 		panelLogo.add(logo);//panelLogo에 라벨 넣기
 		panelLogo.setBackground(Color.WHITE);
 		add(panelLogo,BorderLayout.NORTH);//frame에 paenlLogo 넣기
