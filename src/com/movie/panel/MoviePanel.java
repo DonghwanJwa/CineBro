@@ -14,7 +14,7 @@ public class MoviePanel extends JPanel implements ActionListener{
 		CardLayout cards=new CardLayout();
 		JPanel buttons,card_panel;
 		JButton[] movie=new JButton[8];
-		MovieInfoPanel movieInfo=new MovieInfoPanel();
+		MovieInfoPlus movieInfo=new MovieInfoPlus();
 	
 	public MoviePanel() {
 //		card_panel=new JPanel();

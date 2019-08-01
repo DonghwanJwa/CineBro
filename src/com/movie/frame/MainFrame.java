@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import com.movie.panel.CurrentMoviePanel;
+import com.movie.panel.MoviePage;
 import com.movie.panel.MoviePanel;
 import com.movie.panel.MovieReservationCheckPanel;
 import com.movie.panel.MyPagePanel;
@@ -41,9 +41,9 @@ public class MainFrame extends JFrame implements ActionListener{
 	MoviePanel home_P=new MoviePanel();
 	LogoPanel logoP=new LogoPanel();
 	ReservationPanel reservationP=new ReservationPanel();
-	MovieReservationCheckPanel checkP=new MovieReservationCheckPanel();;
-	CurrentMoviePanel now_movieP=new CurrentMoviePanel();;
-	MyPagePanel myPageP=new MyPagePanel();;
+	MovieReservationCheckPanel checkP=new MovieReservationCheckPanel();
+	MoviePage now_movieP=new MoviePage();
+	MyPagePanel myPageP=new MyPagePanel();
 
 	public MainFrame() {
 		Font font=new Font("맑은 고딕",Font.BOLD,15);
