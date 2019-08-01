@@ -132,7 +132,7 @@ public class LoginPage extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if(e.getSource()==addMem) {
-						new SignUp();
+						new SignUP();
 					}//if
 				}//aP() => 눌렀을 때 시행		
 			}); // 버튼이벤트 등록
