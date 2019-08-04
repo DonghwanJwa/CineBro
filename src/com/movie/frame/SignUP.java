@@ -19,6 +19,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import com.movie.main.AppManager;
+
 /**회원 가입 페이지**/
 /* WSignupFrame에서 Window 생성 및
  * 내부클래스로 panel 3개 나눌 예정
@@ -31,6 +33,7 @@ public class SignUP extends JFrame {
 	JLabel logo;
 
 	public SignUP() {
+		AppManager.getInstance().setSignUp(this);
 		/* 프레임 설정*/
 		setSize(550,750);//프레임 크기 지정
 		setLayout(new BorderLayout());//그리드 레이아웃 : 1열 정렬

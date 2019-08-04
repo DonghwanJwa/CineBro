@@ -1,12 +1,14 @@
 package com.movie.UI;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -46,13 +48,38 @@ public class MainUI {
 	protected JButton loginB=new JButton("로그인");
 	protected JButton registB=new JButton("회원가입");
 	
+	/* 카드레이아웃 패널 */
+	protected final CardLayout card=new CardLayout();
+	JPanel mainC=new JPanel(card);
+	JPanel homeC=new JPanel();
+	JPanel movieC=new JPanel();
+	JPanel reservC=new JPanel();
+	JPanel checkC=new JPanel();
+	JPanel myPageC=new JPanel();
+	
 	public MainUI() {
+		frame.setSize(800,600);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 프레임 항상 최대화
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X누르면 프레임종료
 		mainP.setPreferredSize(new Dimension(1920,1040)); // 프레임 덮을 패널 1920x1080해상도 기준으로 사이즈 설정 ※하단 작업표시줄 감안
 		mainP.setLayout(new BorderLayout());
 		
-		/* --------------------- 메뉴탭 ------------------------ */
+		/* ---------------------- 로고 ---------------------- */
+		logoP.setLayout(null);
+		logoP.setPreferredSize(new Dimension(1500,150));
+		logoP.setOpaque(false);
+		
+		logo.setOpaque(false);
+		logoP.add(logo);
+		logo.setBounds(593,0,735,150);
+		
+		/* 로그인&회원가입 버튼 */
+		log_regBP.add(loginB); log_regBP.add(registB);
+		
+		logoP.add(log_regBP);
+		log_regBP.setBounds(1700,5,200,30);
+		
+		/* -------------------- 메뉴탭 -------------------- */
 		menuTap.setLayout(new GridLayout(0,1));
 		menuTap.setBorder(BorderFactory.createEmptyBorder(20,200,450,40));
 		menuTap.setOpaque(false);
@@ -88,8 +115,20 @@ public class MainUI {
 		menuTap.add(homeB); menuTap.add(movieB); menuTap.add(reservB);
 		menuTap.add(checkB); menuTap.add(myPageB);
 		
+		/* ------------------- 카드레이아웃 ------------------- */
+		homeC.setBackground(Color.BLACK);
+		movieC.setBackground(Color.GRAY);
+		reservC.setBackground(Color.BLUE);
+		checkC.setBackground(Color.CYAN);
+		myPageC.setBackground(Color.GREEN);
+		
+		mainC.add(homeC,"homeB"); mainC.add(movieC,"movieB"); mainC.add(reservC,"reservB");
+		mainC.add(checkC,"checkB"); mainC.add(myPageC,"myPageB");
+		
 		/* 메인패널에 패널추가 */
 		mainP.add(menuTap,BorderLayout.WEST);
+		mainP.add(mainC,"Center");
+		mainP.add(logoP,"North");
 		
 		/* -------------- 프레임 설정 ----------------- */
 		
@@ -98,21 +137,15 @@ public class MainUI {
 		mainScroll.getVerticalScrollBar().setValue((1080-height)/2);
 		mainScroll.getHorizontalScrollBar().setValue((1920-width)/2);
 		frame.add(mainScroll); // 프레임에 스크롤 추가
-		frame.setVisible(true); // 프레임을 항상 보이게함
-		
+		frame.setVisible(true); // 프레임을 항상 보이게함		
 	}//cons MainUI()
-	
-	public void LogoPanel() {
-		/* 로고 패널 */
-		logoP.setLayout(null);
-		logoP.setPreferredSize(new Dimension(1500,150));
-		logoP.setOpaque(false);
-		
-		logo.setOpaque(false);
-		logoP.add(logo);
-		logo.setBounds(593,0,735,150);
-		
-		/* 로그인&회원가입 버튼 */
-		
-	}//LogoPanel()
+	public void addMainListener(ActionListener listener) {
+		homeB.addActionListener(listener);
+		movieB.addActionListener(listener);
+		reservB.addActionListener(listener);
+		checkB.addActionListener(listener);
+		myPageB.addActionListener(listener);
+		loginB.addActionListener(listener);
+		registB.addActionListener(listener);
+	}
 }//MainUI

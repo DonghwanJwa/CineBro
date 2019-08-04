@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.movie.UI.LoginPage;
 import com.movie.panel.MoviePage;
 import com.movie.panel.MoviePanel;
 import com.movie.panel.MovieReservationCheckPanel;
