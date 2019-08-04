@@ -53,7 +53,7 @@ public class MainUI {
 	JPanel mainC=new JPanel(card);
 	JPanel homeC=new JPanel();
 	JPanel movieC=new JPanel();
-	JPanel reservC=new JPanel();
+	ReservationPanel reservC=new ReservationPanel();
 	JPanel checkC=new JPanel();
 	JPanel myPageC=new JPanel();
 	

@@ -21,11 +21,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.movie.UI.LoginPage;
-import com.movie.panel.MoviePage;
-import com.movie.panel.MoviePanel;
-import com.movie.panel.MovieReservationCheckPanel;
-import com.movie.panel.MyPagePanel;
-import com.movie.panel.ReservationPanel;
+import com.movie.UI.MoviePage;
+import com.movie.UI.MoviePanel;
+import com.movie.UI.MovieReservationCheckPanel;
+import com.movie.UI.MyPagePanel;
+import com.movie.UI.ReservationPanel;
 
 public class MainFrame extends JFrame implements ActionListener{
 	/*메인프레임 변수*/

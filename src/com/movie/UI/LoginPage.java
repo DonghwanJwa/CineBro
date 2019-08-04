@@ -45,7 +45,7 @@ public class LoginPage extends JFrame{
 		setLocationRelativeTo(null); // 팝업창 뜨는 위치를 화면 중앙으로 설정
 		getContentPane().setBackground(Color.WHITE); // 프레임 배경색 흰색으로 설정
 		
-		setLoginUI(); // UI셋 메서드 호출		
+		setLoginUI(); // UI셋 메서드 호출
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE); // 이 프레임만 자원 해제
 		setVisible(true);
@@ -82,23 +82,11 @@ public class LoginPage extends JFrame{
 			
 			/* 버튼 배경색 설정 */
 			find.setBackground(Color.WHITE);
-			addMem.setBackground(Color.WHITE);
-			/* 버튼 이벤트 등록 */ 
-			addMem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(e.getSource()==addMem) {
-						AppManager.getInstance().getSignUp();
-					}//if
-				}//aP() => 눌렀을 때 시행
-			}); // 버튼이벤트 등록
-			
+			addMem.setBackground(Color.WHITE);			
 			
 			reg_findP.setLayout(new FlowLayout(FlowLayout.CENTER,37,1)); // FlowLayout 배치관리자 설정
 			reg_findP.add(find); reg_findP.add(addMem); // 패널에 버튼 추가
 			reg_findP.setBackground(Color.WHITE); // 패널 배경색 흰색으로 변경
-			
-			AppManager.getInstance().getMyListener().loginListenerSet();
 			
 			/* 프레임에 패널 추가&위치설정 */
 			add(loginViewP);
@@ -109,5 +97,6 @@ public class LoginPage extends JFrame{
 	
 	public void addLoginListener(ActionListener listener) {
 		login.addActionListener(listener);
+		addMem.addActionListener(listener);
 	}
 }//LoginPage class

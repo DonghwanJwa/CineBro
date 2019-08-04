@@ -1,4 +1,4 @@
-package com.movie.panel;
+package com.movie.UI;
 
 import java.awt.CardLayout;
 import java.awt.Color;
