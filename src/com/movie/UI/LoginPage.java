@@ -18,8 +18,8 @@ import javax.swing.JTextField;
 import com.movie.main.AppManager;
 
 public class LoginPage extends JFrame{	
-	protected JLabel id=new JLabel("아이디"); // 아이디 라벨
-	protected JLabel password=new JLabel("비밀번호");; // 패스워드 라벨
+	protected JLabel id=new JLabel("                              아이디"); // 아이디 라벨
+	protected JLabel password=new JLabel("                            비밀번호"); // 패스워드 라벨
 	protected JLabel error=new JLabel(""); // 오류 라벨
 	
 	/* 입력란 */
