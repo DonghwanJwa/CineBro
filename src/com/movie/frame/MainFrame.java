@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 
 import com.movie.UI.LoginPage;
 import com.movie.UI.MoviePage;
-import com.movie.UI.MoviePanel;
+import com.movie.UI.HomePanel;
 import com.movie.UI.MovieReservationCheckPanel;
 import com.movie.UI.MyPagePanel;
 import com.movie.UI.ReservationPanel;
@@ -39,7 +39,7 @@ public class MainFrame extends JFrame implements ActionListener{
 
 	ImageIcon background;
 
-	MoviePanel home_P=new MoviePanel();
+	HomePanel home_P=new HomePanel();
 	LogoPanel logoP=new LogoPanel();
 	ReservationPanel reservationP=new ReservationPanel();
 	MovieReservationCheckPanel checkP=new MovieReservationCheckPanel();

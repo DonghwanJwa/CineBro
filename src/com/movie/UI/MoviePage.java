@@ -20,7 +20,7 @@ import com.movie.DAO.DAOMovie;
 public class MoviePage extends JPanel {
 	JPanel MovieList, contents;
 	JScrollPane scroll;
-	DAOMovie daom =new DAOMovie();//영화정보 DB
+	DAOMovie daom=new DAOMovie();//영화정보 DB
 
 	public MoviePage(){
 		//	 패널 생성	 //
@@ -56,7 +56,6 @@ public class MoviePage extends JPanel {
 //		MovieList.add(scroll,BorderLayout.EAST);
 		
 		}//생성자
-
 	//	패널 정리할 내부 클래스	생성//
 	public class Mp extends JPanel {
 		//	영화정보에 사용될 패널,라벨,버튼(포스터 이미지) 만들기		//
@@ -118,14 +117,5 @@ public class MoviePage extends JPanel {
 			contents.add(PosterB);
 			contents.add(MovieLine);
 		}//생성자
-	}
-	public static void main(String[] args) {
-		JFrame test=new JFrame();
-		test.setSize(1400,860); 
-		test.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		test.add(new MoviePage());
-		test.pack();
-		test.setVisible(true);
-	}//main
-
-}
+	}//Mp inner class
+}//outer class

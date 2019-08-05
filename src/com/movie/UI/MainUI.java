@@ -51,10 +51,10 @@ public class MainUI {
 	/* 카드레이아웃 패널 */
 	protected final CardLayout card=new CardLayout();
 	JPanel mainC=new JPanel(card);
-	JPanel homeC=new JPanel();
-	JPanel movieC=new JPanel();
+	HomePanel homeC=new HomePanel();
+	MoviePage movieC=new MoviePage();
 	ReservationPanel reservC=new ReservationPanel();
-	JPanel checkC=new JPanel();
+	MovieReservationCheckPanel checkC=new MovieReservationCheckPanel();
 	JPanel myPageC=new JPanel();
 	
 	public MainUI() {
@@ -137,8 +137,9 @@ public class MainUI {
 		mainScroll.getVerticalScrollBar().setValue((1080-height)/2);
 		mainScroll.getHorizontalScrollBar().setValue((1920-width)/2);
 		frame.add(mainScroll); // 프레임에 스크롤 추가
-		frame.setVisible(true); // 프레임을 항상 보이게함		
+		frame.setVisible(true); // 프레임을 항상 보이게함
 	}//cons MainUI()
+	
 	public void addMainListener(ActionListener listener) {
 		homeB.addActionListener(listener);
 		movieB.addActionListener(listener);
