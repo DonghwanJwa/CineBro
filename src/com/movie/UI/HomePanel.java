@@ -1,4 +1,4 @@
-package com.movie.panel;
+package com.movie.UI;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -10,13 +10,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class MoviePanel extends JPanel implements ActionListener{
+public class HomePanel extends JPanel implements ActionListener{
 		CardLayout cards=new CardLayout();
 		JPanel buttons,card_panel;
 		JButton[] movie=new JButton[8];
-		MovieInfoPanel movieInfo=new MovieInfoPanel();
+		MovieInfoPlus movieInfo=new MovieInfoPlus();
 	
-	public MoviePanel() {
+	public HomePanel() {
 //		card_panel=new JPanel();
 		/* 패널설정 */
 		setLayout(cards);
