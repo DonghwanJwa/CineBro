@@ -1,4 +1,4 @@
-package com.movie.UI;
+package com.movie.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -404,9 +404,15 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource()=="videoB") {
-				
+			if(e.getSource()==videoB) {
+				try {
+					Thread.sleep(5000);		
+					Runtime.getRuntime().exec("C:\\Program Files\\Internet Explorer\\iexplore.exe \"http://www.google.com\"");
+				}catch(Exception ie) {
+					ie.printStackTrace();
+				}	
 			}
+			
 			if(e.getSource()=="") {
 				
 			}
