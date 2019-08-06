@@ -24,51 +24,51 @@ import javax.swing.border.LineBorder;
  * 각 패널은 각각의 버튼에 따라 보여지게 된다.(CardLayout(?))
  */
 public class FindIDPassFrame extends JFrame implements ActionListener{
-	JPanel mainP = new JPanel();                 //배경이 되는 패널
-	JPanel buttonbarP = new JPanel();            //버튼이 올라갈 패널(상단)
-	JPanel card_backgroundP = new JPanel();      //주요 패널들을 카드패널로 올릴 패널
-	JPanel find_idP = new JPanel();               //아이디 찾기 화면 패널(카드패널)
-	JPanel find_passP = new JPanel();             //비밀번호 찾기 화면 패널(카드패널)
-	JPanel first_idP = new JPanel();             
+	private JPanel mainP = new JPanel();                 //배경이 되는 패널
+	private JPanel buttonbarP = new JPanel();            //버튼이 올라갈 패널(상단)
+	private JPanel card_backgroundP = new JPanel();      //주요 패널들을 카드패널로 올릴 패널
+	private JPanel find_idP = new JPanel();               //아이디 찾기 화면 패널(카드패널)
+	private JPanel find_passP = new JPanel();             //비밀번호 찾기 화면 패널(카드패널)
+	private JPanel first_idP = new JPanel();             
 	//아이디 찾기 정보 입력 패널(입력:성함,이메일)
-	JPanel second_idP = new JPanel();            //아이디 찾기 정보 출력 패널(출력:아이디)
-	JPanel first_passP = new JPanel();           //비밀번호 찾기 정보 입력 패널(입력:아이디,성함,이메일)
-	JPanel second_passP = new JPanel();          //비밀번호 찾기 정보 수정 패널(수정:비밀번호)
+	private JPanel second_idP = new JPanel();            //아이디 찾기 정보 출력 패널(출력:아이디)
+	private JPanel first_passP = new JPanel();           //비밀번호 찾기 정보 입력 패널(입력:아이디,성함,이메일)
+	private JPanel second_passP = new JPanel();          //비밀번호 찾기 정보 수정 패널(수정:비밀번호)
 
-	JButton find_idB = new JButton("아이디 찾기");    //아이디 찾기,비밀번호 찾기 패널 전환버튼
-	JButton find_passB = new JButton("비밀번호 찾기");
-	JButton confirm_idB = new JButton("확인");      //아이디 찾기 정보입력 후 확인 버튼 
-	JButton confirm_passB = new JButton("확인");    //비밀번호 찾기 정보입력 후 확인 버튼 
-	JButton update_passB = new JButton("변경하기");  //비밀번호 찾기 비밀번호 변경하기 버튼
-	JButton back_closeidB = new JButton("돌아가기");  //찾기 완료 후 돌아가기 버튼(해당 프레임 종료)
+	protected JButton find_idB = new JButton("아이디 찾기");    //아이디 찾기,비밀번호 찾기 패널 전환버튼
+	protected JButton find_passB = new JButton("비밀번호 찾기");
+	protected JButton confirm_idB = new JButton("확인");      //아이디 찾기 정보입력 후 확인 버튼 
+	protected JButton confirm_passB = new JButton("확인");    //비밀번호 찾기 정보입력 후 확인 버튼 
+	protected JButton update_passB = new JButton("변경하기");  //비밀번호 찾기 비밀번호 변경하기 버튼
+	protected JButton back_closeidB = new JButton("돌아가기");  //찾기 완료 후 돌아가기 버튼(해당 프레임 종료)
 
-	JTextField name_idTF = new JTextField();       //아이디 찾기 이름 입력 텍스트필드
-	JTextField email_idTF = new JTextField();      //아이디 찾기 이메일 입력 텍스트필드
-	JTextField id_passTF = new JTextField();       //비밀번호 찾기 이메일 입력 텍스트필드
-	JTextField name_passTF = new JTextField();     //비밀번호 찾기 이메일 입력 텍스트필드
-	JTextField email_passTF = new JTextField();    //비밀번호 찾기 이메일 입력 텍스트필드
+	protected JTextField name_idTF = new JTextField();       //아이디 찾기 이름 입력 텍스트필드
+	protected JTextField email_idTF = new JTextField();      //아이디 찾기 이메일 입력 텍스트필드
+	protected JTextField id_passTF = new JTextField();       //비밀번호 찾기 이메일 입력 텍스트필드
+	protected JTextField name_passTF = new JTextField();     //비밀번호 찾기 이메일 입력 텍스트필드
+	protected JTextField email_passTF = new JTextField();    //비밀번호 찾기 이메일 입력 텍스트필드
 	
-	JPasswordField pass_PF = new JPasswordField();  //비밀번호 입력 필드
-	JPasswordField passre_PF = new JPasswordField();//비밀번호 재입력 필드
+	protected JPasswordField pass_PF = new JPasswordField();  //비밀번호 입력 필드
+	protected JPasswordField passre_PF = new JPasswordField();//비밀번호 재입력 필드
 
-	JLabel emptyL = new JLabel(" ");             //아이디 찾기,비밀번호 찾기 버튼 사이 공백만드는 라벨
-	JLabel name_idtitleL = new JLabel("성함");       //아이디 찾기 페이지 이름 타이틀 라벨
-	JLabel email_idtitleL = new JLabel("이메일주소");  //아이디 찾기 페이지 이메일 타이틀 라벨
-	JLabel id_passtitleL = new JLabel("아이디");		//비밀번호 찾기 아이디 타이틀 라벨
-	JLabel name_passtitleL = new JLabel("성함"); 	//비밀번호 찾기 이름 타이틀 라벨
-	JLabel email_passtitleL = new JLabel("이메일주소");	//비밀번호 찾기 이메일 타이틀 라벨
-	JLabel error_idL = new JLabel();              //id찾기 경고문 출력 라벨 setText()로 문구 변경 
-	JLabel error_passL = new JLabel();            //pass찾기 경고문 출력 라벨 setText()로 문구 변경
-	JLabel wrong_passL = new JLabel();			 //pass설정 경고문 출력 라벨
-	JLabel show_nameL = new JLabel();            //~님의 아이디는          출력라벨
-	JLabel show_idL = new JLabel();              //"아이디명" 입니다. 출력라벨
-	JLabel pass_passtitleL = new JLabel("비밀번호 입력");		 //비밀번호 찾기 비밀번호 입력 타이틀 라벨
-	JLabel passre_passtitleL = new JLabel("비밀번호 재입력");	 //비밀번호 찾기 비밀번호 재입력 타이틀 라벨
+	private JLabel emptyL = new JLabel(" ");             //아이디 찾기,비밀번호 찾기 버튼 사이 공백만드는 라벨
+	private JLabel name_idtitleL = new JLabel("성함");       //아이디 찾기 페이지 이름 타이틀 라벨
+	private JLabel email_idtitleL = new JLabel("이메일주소");  //아이디 찾기 페이지 이메일 타이틀 라벨
+	private JLabel id_passtitleL = new JLabel("아이디");		//비밀번호 찾기 아이디 타이틀 라벨
+	private JLabel name_passtitleL = new JLabel("성함"); 	//비밀번호 찾기 이름 타이틀 라벨
+	private JLabel email_passtitleL = new JLabel("이메일주소");	//비밀번호 찾기 이메일 타이틀 라벨
+	private JLabel error_idL = new JLabel();              //id찾기 경고문 출력 라벨 setText()로 문구 변경 
+	private JLabel error_passL = new JLabel();            //pass찾기 경고문 출력 라벨 setText()로 문구 변경
+	private JLabel wrong_passL = new JLabel();			 //pass설정 경고문 출력 라벨
+	protected JLabel show_nameL = new JLabel();            //~님의 아이디는          출력라벨
+	protected JLabel show_idL = new JLabel();              //"아이디명" 입니다. 출력라벨
+	private JLabel pass_passtitleL = new JLabel("비밀번호 입력");		 //비밀번호 찾기 비밀번호 입력 타이틀 라벨
+	private JLabel passre_passtitleL = new JLabel("비밀번호 재입력");	 //비밀번호 찾기 비밀번호 재입력 타이틀 라벨
 
-	JOptionPane pass_updateD;
-	CardLayout cardlayout = new CardLayout(0,0); //카드레이아웃
-	Font font = new Font("맑은 고딕",Font.BOLD,15); //컴포넌트에 적용시킬 폰트
-	Font warnF = new Font("맑은 고딕",Font.PLAIN,10);
+	private JOptionPane pass_updateD;
+	private CardLayout cardlayout = new CardLayout(0,0); //카드레이아웃
+	private Font font = new Font("맑은 고딕",Font.BOLD,15); //컴포넌트에 적용시킬 폰트
+	private Font warnF = new Font("맑은 고딕",Font.PLAIN,10);
 
 	public FindIDPassFrame() {
 		setTitle("아이디/비밀번호 찾기");
