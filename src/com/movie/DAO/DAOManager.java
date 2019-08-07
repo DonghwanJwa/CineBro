@@ -3,16 +3,17 @@ package com.movie.DAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
+import com.movie.main.AppManager;
 
 public class DAOManager {
 	private CinemaDAO cinemaDAO;
 	private MovieDAO movieDAO;
 	private MovieNowDAO movieNowDAO;
+	private MemberDAO memberDAO;
 	
 	
-	
-	// ------- DB 커넥트 변수
+	// ******* DB 커넥트 변수 ******* //
 	String driver="oracle.jdbc.OracleDriver";
 	String url="jdbc:oracle:thin:@localhost:1521:xe";
 	String user="cinema";
@@ -20,6 +21,11 @@ public class DAOManager {
 
 	Connection con=null;
 	PreparedStatement pt=null;
+
+	public DAOManager() {
+		// ******* 싱글턴 패턴 적용 ******* //	
+		AppManager.getInstance().setDAOManager(this);
+	}
 
 	public void ConnectDB() {
 		try {
@@ -34,5 +40,25 @@ public class DAOManager {
 			if(con != null) pt.close();
 		}catch(Exception e) {e.printStackTrace();}
 	}//closeDB()
+
+	//******************************set 메서드*****************************//
+
+	public void setCinemaDAO(CinemaDAO cinemaDAO) { this.cinemaDAO = cinemaDAO;	}
+	
+	public void setMovieDAO(MovieDAO movieDAO) { this.movieDAO = movieDAO; }
+	
+	public void setMovieNowDAO(MovieNowDAO movieNowDAO) { this.movieNowDAO = movieNowDAO; }
+	
+	public void setMemberDAO(MemberDAO memberDAO) {	this.memberDAO = memberDAO;	}
+	
+	//******************************get 메서드*****************************//
+	public CinemaDAO getCinemaDAO() { return cinemaDAO;	}
+	
+	public MovieDAO getMovieDAO() {	return movieDAO; }
+	
+	public MovieNowDAO getMovieNowDAO() { return movieNowDAO;	}
+	
+	public MemberDAO getMemberDAO() { return memberDAO;	}
+
 
 }//DAOManager

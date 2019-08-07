@@ -5,28 +5,31 @@ package com.movie.DAO;
 
 import java.sql.ResultSet;
 
+import com.movie.VO.MemberVO;
+import com.movie.main.AppManager;
+
 public class MemberDAO {
-	DataManager DM;//데이터를 가져오는 클래스
-	Member mem;	//데이터를 보관해줄 VO
-	
+	DAOManager daoManager = AppManager.getInstance().getDAOManager();//데이터를 가져오는 클래스
+	MemberVO memberVO = AppManager.getInstance().getDataManager().getMemberVO();	//데이터를 보관해줄 VO
+
 	int result;
 	ResultSet rs;
-	
+
 	public MemberDAO() {
-		//		싱글턴 적용할 생성자?
+		AppManager.getInstance().getDAOManager().setMemberDAO(this);
 	}
 	//------------------------------회원가입------------------------------//
 	boolean Customer() {
-		DM.ConnectDB();
-		String sql= "INSERT INTO ( member_id, member_pw, member_name, member_sex, member_birthday, member_email) VALUES(?, ?, ?, ?, ?, ?)";
+		daoManager.ConnectDB();
+		String sql= "INSERT INTO ( memberVOber_id, memberVOber_pw, memberVOber_name, memberVOber_sex, memberVOber_birthday, memberVOber_email) VALUES(?, ?, ?, ?, ?, ?)";
 		try {
-			DM.pt = DM.con.prepareStatement(sql);
-			DM.pt.setString(1, mem.getId());
-			DM.pt.setString(2, mem.getPwd());
-			DM.pt.setString(3, mem.getName());
-			DM.pt.setString(4, mem.getSex());
-			DM.pt.setString(5, mem.getBirthday());
-			DM.pt.setString(6, mem.getEmail());
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, memberVO.getId());
+			daoManager.pt.setString(2, memberVO.getPwd());
+			daoManager.pt.setString(3, memberVO.getName());
+			daoManager.pt.setString(4, memberVO.getSex());
+			daoManager.pt.setString(5, memberVO.getBirthday());
+			daoManager.pt.setString(6, memberVO.getEmail());
 
 		}catch(Exception e) {e.printStackTrace();}
 		//		result값이 참일 때
@@ -34,30 +37,33 @@ public class MemberDAO {
 			return true;
 		}else {
 			return false;
-			}//if else
+		}//if else
 	}
 	//------------------------------로그인 기능------------------------------//
 	boolean login() {
-		DM.ConnectDB();
-		String sql= "SELECT * FROM member WHERE member_id = ?";
+		daoManager =AppManager.getInstance().getDAOManager(); 
+		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
+		
+		daoManager.ConnectDB();
+		String sql= "SELECT * FROM memberVOber WHERE memberVOber_id = ?";
 		try {
-			DM.pt = DM.con.prepareStatement(sql);
-			DM.pt.setString(1, mem.getId());
-			rs=DM.pt.executeQuery();
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, memberVO.getId());
+			rs=daoManager.pt.executeQuery();
 			//--------------------아이디와 비밀번호가 같다면 회원정보를 불러와 저장-------------------//
 			if(rs.next()) {
-				if(mem.getPwd().equals(rs.getString(3))) {
-					mem.setId(rs.getString("mem_id"));
-					mem.setPwd(rs.getString("mem_pwd"));
-					mem.setName(rs.getString("mem_name"));
-					mem.setSex(rs.getString("mem_sex"));
-					mem.setBirthday(rs.getString("mem_birthday"));
-					mem.setEmail(rs.getString("mem_email"));
+				if(memberVO.getPwd().equals(rs.getString(3))) {
+					memberVO.setId(rs.getString("memberVO_id"));
+					memberVO.setPwd(rs.getString("memberVO_pwd"));
+					memberVO.setName(rs.getString("memberVO_name"));
+					memberVO.setSex(rs.getString("memberVO_sex"));
+					memberVO.setBirthday(rs.getString("memberVO_birthday"));
+					memberVO.setEmail(rs.getString("memberVO_email"));
 					return true;
 				}
 			}
 			rs.close();
-			DM.CloseDB();
+			daoManager.closeDB();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -65,22 +71,25 @@ public class MemberDAO {
 	}
 	//------------------------------중복검사------------------------------//
 	boolean idCheck() {
+		daoManager =AppManager.getInstance().getDAOManager(); 
+		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
 		
-		
-		DM.ConnectDB();
-		String sql="SELECT member_id FROM member";
-		
+
+		daoManager.ConnectDB();
+		String sql="SELECT memberVOber_id FROM memberVOber";
+
 		try {
-			DM.pt=DM.con.prepareStatement(sql);
-			rs= DM.pt.executeQuery();
+			daoManager.pt=daoManager.con.prepareStatement(sql);
+			rs= daoManager.pt.executeQuery();
 			while(rs.next()) {
-				if(mem.getId().equals(rs.getString(1)))
+				if(memberVO.getId().equals(rs.getString(1)))
 					return false;
 			}
 			rs.close();
-			DM.CloseDB();
+			daoManager.closeDB();
 		}catch(Exception e) {
 			e.printStackTrace();
-			}
+		}
+		return true;
 	}
 }
