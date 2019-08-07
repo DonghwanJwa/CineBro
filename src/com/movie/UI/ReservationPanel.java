@@ -36,8 +36,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel peopleGroup=new JPanel(new FlowLayout(FlowLayout.LEFT));
 	private JLabel timeChoiceLabel=new JLabel("시간선택");
 	private JLabel peopleChoiceLabel=new JLabel("인원선택");
-	protected JLabel adultL=new JLabel("성인");
-	protected JLabel childL=new JLabel("청소년");
+	protected JLabel adultL=new JLabel("  성인");
+	protected JLabel childL=new JLabel("  청소년");
 	protected JButton[] timeB=new JButton[time.length+1];
 	protected JButton[] adultB=new JButton[8];
 	protected JButton[] childB=new JButton[8];
@@ -167,12 +167,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// ------------------ 예매 카드패널
 		
 		// ------ 상단 패널 구축
+		
 		cinemaList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 리스트 설정 단일선택 모델
 		cinemaList.setPreferredSize(new Dimension(200,650)); // 리스트 크기 지정
 		movieList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //
 		movieList.setPreferredSize(new Dimension(200,650));
 		calendar.setPreferredSize(new Dimension(300,400)); // 달력 패널 크기지정
 		calendar.setBackground(Color.ORANGE);
+		
+		movieList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
+		cinemaList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
 		
 		/* 리스트 항목 작성 */
 		for(int i=0;i<12;i++) {
@@ -230,7 +234,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	
 	// --- 시간선택 버튼 컴포넌트 메서드	
 	public Component setTimeButton() {
-		timeGroup.setPreferredSize(new Dimension(350,150));
+		timeGroup.setPreferredSize(new Dimension(300,150));
 		for(int i=0;i<time.length;i++) {
 			timeB[i]=new JButton(time[i]);
 			timeB[i].addActionListener(this);
