@@ -4,15 +4,15 @@ import com.movie.DAO.DAOManager;
 import com.movie.UI.LoginPage;
 import com.movie.UI.MainUI;
 import com.movie.UI.MyActionListener;
+import com.movie.UI.SignUpFrame;
 import com.movie.VO.DataManager;
-import com.movie.frame.SignUP;
 
 public class AppManager {
 	private static AppManager appManager=null;
 	private MyActionListener myListener;
 	private MainUI mainUi;
 	private LoginPage login_page;
-	private SignUP signUp;
+	private SignUpFrame signUp;
 	private DAOManager daoManager;
 	private DataManager dataManager;
 	
@@ -26,7 +26,7 @@ public class AppManager {
 
 	//******************************get 메서드*****************************//
 	public LoginPage getLogin() {		return login_page;		}
-	public SignUP getSignUp() {		return signUp;		}
+	public SignUpFrame getSignUpFrame() {		return signUp;		}
 	public MainUI getMainUi() {		return mainUi;  	}
 	public MyActionListener getMyListener() {		return myListener;		}
 	public DAOManager getDAOManager() {	return daoManager;	}
@@ -34,7 +34,7 @@ public class AppManager {
 	
 	//******************************set 메서드*****************************//
 	public void setLogin(LoginPage login) {		this.login_page = login;		}
-	public void setSignUp(SignUP signUp) {  	this.signUp = signUp; 		}
+	public void setSignUpFrame(SignUpFrame signUp) {  	this.signUp = signUp; 		}
 	public void setMainUi(MainUI mainUi) {		this.mainUi = mainUi;		}
 	public void setMyListener(MyActionListener myListener) {	this.myListener = myListener;	}
 	public void setDAOManager(DAOManager daoManager) { this.daoManager = daoManager;	}
