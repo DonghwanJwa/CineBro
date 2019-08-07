@@ -19,18 +19,19 @@ import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
+import com.movie.main.AppManager;
+
 /**아이디/비밀번호 찾기 Frame**/
 /* 아이디패널 클래스, 비밀번호 찾기 패널 클래스 따로 생성
  * 각 패널은 각각의 버튼에 따라 보여지게 된다.(CardLayout(?))
  */
-public class FindIDPassFrame extends JFrame implements ActionListener{
+public class FindIDPassFrame extends JFrame{
 	private JPanel mainP = new JPanel();                 //배경이 되는 패널
 	private JPanel buttonbarP = new JPanel();            //버튼이 올라갈 패널(상단)
-	private JPanel card_backgroundP = new JPanel();      //주요 패널들을 카드패널로 올릴 패널
-	private JPanel find_idP = new JPanel();               //아이디 찾기 화면 패널(카드패널)
-	private JPanel find_passP = new JPanel();             //비밀번호 찾기 화면 패널(카드패널)
-	private JPanel first_idP = new JPanel();             
-	//아이디 찾기 정보 입력 패널(입력:성함,이메일)
+	protected JPanel card_backgroundP = new JPanel();      //주요 패널들을 카드패널로 올릴 패널
+	protected JPanel find_idP = new JPanel();               //아이디 찾기 화면 패널(카드패널)
+	protected JPanel find_passP = new JPanel();             //비밀번호 찾기 화면 패널(카드패널)
+	private JPanel first_idP = new JPanel();             //아이디 찾기 정보 입력 패널(입력:성함,이메일)
 	private JPanel second_idP = new JPanel();            //아이디 찾기 정보 출력 패널(출력:아이디)
 	private JPanel first_passP = new JPanel();           //비밀번호 찾기 정보 입력 패널(입력:아이디,성함,이메일)
 	private JPanel second_passP = new JPanel();          //비밀번호 찾기 정보 수정 패널(수정:비밀번호)
@@ -57,25 +58,28 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 	private JLabel id_passtitleL = new JLabel("아이디");		//비밀번호 찾기 아이디 타이틀 라벨
 	private JLabel name_passtitleL = new JLabel("성함"); 	//비밀번호 찾기 이름 타이틀 라벨
 	private JLabel email_passtitleL = new JLabel("이메일주소");	//비밀번호 찾기 이메일 타이틀 라벨
-	private JLabel error_idL = new JLabel();              //id찾기 경고문 출력 라벨 setText()로 문구 변경 
-	private JLabel error_passL = new JLabel();            //pass찾기 경고문 출력 라벨 setText()로 문구 변경
-	private JLabel wrong_passL = new JLabel();			 //pass설정 경고문 출력 라벨
+	protected JLabel error_idL = new JLabel();              //id찾기 경고문 출력 라벨 setText()로 문구 변경 
+	protected JLabel error_passL = new JLabel();            //pass찾기 경고문 출력 라벨 setText()로 문구 변경
+	protected JLabel wrong_passL = new JLabel();			 //pass설정 경고문 출력 라벨
 	protected JLabel show_nameL = new JLabel();            //~님의 아이디는          출력라벨
 	protected JLabel show_idL = new JLabel();              //"아이디명" 입니다. 출력라벨
 	private JLabel pass_passtitleL = new JLabel("비밀번호 입력");		 //비밀번호 찾기 비밀번호 입력 타이틀 라벨
 	private JLabel passre_passtitleL = new JLabel("비밀번호 재입력");	 //비밀번호 찾기 비밀번호 재입력 타이틀 라벨
 
-	private JOptionPane pass_updateD;
-	private CardLayout cardlayout = new CardLayout(0,0); //카드레이아웃
+	protected JOptionPane pass_updateD;
+	protected CardLayout cardlayout = new CardLayout(0,0); //카드레이아웃
 	private Font font = new Font("맑은 고딕",Font.BOLD,15); //컴포넌트에 적용시킬 폰트
 	private Font warnF = new Font("맑은 고딕",Font.PLAIN,10);
 
 	public FindIDPassFrame() {
+		AppManager.getInstance().setFindIDPassFrame(this);
+		
 		setTitle("아이디/비밀번호 찾기");
 		setSize(new Dimension(600,527));//높이 : 500(화면)+27(틀과 상태창)
 		setResizable(false);
 		setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocationRelativeTo(null); // 팝업창 뜨는 위치를 화면 중앙으로 설정
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		/*배경이 되는 패널*/
 		mainP.setPreferredSize(new Dimension(600,500));
@@ -105,9 +109,6 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 
 		find_idB.setFocusPainted(false);                  //버튼 포커스 해제
 		find_passB.setFocusPainted(false);
-
-		find_idB.addActionListener(this);                 //이벤트 추가
-		find_passB.addActionListener(this);
 
 		buttonbarP.add(find_idB);                         //버튼패널에 버튼 추가
 		buttonbarP.add(emptyL);
@@ -149,8 +150,6 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 
 		error_idL.setForeground(Color.RED);                    //경고문 글자색 빨간색 지정
 
-		confirm_idB.addActionListener(this);                   //확인버튼 이벤트 추가
-
 		name_idtitleL.setPreferredSize(new Dimension(350,40));   //컴포넌트 사이즈 지정
 		email_idtitleL.setPreferredSize(new Dimension(350,40));
 		error_idL.setPreferredSize(new Dimension(350,20));
@@ -185,7 +184,7 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 		show_idL.setHorizontalAlignment(JLabel.CENTER);
 
 
-		back_closeidB.addActionListener(this);                 //버튼 이벤트 등록
+		
 
 		show_nameL.setPreferredSize(new Dimension(350,40));  //컴포넌트 크기지정
 		show_idL.setPreferredSize(new Dimension(350,40));
@@ -228,8 +227,6 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 
 		error_passL.setForeground(Color.RED);   				  //경고문 글자 빨강색 지정
 
-		confirm_passB.addActionListener(this);                    //버튼 이벤트 등록
-
 		id_passtitleL.setPreferredSize(new Dimension(350,40));    //컴포넌트 사이즈 지정
 		name_passtitleL.setPreferredSize(new Dimension(350,40));
 		email_passtitleL.setPreferredSize(new Dimension(350,40));
@@ -268,8 +265,6 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 		
 		wrong_passL.setForeground(Color.RED);
 		
-		update_passB.addActionListener(this);
-		
 		pass_passtitleL.setPreferredSize(new Dimension(350,40));	//컴포넌트 크기 지정
 		passre_passtitleL.setPreferredSize(new Dimension(350,40)); 
 		pass_PF.setPreferredSize(new Dimension(350,40));
@@ -291,65 +286,12 @@ public class FindIDPassFrame extends JFrame implements ActionListener{
 		find_passP.add(second_passP,"confirm_passB");
 	}//setPassFind()
 
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==find_idB) {
-			find_idB.setBackground(Color.RED);            //상단의 버튼 색 변경
-			find_passB.setBackground(Color.WHITE);			
-			name_idTF.setText("");					     //텍스트필드 비움
-			email_idTF.setText("");
-			name_idTF.requestFocus();                    //텍스트 커서(깜빡이)를 성함입력창에 둠
-			cardlayout.show(card_backgroundP,"find_idB"); //아이디찾기 버튼 클릭 시 아이디 찾기 패널로 전환
-		}
-		if(e.getSource()==find_passB) {
-			find_idB.setBackground(Color.WHITE);          //상단의 버튼 색 변경
-			find_passB.setBackground(Color.RED);
-			cardlayout.show(card_backgroundP,"find_passB");//비밀번호 찾기 버튼 클릭 시 비밀번호 찾기 패널로 전환
-		}
-		/*아이디 찾기 패널의 액션*/
-		if(e.getSource()==confirm_idB) {
-			/**아이디 찾기 중 : 입력된 아이디,이메일과 DB의 아이디,이메일 같은지 비교하여, 같으면 페이지 넘어가기 활성**/
-			/**            이후, DB에서 지정된 ID값을 가져와 라벨에 출력**/
-			if((name_idTF.getText().trim().equals("")) || (email_idTF.getText().trim().equals(""))) {
-				error_idL.setText("정보가 입력되지 않았습니다.");
-			}else {
-				error_idL.setText("");
-				show_nameL.setText("이름 DB에서 가져온 님 의 아이디는");
-				show_idL.setText("\"아이디 DB에서 가저옴\" 입니다");
-				cardlayout.show(find_idP,"confirm_idB");
-			}
-		}
-		if(e.getSource()==back_closeidB) {
-			dispose();
-		}
-		/*비밀번호 찾기 패널의 액션*/
-		if(e.getSource()==confirm_passB) {
-			if((id_passTF
-					.getText().trim().equals("")) || (name_passTF.getText().trim().equals("")) ||
-					(email_passTF.getText().trim().equals(""))) {
-				error_passL.setText("입력된 정보가 올바르지 않습니다.");
-			}else {
-				error_passL.setText("");
-				cardlayout.show(find_passP,"confirm_passB");
-			}
-		}
-		if(e.getSource()==update_passB) {
-			if((pass_PF.getPassword().equals(null)) || (passre_PF.getPassword().equals(null))) {
-				wrong_passL.setText("비밀번호가 입력되지 않았습니다.");
-			}else if(!(pass_PF.getText().equals(passre_PF.getText()))) {
-				wrong_passL.setText("비밀번호가 일치하지 않습니다.");
-			}else {
-				wrong_passL.setText("");
-			    pass_updateD.showMessageDialog(this, "비밀번호가 변경 되었습니다.", "안내", pass_updateD.CLOSED_OPTION);
-			    dispose();
-			}
-		}
-		
-	}//ap()
-
-	public static void main(String[] args) {
-		new FindIDPassFrame();
-	}//main() 나중에 지워야됨!!
-
+	public void addFindListener(ActionListener listener) {
+		find_idB.addActionListener(listener);
+		find_passB.addActionListener(listener);
+		confirm_idB.addActionListener(listener);
+		back_closeidB.addActionListener(listener);
+		confirm_passB.addActionListener(listener);
+		update_passB.addActionListener(listener);
+	}//addFindListener()
 }
