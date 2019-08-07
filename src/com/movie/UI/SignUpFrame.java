@@ -77,6 +77,7 @@ public class SignUpFrame extends JFrame{
 		setTitle("회원가입");
 		setSize(new Dimension(540,757));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(null); // 팝업창 뜨는 위치를 화면 중앙으로 설정
 		setResizable(false);
 
 		add(mainP());
