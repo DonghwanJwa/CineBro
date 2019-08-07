@@ -74,9 +74,9 @@ public class LoginPage extends JFrame{
 			login.setBorderPainted(false); //버튼 윤곽선 제거
 			
 			/* 패널에 각 컴포넌트 추가 */
-			loginViewP.add(id); loginViewP.add(idField); 
+			loginViewP.add(id);         loginViewP.add(idField); 
 			loginViewP.add(password);	loginViewP.add(passwordField);
-			loginViewP.add(error); loginViewP.add(login);// TextPanel에 텍스트박스, 라벨, 버튼 추가
+			loginViewP.add(error);      loginViewP.add(login);// TextPanel에 텍스트박스, 라벨, 버튼 추가
 			loginViewP.setLayout(new GridLayout(6,1)); // GridLayout 배치관리자 설정으로 세로정렬
 			loginViewP.setBackground(Color.WHITE); // 패널배경색 흰색으로 설정
 			
