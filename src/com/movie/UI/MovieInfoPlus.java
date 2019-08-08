@@ -41,7 +41,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 	private JPanel infopanel=new JPanel();				//인포패널 클래스 객체생성
 	
 	private JLabel movienameL;
-	private JLabel movieing;
+	private JLabel movieingL;
 	private JLabel englishmovienameL;
 	private JLabel audiencescoreL;						//관람객 라벨
 	private JLabel reporterscoreL;						//전문가평점 라벨
@@ -125,7 +125,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		if(e.getSource()==videoB) {
 			try {
 				Thread.sleep(5000);		
-				Runtime.getRuntime().exec("C:\\Program Files\\Internet Explorer\\iexplore.exe \"http://www.google.com\"");
+				Runtime.getRuntime().exec("C:\\Program Files\\Internet Explorer\\iexplore.exe \"https://movie.naver.com/movie/bi/mi/mediaView.nhn?code=174903&mid=42940#tab");
 			}catch(Exception ie) {
 				ie.printStackTrace();
 			}	
@@ -149,7 +149,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		//강력한 크기지정 메서드이다. >setSize
 
 		/** 포스터 이미지 조정**/
-		ImageIcon mainposter = new ImageIcon("Exit.jpg");//포스터 넣는칸
+		ImageIcon mainposter = new ImageIcon("1movie.jpg");//포스터 넣는칸
 		Image originImg = mainposter.getImage();//ImagIcon을 Image로 전환
 		Image changeImg = originImg.getScaledInstance(275,400,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -196,17 +196,17 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		infopanel.add(moviename);
 		
 		movienameL=new JLabel("엑시트");
-		movieing=new JLabel(" 상영중▶");
+		movieingL=new JLabel(" 상영중▶");
 
 
 		movienameL.setFont(new Font("맑은 고딕",Font.BOLD,39));
 		movienameL.setBackground(Color.WHITE);
 
-		movieing.setBackground(Color.blue);
-		movieing.setForeground(Color.WHITE);
-		movieing.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		movieingL.setBackground(Color.blue);
+		movieingL.setForeground(Color.blue);
+		movieingL.setFont(new Font("맑은 고딕",Font.BOLD,20));
 
-		koreanmoviepanel.add(movienameL);koreanmoviepanel.add(movieing);
+		koreanmoviepanel.add(movienameL);koreanmoviepanel.add(movieingL);
 		moviename.setLayout(new FlowLayout(FlowLayout.LEFT));
 		koreanmoviepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		moviename.add(koreanmoviepanel);  moviename.add(englishmoviepanel);
@@ -326,7 +326,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		viewcountpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		viewcountpanel.add(viewtitleL);
 
-		viewL=new JLabel(" 누적관객 4,532,156");
+		viewL=new JLabel(" 누적관객 4,532,156명");
 		viewL.setFont(new Font("맑은 고딕",Font.BOLD,20));
 		viewL.setForeground(Color.GRAY);
 		viewcountpanel.add(viewL);
@@ -354,7 +354,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		videopanel.add(videoL);
 
 		/** 미리보기 동영상 넣기 **/
-		ImageIcon videoposter1 = new ImageIcon("video1.jpg");//포스터 넣는칸
+		ImageIcon videoposter1 = new ImageIcon("1video1.jpg");//포스터 넣는칸
 		Image origin_videoI = videoposter1.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI = origin_videoI.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -371,7 +371,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		seriespanel.add(videoB);
 
 		/** 미리보기 동영상 2번쨰 **/
-		ImageIcon videoposter2 = new ImageIcon("video2.jpg");//포스터 넣는칸
+		ImageIcon videoposter2 = new ImageIcon("1video2.jpg");//포스터 넣는칸
 		Image origin_videoI2 = videoposter2.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI2 = origin_videoI2.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -388,7 +388,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		seriespanel.add(videoB2);
 
 		/** 미리보기 동영상 3번쨰 **/
-		ImageIcon videoposter3 = new ImageIcon("video3.jpg");//포스터 넣는칸
+		ImageIcon videoposter3 = new ImageIcon("1video3.jpg");//포스터 넣는칸
 		Image origin_videoI3 = videoposter3.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI3 = origin_videoI3.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -405,7 +405,7 @@ public class MovieInfoPlus extends JPanel implements ActionListener {
 		seriespanel.add(videoB3);
 
 		/** 미리보기 동영상 4번째 **/
-		ImageIcon videoposter4 = new ImageIcon("video4.jpg");//포스터 넣는칸
+		ImageIcon videoposter4 = new ImageIcon("1video4.jpg");//포스터 넣는칸
 		Image origin_videoI4 = videoposter4.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI4 = origin_videoI4.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
