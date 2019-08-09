@@ -98,5 +98,6 @@ public class LoginPage extends JFrame{
 	public void addLoginListener(ActionListener listener) {
 		login.addActionListener(listener);
 		addMem.addActionListener(listener);
+		find.addActionListener(listener);
 	}
 }//LoginPage class
