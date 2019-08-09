@@ -19,7 +19,8 @@ public class MovieNowDAO {
 	private String preview2;
 	//******************************set*****************************//
 
-	public void setMovieCode(String movieCode)	 	{ this.movieCode = movieCode; }
+	public void setMovieCode(String movieCode)	 	{ 
+		this.movieCode = movieCode; }
 	public void setTitle(String title) 				{ this.title = title;	}
 	public void setGenre(String genre) 				{ this.genre = genre;	}
 	public void setRunningTime(String runningTime) 	{ this.runningTime = runningTime; }
