@@ -26,34 +26,34 @@ import javax.swing.event.ListSelectionListener;
 
 public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
 	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
-
+	SetCalendar setCal=new SetCalendar();
 	// 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
 	
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
-	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
-	private JPanel calP=new JPanel(new GridLayout(7,7));
-	private JPanel monthCalP=new JPanel(new BorderLayout());
-	private JPanel monthButtonP=new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
-	private String[] calWeek= {"일","월","화","수","목","금","토"};
-	
-	private JLabel[] calWeekL=new JLabel[7];
-	protected JButton[] calDate=new JButton[32];
-	protected JButton nextMonth=new JButton("▶");
-	protected JButton preMonth=new JButton("◀");
-	protected JLabel calMonth=new JLabel("");
-	protected JLabel calYear=new JLabel("2019년");
-
-	private int startDay; // 각 월 시작 일
-	private int lastDay; // 각 월 마지막 일
-
-	private int year; // 현재 년도
-	private int month; // 월
-	private int date; // 일
-	private int sunday=1;
-	private int indexDay=1;
+//	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
+//	private JPanel calP=new JPanel(new GridLayout(7,7));
+//	private JPanel monthCalP=new JPanel(new BorderLayout());
+//	private JPanel monthButtonP=new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
+//	private String[] calWeek= {"일","월","화","수","목","금","토"};
+//	
+//	private JLabel[] calWeekL=new JLabel[7];
+//	protected JButton[] calDate=new JButton[32];
+//	protected JButton nextMonth=new JButton("▶");
+//	protected JButton preMonth=new JButton("◀");
+//	protected JLabel calMonth=new JLabel("");
+//	protected JLabel calYear=new JLabel("2019년");
+//
+//	private int startDay; // 각 월 시작 일
+//	private int lastDay; // 각 월 마지막 일
+//
+//	private int year; // 현재 년도
+//	private int month; // 월
+//	private int date; // 일
+//	private int sunday=1;
+//	private int indexDay=1;
 
 	// ------------------------------------- 버튼그룹 메서드
 
@@ -94,15 +94,28 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel peopleGroupLP=new JPanel(new FlowLayout(FlowLayout.LEFT,0,2));
 	private JPanel movieListPanel=new JPanel(new BorderLayout());
 	private JPanel cinemaListPanel=new JPanel(new BorderLayout());
-	private JPanel calendarPanel=new JPanel(new BorderLayout());
+	
+	protected JPanel calendarPanel=new JPanel(new BorderLayout());
 
 	// - 서브라벨
 	private JLabel movieChoiceLabel=new JLabel("    영화");
 	private JLabel cinemaChoiceLabel=new JLabel("    상영관");
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
 
-	/* 좌석 패널 */
-
+	// --------------------------------- 좌석 패널
+	
+	private JPanel seatPanel=new JPanel();
+	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1));
+	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1));
+	private JPanel rightArea=new JPanel(new GridLayout(12,5,1,1));
+	private JPanel areaLine=new JPanel(new GridLayout(12,1,1,1));
+	
+	protected JButton[][] leftSeat=new JButton[12][5];
+	protected JButton[][] centerSeat=new JButton[12][10];
+	protected JButton[][] rightSeat=new JButton[12][5];
+	
+	protected JLabel[] seatLine=new JLabel[12];
+	
 	/* 결제 패널 */
 
 	// ----------------------------------- 리스트
@@ -228,7 +241,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		/* --- 라벨, 리스트 추가한 패널 구성 */
 		movieListPanel.add(movieChoiceLabel,"North");   movieListPanel.add(movieListSp,"Center");
 		cinemaListPanel.add(cinemaChoiceLabel,"North"); cinemaListPanel.add(cinemaListSp,"Center");
-		calendarPanel.add(dayChoiceLabel,"North");      setCalendar();
+		calendarPanel.add(dayChoiceLabel,"North");      calendarPanel.add(setCal,"Center");
+//		setCalendar();
 		
 		movieChoiceLabel.setFont(choiceLabelFont);      cinemaChoiceLabel.setFont(choiceLabelFont);
 		dayChoiceLabel.setFont(choiceLabelFont);
@@ -259,7 +273,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		// ------------------ 좌석 카드패널
 
-
+		setCinemaSeat();
 
 		// ------------------ 결제 카드패널
 
@@ -319,71 +333,125 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	}//setPeopleButton()
 
 	// --- 날짜선택 캘린더 컴포넌트 메서드
-	public void setCalendar() {
-		calMonth.setText("8");
-		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
-		calMonth.setHorizontalAlignment(JLabel.CENTER);
-		// --- 년 / 월 설정 버튼
-		
-		monthButtonP.add(preMonth);
-		monthButtonP.add(calMonth);
-		monthButtonP.add(nextMonth);
-		
-		preMonth.setContentAreaFilled(false);
-		preMonth.setBorderPainted(false);
-		nextMonth.setContentAreaFilled(false);
-		nextMonth.setBorderPainted(false);
-		
-		nextMonth.addActionListener(this);
-		
-		// --- 캘린더 날짜 구성
-		year=2019; 
-		month=Integer.parseInt(calMonth.getText()); // 컴포넌트위 문자열을 정수로 반환
-		
-		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.MONTH, month-1);
-		cal.set(Calendar.DATE, 1);
-		
-		startDay=cal.get(Calendar.DAY_OF_WEEK); // 현재 월 시작 요일
-		lastDay=cal.getActualMaximum(Calendar.DATE); // 월 마지막 날짜
-		// 버튼 설정		
-		for(int i=0;i<calDate.length;i++) {
-			String sday="";
-			if(i<10) {
-				sday=" "+i;
-			}else {
-				sday=""+i;
-			}
-			calDate[i]=new JButton(sday);
-		}//for
-		for(int i=0;i<calWeek.length;i++) {
-			calWeekL[i]=new JLabel(calWeek[i]);
-			calWeekL[i].setHorizontalAlignment(JLabel.CENTER);
-			calP.add(calWeekL[i]);
-		}//for
-		for(int i=1;i<startDay;i++) {
-			calP.add(new JLabel(""));
-			sunday++;
-		}//for
-		for(int j=0;j<lastDay;j++) {
-			if(sunday%7==1) calDate[indexDay].setForeground(Color.RED);
-			else if(sunday%7==0) calDate[indexDay].setForeground(Color.BLUE);
-			else calDate[indexDay].setForeground(Color.BLACK);
-			sunday++;
-			calP.add(calDate[indexDay++]);
-		}//for
-		while(calP.getComponentCount()<49) {
-			calP.add(new JLabel(""));
-		}//while
-		for(int i=0;i<calDate.length;i++) {
-			calDate[i].setBackground(Color.WHITE);
-			calDate[i].addActionListener(this);
-		}//for		
-		monthCalP.add(monthButtonP,"North"); monthCalP.add(calP,"Center");		
-		calendar.add(calYear,"North");	     calendar.add(monthCalP,"Center");
-		calendarPanel.add(calendar,"Center");
-	}//setCalendar()
+//	public void setCalendar() {
+//		calMonth.setText("8");
+//		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
+//		calMonth.setHorizontalAlignment(JLabel.CENTER);
+//		// --- 년 / 월 설정 버튼
+//		
+//		monthButtonP.add(preMonth);
+//		monthButtonP.add(calMonth);
+//		monthButtonP.add(nextMonth);
+//		
+//		preMonth.setContentAreaFilled(false);
+//		preMonth.setBorderPainted(false);
+//		nextMonth.setContentAreaFilled(false);
+//		nextMonth.setBorderPainted(false);
+//		
+//		nextMonth.addActionListener(this);
+//		
+//		// --- 캘린더 날짜 구성
+//		year=2019; 
+//		month=Integer.parseInt(calMonth.getText()); // 컴포넌트위 문자열을 정수로 반환
+//		
+//		cal.set(Calendar.YEAR, year);
+//		cal.set(Calendar.MONTH, month-1);
+//		cal.set(Calendar.DATE, 1);
+//		
+//		startDay=cal.get(Calendar.DAY_OF_WEEK); // 현재 월 시작 요일
+//		lastDay=cal.getActualMaximum(Calendar.DATE); // 월 마지막 날짜
+//		// 버튼 설정		
+//		for(int i=0;i<calDate.length;i++) {
+//			String sday="";
+//			if(i<10) {
+//				sday=" "+i;
+//			}else {
+//				sday=""+i;
+//			}
+//			calDate[i]=new JButton(sday);
+//		}//for
+//		for(int i=0;i<calWeek.length;i++) {
+//			calWeekL[i]=new JLabel(calWeek[i]);
+//			calWeekL[i].setHorizontalAlignment(JLabel.CENTER);
+//			calP.add(calWeekL[i]);
+//		}//for
+//		for(int i=1;i<startDay;i++) {
+//			calP.add(new JLabel(""));
+//			sunday++;
+//		}//for
+//		for(int j=0;j<lastDay;j++) {
+//			if(sunday%7==1) calDate[indexDay].setForeground(Color.RED);
+//			else if(sunday%7==0) calDate[indexDay].setForeground(Color.BLUE);
+//			else calDate[indexDay].setForeground(Color.BLACK);
+//			sunday++;
+//			calP.add(calDate[indexDay++]);
+//		}//for
+//		while(calP.getComponentCount()<49) {
+//			calP.add(new JLabel(""));
+//		}//while
+//		for(int i=0;i<calDate.length;i++) {
+//			calDate[i].setBackground(Color.WHITE);
+//			calDate[i].addActionListener(this);
+//		}//for		
+//		monthCalP.add(monthButtonP,"North"); monthCalP.add(calP,"Center");		
+//		calendar.add(calYear,"North");	     calendar.add(monthCalP,"Center");
+//		calendarPanel.add(calendar,"Center");
+//	}//setCalendar()
 
+	public void setCinemaSeat() {
+		char lineName='A';
+		int index=1;
+		for(int i=0;i<12;i++) {
+			seatLine[i]=new JLabel(lineName+"");
+			lineName++;
+			areaLine.add(seatLine[i]);
+		}//for
+		// 왼쪽구역 좌석 배치
+		for(int i=0;i<12;i++) {
+			for(int j=0;j<5;j++) {
+				leftSeat[i][j]=new JButton();
+				leftSeat[i][j].setText(index+"");
+				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
+				if(index==5) {
+					index=0;
+				}//
+				index++;		
+				leftArea.add(leftSeat[i][j]);
+			}// inner for
+		}// outer for
+		index=6;
+		for(int i=0;i<12;i++) {
+			for(int j=0;j<10;j++) {
+				centerSeat[i][j]=new JButton();
+				centerSeat[i][j].setText(index+"");
+				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
+				if(index==15) {
+					index=5;
+				}
+				index++;
+				centerArea.add(centerSeat[i][j]);
+			}// inner for
+		}// outer for
+		index=16;
+		for(int i=0;i<12;i++) {
+			for(int j=0;j<5;j++) {
+				rightSeat[i][j]=new JButton();
+				rightSeat[i][j].setText(index+"");
+				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
+				if(index==20) {
+					index=15;
+				}//if
+				index++;
+				rightArea.add(rightSeat[i][j]);
+			}// inner for
+		}// outer for
+		seatCard.add(areaLine);
+		seatCard.add(leftArea);
+		seatCard.add(centerArea);
+		seatCard.add(rightArea);
+		
+	}//setCinemaSeat()
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int i=0; // 반복문 매개변수
@@ -405,17 +473,17 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}
 		}//for
 		// --- 캘린더 버튼 이벤트
-		if(obj==nextMonth) {
-			month++;
-			calMonth.setText(month+"");
-			calendar.repaint();
-		}//if
-		for(i=0;i<calDate.length;i++) {
-			if(obj==calDate[i]) {
-				setDaysL.setText(calYear.getText()+" "+calMonth.getText()+"월 "+calDate[i].getText()+"일");
-				break;
-			}//if
-		}//for
+//		if(obj==nextMonth) {
+//			month++;
+//			calMonth.setText(month+"");
+//			calP.getComponent(48).repaint();
+//		}//if
+//		for(i=0;i<calDate.length;i++) {
+//			if(obj==calDate[i]) {
+//				setDaysL.setText(calYear.getText()+" "+calMonth.getText()+"월 "+calDate[i].getText()+"일");
+//				break;
+//			}//if
+//		}//for
 		// --- 다음, 이전단계 버튼 이벤트
 		if(obj==infoNextB) {
 			nextCard();
