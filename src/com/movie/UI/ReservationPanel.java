@@ -26,34 +26,33 @@ import javax.swing.event.ListSelectionListener;
 
 public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
 	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
-	SetCalendar setCal=new SetCalendar();
 	// 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
-	
+
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
-//	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
-//	private JPanel calP=new JPanel(new GridLayout(7,7));
-//	private JPanel monthCalP=new JPanel(new BorderLayout());
-//	private JPanel monthButtonP=new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
-//	private String[] calWeek= {"일","월","화","수","목","금","토"};
-//	
-//	private JLabel[] calWeekL=new JLabel[7];
-//	protected JButton[] calDate=new JButton[32];
-//	protected JButton nextMonth=new JButton("▶");
-//	protected JButton preMonth=new JButton("◀");
-//	protected JLabel calMonth=new JLabel("");
-//	protected JLabel calYear=new JLabel("2019년");
-//
-//	private int startDay; // 각 월 시작 일
-//	private int lastDay; // 각 월 마지막 일
-//
-//	private int year; // 현재 년도
-//	private int month; // 월
-//	private int date; // 일
-//	private int sunday=1;
-//	private int indexDay=1;
+	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
+	private JPanel calP=new JPanel(new GridLayout(7,7));
+	private JPanel monthCalP=new JPanel(new BorderLayout());
+	private JPanel monthButtonP=new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
+	private String[] calWeek= {"일","월","화","수","목","금","토"};
+
+	private JLabel[] calWeekL=new JLabel[7];
+	protected JButton[] calDate=new JButton[32];
+	protected JButton nextMonth=new JButton("▶");
+	protected JButton preMonth=new JButton("◀");
+	protected JLabel calMonth=new JLabel("");
+	protected JLabel calYear=new JLabel("2019년");
+
+	private int startDay; // 각 월 시작 일
+	private int lastDay; // 각 월 마지막 일
+
+	private int year; // 현재 년도
+	private int month; // 월
+	private int date; // 일
+	private int sunday=1;
+	private int indexDay=1;
 
 	// ------------------------------------- 버튼그룹 메서드
 
@@ -72,7 +71,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	/* 카드레이아웃 패널 */
 	private JPanel reservCard=new JPanel(CARD);
 	private JPanel homeCard=new JPanel(new BorderLayout()); // 홈 카드패널
-	private JPanel seatCard=new JPanel(); // 좌석 카드패널
+	private JPanel seatCard=new JPanel(new FlowLayout(FlowLayout.CENTER,0,70)); // 좌석 카드패널
 	private JPanel paymentCard=new JPanel(); // 결제 카드패널
 
 	/* 홈 패널 */
@@ -94,7 +93,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel peopleGroupLP=new JPanel(new FlowLayout(FlowLayout.LEFT,0,2));
 	private JPanel movieListPanel=new JPanel(new BorderLayout());
 	private JPanel cinemaListPanel=new JPanel(new BorderLayout());
-	
+
 	protected JPanel calendarPanel=new JPanel(new BorderLayout());
 
 	// - 서브라벨
@@ -103,19 +102,22 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
 
 	// --------------------------------- 좌석 패널
+
+	private JPanel seatPanel=new JPanel(new FlowLayout(FlowLayout.CENTER,10,0)); // 좌석 구역 패널
+	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
+	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1)); // 중앙 구역 좌석
+	private JPanel rightArea=new JPanel(new GridLayout(12,5,1,1)); // 오른쪽 구역 좌석
+	private JPanel areaLine=new JPanel(new GridLayout(12,1,1,7)); // 좌석 열표시
 	
-	private JPanel seatPanel=new JPanel();
-	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1));
-	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1));
-	private JPanel rightArea=new JPanel(new GridLayout(12,5,1,1));
-	private JPanel areaLine=new JPanel(new GridLayout(12,1,1,1));
-	
+	private JPanel lineSeatP=new JPanel(new BorderLayout(20,30));
+
 	protected JButton[][] leftSeat=new JButton[12][5];
 	protected JButton[][] centerSeat=new JButton[12][10];
 	protected JButton[][] rightSeat=new JButton[12][5];
-	
-	protected JLabel[] seatLine=new JLabel[12];
-	
+
+	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
+	private JLabel screen=new JLabel("SCREEN");
+
 	/* 결제 패널 */
 
 	// ----------------------------------- 리스트
@@ -169,7 +171,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		infoName.add(movieNameL); // 영화명 라벨
 		dayGroupLP.add(setDaysL); dayGroupLP.add(setTimesL);
 		peopleGroupLP.add(setAdultL); peopleGroupLP.add(setChildL);
-		
+
 		infoWestLP.add(daysL);    infoCenterLP.add(dayGroupLP);
 		infoWestLP.add(cinemaL);  infoCenterLP.add(setCinemaL);
 		infoWestLP.add(seatL);    infoCenterLP.add(setSeatL);
@@ -241,9 +243,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		/* --- 라벨, 리스트 추가한 패널 구성 */
 		movieListPanel.add(movieChoiceLabel,"North");   movieListPanel.add(movieListSp,"Center");
 		cinemaListPanel.add(cinemaChoiceLabel,"North"); cinemaListPanel.add(cinemaListSp,"Center");
-		calendarPanel.add(dayChoiceLabel,"North");      calendarPanel.add(setCal,"Center");
-//		setCalendar();
-		
+		calendarPanel.add(dayChoiceLabel,"North");      setCalendar();
+
+
 		movieChoiceLabel.setFont(choiceLabelFont);      cinemaChoiceLabel.setFont(choiceLabelFont);
 		dayChoiceLabel.setFont(choiceLabelFont);
 
@@ -251,7 +253,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		// ------ 하단 패널 구축
 		Font bottomLabelFont=new Font("맑은 고딕",Font.BOLD,13);
-		
+
 		bottomPanel.setPreferredSize(new Dimension(1000,150));
 		timeChoice.setBackground(Color.WHITE);
 		timeChoice.setPreferredSize(new Dimension(600,150));
@@ -259,7 +261,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		peopleChoice.setBackground(Color.WHITE);
 		peopleChoice.setPreferredSize(new Dimension(200,150));
 		peopleChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		timeChoiceLabel.setFont(bottomLabelFont); peopleChoiceLabel.setFont(bottomLabelFont);
 
 		timeChoice.add(timeChoiceLabel);	    timeChoice.add(setTimeButton());
@@ -302,7 +304,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		JPanel adultButtonP=new JPanel();
 		JPanel childP=new JPanel(new BorderLayout(0,5));
 		JPanel childButtonP=new JPanel();
-		
+
 		peopleGroup.setPreferredSize(new Dimension(200,150));
 		peopleGroup.setOpaque(false);
 		peopleGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -333,70 +335,70 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	}//setPeopleButton()
 
 	// --- 날짜선택 캘린더 컴포넌트 메서드
-//	public void setCalendar() {
-//		calMonth.setText("8");
-//		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
-//		calMonth.setHorizontalAlignment(JLabel.CENTER);
-//		// --- 년 / 월 설정 버튼
-//		
-//		monthButtonP.add(preMonth);
-//		monthButtonP.add(calMonth);
-//		monthButtonP.add(nextMonth);
-//		
-//		preMonth.setContentAreaFilled(false);
-//		preMonth.setBorderPainted(false);
-//		nextMonth.setContentAreaFilled(false);
-//		nextMonth.setBorderPainted(false);
-//		
-//		nextMonth.addActionListener(this);
-//		
-//		// --- 캘린더 날짜 구성
-//		year=2019; 
-//		month=Integer.parseInt(calMonth.getText()); // 컴포넌트위 문자열을 정수로 반환
-//		
-//		cal.set(Calendar.YEAR, year);
-//		cal.set(Calendar.MONTH, month-1);
-//		cal.set(Calendar.DATE, 1);
-//		
-//		startDay=cal.get(Calendar.DAY_OF_WEEK); // 현재 월 시작 요일
-//		lastDay=cal.getActualMaximum(Calendar.DATE); // 월 마지막 날짜
-//		// 버튼 설정		
-//		for(int i=0;i<calDate.length;i++) {
-//			String sday="";
-//			if(i<10) {
-//				sday=" "+i;
-//			}else {
-//				sday=""+i;
-//			}
-//			calDate[i]=new JButton(sday);
-//		}//for
-//		for(int i=0;i<calWeek.length;i++) {
-//			calWeekL[i]=new JLabel(calWeek[i]);
-//			calWeekL[i].setHorizontalAlignment(JLabel.CENTER);
-//			calP.add(calWeekL[i]);
-//		}//for
-//		for(int i=1;i<startDay;i++) {
-//			calP.add(new JLabel(""));
-//			sunday++;
-//		}//for
-//		for(int j=0;j<lastDay;j++) {
-//			if(sunday%7==1) calDate[indexDay].setForeground(Color.RED);
-//			else if(sunday%7==0) calDate[indexDay].setForeground(Color.BLUE);
-//			else calDate[indexDay].setForeground(Color.BLACK);
-//			sunday++;
-//			calP.add(calDate[indexDay++]);
-//		}//for
-//		while(calP.getComponentCount()<49) {
-//			calP.add(new JLabel(""));
-//		}//while
-//		for(int i=0;i<calDate.length;i++) {
-//			calDate[i].setBackground(Color.WHITE);
-//			calDate[i].addActionListener(this);
-//		}//for		
-//		monthCalP.add(monthButtonP,"North"); monthCalP.add(calP,"Center");		
-//		calendar.add(calYear,"North");	     calendar.add(monthCalP,"Center");
-//		calendarPanel.add(calendar,"Center");
-//	}//setCalendar()
+	public void setCalendar() {
+		calMonth.setText("8");
+		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
+		calMonth.setHorizontalAlignment(JLabel.CENTER);
+		// --- 년 / 월 설정 버튼
+
+		monthButtonP.add(preMonth);
+		monthButtonP.add(calMonth);
+		monthButtonP.add(nextMonth);
+
+		preMonth.setContentAreaFilled(false);
+		preMonth.setBorderPainted(false);
+		nextMonth.setContentAreaFilled(false);
+		nextMonth.setBorderPainted(false);
+
+		nextMonth.addActionListener(this);
+
+		// --- 캘린더 날짜 구성
+		year=2019; 
+		month=Integer.parseInt(calMonth.getText()); // 컴포넌트위 문자열을 정수로 반환
+
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month-1);
+		cal.set(Calendar.DATE, 1);
+
+		startDay=cal.get(Calendar.DAY_OF_WEEK); // 현재 월 시작 요일
+		lastDay=cal.getActualMaximum(Calendar.DATE); // 월 마지막 날짜
+		// 버튼 설정		
+		for(int i=0;i<calDate.length;i++) {
+			String sday="";
+			if(i<10) {
+				sday=" "+i;
+			}else {
+				sday=""+i;
+			}
+			calDate[i]=new JButton(sday);
+		}//for
+		for(int i=0;i<calWeek.length;i++) {
+			calWeekL[i]=new JLabel(calWeek[i]);
+			calWeekL[i].setHorizontalAlignment(JLabel.CENTER);
+			calP.add(calWeekL[i]);
+		}//for
+		for(int i=1;i<startDay;i++) {
+			calP.add(new JLabel(""));
+			sunday++;
+		}//for
+		for(int j=0;j<lastDay;j++) {
+			if(sunday%7==1) calDate[indexDay].setForeground(Color.RED);
+			else if(sunday%7==0) calDate[indexDay].setForeground(Color.BLUE);
+			else calDate[indexDay].setForeground(Color.BLACK);
+			sunday++;
+			calP.add(calDate[indexDay++]);
+		}//for
+		while(calP.getComponentCount()<49) {
+			calP.add(new JLabel(""));
+		}//while
+		for(int i=0;i<calDate.length;i++) {
+			calDate[i].setBackground(Color.WHITE);
+			calDate[i].addActionListener(this);
+		}//for		
+		monthCalP.add(monthButtonP,"North"); monthCalP.add(calP,"Center");		
+		calendar.add(calYear,"North");	     calendar.add(monthCalP,"Center");
+		calendarPanel.add(calendar,"Center");
+	}//setCalendar()
 
 	public void setCinemaSeat() {
 		char lineName='A';
@@ -412,9 +414,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				leftSeat[i][j]=new JButton();
 				leftSeat[i][j].setText(index+"");
 				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
+				leftSeat[i][j].setBackground(Color.BLACK.brighter());
+				leftSeat[i][j].setForeground(Color.WHITE);
 				if(index==5) {
 					index=0;
-				}//
+				}// if
 				index++;		
 				leftArea.add(leftSeat[i][j]);
 			}// inner for
@@ -425,9 +429,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				centerSeat[i][j]=new JButton();
 				centerSeat[i][j].setText(index+"");
 				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
+				centerSeat[i][j].setBackground(Color.BLACK);
+				centerSeat[i][j].setForeground(Color.WHITE);
 				if(index==15) {
 					index=5;
-				}
+				}// if
 				index++;
 				centerArea.add(centerSeat[i][j]);
 			}// inner for
@@ -438,6 +444,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				rightSeat[i][j]=new JButton();
 				rightSeat[i][j].setText(index+"");
 				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
+				rightSeat[i][j].setBackground(Color.BLACK);
+				rightSeat[i][j].setForeground(Color.WHITE);			
 				if(index==20) {
 					index=15;
 				}//if
@@ -445,13 +453,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				rightArea.add(rightSeat[i][j]);
 			}// inner for
 		}// outer for
-		seatCard.add(areaLine);
-		seatCard.add(leftArea);
-		seatCard.add(centerArea);
-		seatCard.add(rightArea);
-		
+		seatPanel.add(leftArea); seatPanel.add(centerArea); seatPanel.add(rightArea); // 좌석 구역 배치
+		screen.setPreferredSize(new Dimension(0,30));
+		screen.setHorizontalAlignment(JLabel.CENTER);
+		screen.setOpaque(true);
+		screen.setBackground(new Color(225,225,225));
+		screen.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		lineSeatP.add(areaLine,"West"); lineSeatP.add(seatPanel,"Center"); lineSeatP.add(screen,"North");
+		seatCard.add(lineSeatP);
 	}//setCinemaSeat()
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int i=0; // 반복문 매개변수
@@ -464,40 +475,39 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}else if(obj==adultB[i]){
 				setAdultL.setText(adultL.getText()+adultB[i].getText()+"명");
 				break;
-			}
-		}//for
+			}// if else
+		}// for
 		for(int j=0;j<childB.length;j++) {
 			if(obj==childB[j]){
 				setChildL.setText(","+childL.getText()+childB[j].getText()+"명");
 				break;
 			}
-		}//for
+		}// for
 		// --- 캘린더 버튼 이벤트
-//		if(obj==nextMonth) {
-//			month++;
-//			calMonth.setText(month+"");
-//			calP.getComponent(48).repaint();
-//		}//if
-//		for(i=0;i<calDate.length;i++) {
-//			if(obj==calDate[i]) {
-//				setDaysL.setText(calYear.getText()+" "+calMonth.getText()+"월 "+calDate[i].getText()+"일");
-//				break;
-//			}//if
-//		}//for
+		if(obj==nextMonth) {
+			month++;
+			calMonth.setText(month+"");
+			repaint();
+		}// if
+		for(i=0;i<calDate.length;i++) {
+			if(obj==calDate[i]) {
+				setDaysL.setText(calYear.getText()+" "+calMonth.getText()+"월 "+calDate[i].getText()+"일");
+				break;
+			}// if
+		}// for
 		// --- 다음, 이전단계 버튼 이벤트
 		if(obj==infoNextB) {
 			nextCard();
-		}//if
+		}// if
 		if(obj==seatBackB) {
 			infoNextB.setVisible(true);
 			seatNextB.setVisible(false);
 			seatBackB.setVisible(false);
 			CARD.previous(reservCard);
-		}//if
+		}// if
 		if(obj==seatNextB) {
 			nextCard();
-		}//if
-		
+		}// if
 	}//aP()
 
 	public void nextCard() {
@@ -515,5 +525,5 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		}else if(obj==cinemaList) {
 			setCinemaL.setText(cinemaList.getSelectedValue()+"");
 		}//if else
-	}
+	}// vC() => 리스트 항목 선택시 이벤트
 }//Reservation class
