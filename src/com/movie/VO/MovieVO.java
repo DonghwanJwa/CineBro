@@ -1,10 +1,12 @@
 package com.movie.VO;
 
+import com.movie.main.AppManager;
+
 public class MovieVO {
 
 	//*********기본 영화 정보*********//
 	
-	private int movie_code;			//영화를 식별할 영화코드
+	private String movie_code;		//영화를 식별할 영화코드
 	private String movie_nameK;		//한국영화이름 
 	private String movie_nameE; 	//영어영화이름
 	private String movie_img;		//영화포스터
@@ -28,9 +30,13 @@ public class MovieVO {
 	private String threeview;		//예고편3
 	private String threeview_img;	//예고편3 이미지
 	
+	public MovieVO() {
+		AppManager.getInstance().getDataManager().setMovieVO(this);
+	}
+	
 	//******************************set*****************************//
  
-	public void setMovie_code	(int movie_code) 			{this.movie_code = movie_code;}
+	public void setMovie_code	(String movie_code) 		{this.movie_code = movie_code;}
 	public void setMovie_nameK	(String movie_nameK) 		{this.movie_nameK = movie_nameK;}
 	public void setMovie_nameE	(String movie_nameE) 		{this.movie_nameE = movie_nameE;}
 	public void setMovie_img	(String movie_img) 			{this.movie_img = movie_img;}
@@ -52,7 +58,7 @@ public class MovieVO {
 
 	//******************************get*****************************//
 
-	public int getMovie_code() 			{return movie_code;}
+	public String getMovie_code() 		{return movie_code;}
 	public String getMovie_nameK() 		{return movie_nameK;}
 	public String getMovie_nameE() 		{return movie_nameE;}
 	public String getMovie_img() 		{return movie_img;}
