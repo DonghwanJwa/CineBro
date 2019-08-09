@@ -26,21 +26,21 @@ public class AppManager {
 		return appManager;
 	}//getInstance
 
-	//******************************get 메서드*****************************//
-	public LoginPage getLogin() {		return login_page;		}
-	public SignUpFrame getSignUpFrame() {		return signUp;		}
-	public FindIDPassFrame getFindIDPassFrame() { return find_frame;	}
-	public MainUI getMainUi() {		return mainUi;  	}
-	public MyActionListener getMyListener() {		return myListener;		}
-	public DAOManager getDAOManager() {	return daoManager;	}
-	public DataManager getDataManager() { return dataManager;	}
+	// ------------------------------ get 메서드 ----------------------------- //
+	public LoginPage getLogin()	                {		return login_page;		}
+	public SignUpFrame getSignUpFrame()         {		return signUp;		    }
+	public FindIDPassFrame getFindIDPassFrame() { 		return find_frame;	    }
+	public MainUI getMainUi()		            {		return mainUi;  	    }
+	public MyActionListener getMyListener() 	{		return myListener;		}
+	public DAOManager getDAOManager() 	 	    {		return daoManager;	    }
+	public DataManager getDataManager()         { 		return dataManager;	    }
 
-	//******************************set 메서드*****************************//
-	public void setLogin(LoginPage login) {		this.login_page = login;		}
-	public void setSignUpFrame(SignUpFrame signUp) { this.signUp = signUp; }
-	public void setFindIDPassFrame(FindIDPassFrame find_frame) { this.find_frame = find_frame; }
-	public void setMainUi(MainUI mainUi) {		this.mainUi = mainUi;		}
-	public void setMyListener(MyActionListener myListener) {	this.myListener = myListener;	}
-	public void setDAOManager(DAOManager daoManager) { this.daoManager = daoManager;	}
-	public void setDataManager(DataManager dataManager) { this.dataManager=dataManager;	}
-}//AppManager class ( SingleTon ) 
+	// ------------------------------ set 메서드 ----------------------------- //
+	public void setLogin(LoginPage login)					   {		this.login_page = login;			}
+	public void setSignUpFrame(SignUpFrame signUp) 			   { 		this.signUp = signUp;               }
+	public void setFindIDPassFrame(FindIDPassFrame find_frame) { 		this.find_frame = find_frame; 		}
+	public void setMainUi(MainUI mainUi) 					   {		this.mainUi = mainUi;	    		}
+	public void setMyListener(MyActionListener myListener)     {		this.myListener = myListener;		}
+	public void setDAOManager(DAOManager daoManager)           {		this.daoManager = daoManager;		}
+	public void setDataManager(DataManager dataManager)        { 		this.dataManager=dataManager;		}
+}//AppManager class ( SingleTon ) 	

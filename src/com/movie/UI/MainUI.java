@@ -18,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.movie.main.AppManager;
+
 public class MainUI {
 	static Dimension screensize=Toolkit.getDefaultToolkit().getScreenSize(); // 스크린사이즈를 가져옴
 	static int width=screensize.width; // 화면넓이
@@ -58,6 +60,7 @@ public class MainUI {
 	JPanel myPageC=new JPanel();
 	
 	public MainUI() {
+		AppManager.getInstance().setMainUi(this);
 		frame.setSize(800,600);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 프레임 항상 최대화
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X누르면 프레임종료
