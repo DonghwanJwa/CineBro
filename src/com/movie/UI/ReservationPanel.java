@@ -24,7 +24,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
+import com.movie.main.AppManager;
+
+public class ReservationPanel extends JPanel implements ActionListener{
 	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
 	// 카드레이아웃 설정
 
@@ -108,13 +110,15 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1)); // 중앙 구역 좌석
 	private JPanel rightArea=new JPanel(new GridLayout(12,5,1,1)); // 오른쪽 구역 좌석
 	private JPanel areaLine=new JPanel(new GridLayout(12,1,1,7)); // 좌석 열표시
-	
+	private JPanel seatChoice=new JPanel(new GridLayout(4,2,3,2));
+
 	private JPanel lineSeatP=new JPanel(new BorderLayout(20,30));
 
 	protected JButton[][] leftSeat=new JButton[12][5];
 	protected JButton[][] centerSeat=new JButton[12][10];
 	protected JButton[][] rightSeat=new JButton[12][5];
-
+	
+	protected JLabel[] seatChoiceL=new JLabel[8];
 	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
 	private JLabel screen=new JLabel("SCREEN");
 
@@ -136,7 +140,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JLabel cinemaL=new JLabel("상영관");
 	protected JLabel setCinemaL=new JLabel("3");
 	protected JLabel seatL=new JLabel("좌석");
-	protected JLabel setSeatL=new JLabel("3"); 
+	protected JLabel setSeatL=new JLabel(""); 
 	protected JLabel peopleL=new JLabel("인원");
 	protected JLabel setAdultL=new JLabel();
 	protected JLabel setChildL=new JLabel();
@@ -152,6 +156,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JButton seatBackB=new JButton("이전단계");
 
 	public ReservationPanel() {
+		//		AppManager.getInstance().setBookingP(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(50,150,200,200));			
 
@@ -226,9 +231,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		for(int i=0;i<12;i++) {
 			movieVector.add(i+"번째 영화");
 			cinemaVector.add(i+"번째 상영관");
-		}//for
-		movieList.addListSelectionListener(this);
-		cinemaList.addListSelectionListener(this);		
+		}//for			
 
 		// --- 리스트 스크롤생성
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -401,8 +404,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	}//setCalendar()
 
 	public void setCinemaSeat() {
-		char lineName='A';
-		int index=1;
+		char lineName='A'; // 열 이름
+		int index=1; // 좌석배치 인덱스
+		// --- 열 이름
 		for(int i=0;i<12;i++) {
 			seatLine[i]=new JLabel(lineName+"");
 			lineName++;
@@ -416,6 +420,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
 				leftSeat[i][j].setBackground(Color.BLACK.brighter());
 				leftSeat[i][j].setForeground(Color.WHITE);
+				leftSeat[i][j].addActionListener(this);
 				if(index==5) {
 					index=0;
 				}// if
@@ -423,6 +428,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				leftArea.add(leftSeat[i][j]);
 			}// inner for
 		}// outer for
+		// --- 중앙구역 좌석
 		index=6;
 		for(int i=0;i<12;i++) {
 			for(int j=0;j<10;j++) {
@@ -431,6 +437,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
 				centerSeat[i][j].setBackground(Color.BLACK);
 				centerSeat[i][j].setForeground(Color.WHITE);
+				centerSeat[i][j].addActionListener(this);
 				if(index==15) {
 					index=5;
 				}// if
@@ -438,6 +445,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				centerArea.add(centerSeat[i][j]);
 			}// inner for
 		}// outer for
+		// --- 오른쪽 구역 좌석
 		index=16;
 		for(int i=0;i<12;i++) {
 			for(int j=0;j<5;j++) {
@@ -445,7 +453,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				rightSeat[i][j].setText(index+"");
 				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
 				rightSeat[i][j].setBackground(Color.BLACK);
-				rightSeat[i][j].setForeground(Color.WHITE);			
+				rightSeat[i][j].setForeground(Color.WHITE);	
+				rightSeat[i][j].addActionListener(this);
 				if(index==20) {
 					index=15;
 				}//if
@@ -453,13 +462,20 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				rightArea.add(rightSeat[i][j]);
 			}// inner for
 		}// outer for
+		for(int i=0;i<8;i++) {
+			seatChoiceL[i]=new JLabel();
+			seatChoiceL[i].setHorizontalAlignment(JLabel.CENTER);
+		}// for
+		seatChoice.setPreferredSize(new Dimension(120,0));
+		seatChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		seatPanel.add(leftArea); seatPanel.add(centerArea); seatPanel.add(rightArea); // 좌석 구역 배치
 		screen.setPreferredSize(new Dimension(0,30));
 		screen.setHorizontalAlignment(JLabel.CENTER);
 		screen.setOpaque(true);
 		screen.setBackground(new Color(225,225,225));
 		screen.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		lineSeatP.add(areaLine,"West"); lineSeatP.add(seatPanel,"Center"); lineSeatP.add(screen,"North");
+		lineSeatP.add(areaLine,"West"); lineSeatP.add(seatPanel,"Center"); 
+		lineSeatP.add(screen,"North"); lineSeatP.add(seatChoice,"East");
 		seatCard.add(lineSeatP);
 	}//setCinemaSeat()
 
@@ -508,6 +524,20 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		if(obj==seatNextB) {
 			nextCard();
 		}// if
+		for(i=0;i<5;i++) {
+			if(obj==leftSeat[0][i]) {
+				if(seatChoice.getComponentCount()<8) {
+					seatChoice.add(seatChoiceL[0]);
+					seatChoiceL[0].setText("A"+leftSeat[0][i].getText());
+				}//if
+				
+				break;
+			}
+			if(obj==leftSeat[1][i]) {
+				setSeatL.setText(setSeatL.getText().concat("B"+leftSeat[0][i].getText()));
+				break;
+			}
+		}// outer for
 	}//aP()
 
 	public void nextCard() {
@@ -516,14 +546,4 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		seatNextB.setVisible(true);
 		CARD.next(reservCard);
 	}//nextCard()
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		Object obj=e.getSource();
-		if(obj==movieList) {
-			movieNameL.setText(movieList.getSelectedValue()+"");
-		}else if(obj==cinemaList) {
-			setCinemaL.setText(cinemaList.getSelectedValue()+"");
-		}//if else
-	}// vC() => 리스트 항목 선택시 이벤트
 }//Reservation class
