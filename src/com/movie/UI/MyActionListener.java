@@ -30,14 +30,16 @@ public class MyActionListener {
 				if((signUp.idTF.getText().length()<6 || signUp.idTF.getText().length()>16) || 
 						!(Pattern.matches("^[a-z]+[a-z0-9]*$",signUp.idTF.getText()))) {
 					signUp.error_idL.setText("아이디는 영문소문자로 시작하는 6~16자리 영문 소문자와 숫자로만 입력하세요!");
+					return;
 				}else {//아이디 경고문 출력
 					/**DB에서 id search=>비교 if절 추가해야됨**/		
 					signUp.check_idB.setEnabled(false);
+					return;
 				}
 			}//아이디 중복체크 버튼 선택시
 
 			if(e.getSource()==signUp.check_emailB) {
-				
+				return;
 			}//이메일 인증번호 버튼 선택시
 
 			if(e.getSource()==signUp.confirmB) {
@@ -50,6 +52,7 @@ public class MyActionListener {
 				if(signUp.check_idB.isEnabled()==true) { //중복검색 안했을때(버튼 활성화되어있을때)
 					signUp.error_idL.setText("아이디를 입력한 후 중복확인을 해주세요!");
 					signUp.idTF.requestFocus();
+					return;
 				}//아이디 중복검색 버튼 안눌렀을 때
 				
 				if(signUp.passPF.getText().length()<6 || signUp.passPF.getText().length()>16 || 
@@ -58,18 +61,21 @@ public class MyActionListener {
 					signUp.passPF.setText("");
 					signUp.passrePF.setText("");
 					signUp.passPF.requestFocus();
+					return;
 				}//비밀번호 입력값이 올바르지 않을 때
 				
 				if(!signUp.passPF.getText().equals(signUp.passrePF.getText())) {
-					signUp.error_passL.setText("비번이 일치하지 않습니다!");
+					signUp.error_passL.setText("두 비밀번호가 일치하지 않습니다!");
 					signUp.passPF.setText(""); 
 					signUp.passrePF.setText("");
 					signUp.passPF.requestFocus();
+					return;
 				}//비밀번호 입력값과 재입력값이 다른경우
 				
 				if(signUp.nameTF.getText().trim().equals("")) {
 					signUp.error_nameL.setText("이름을 입력하세요!");
 					signUp.nameTF.requestFocus();
+					return;
 				}//이름란이 공백일 때
 				
 				if(signUp.yearTF.getText().trim().equals("") || signUp.monthTF.getText().trim().equals("") ||
@@ -79,13 +85,15 @@ public class MyActionListener {
 						(!(Pattern.matches("^[0-9]*$", signUp.dateTF.getText())))) {     //일 텍스트필드에 숫자가 아닌것이 있을때
 					signUp.error_birthL.setText("생년월일을 정확히 입력해 주세요!");
 					signUp.yearTF.requestFocus();
+					return;
 				}//생년월일 란에 문제가 있을 때
 				
 				if(signUp.emailTF.getText().trim().equals("")) {
 					signUp.error_emailL.setText("이메일을 입력하세요!");
 					signUp.emailTF.requestFocus();
+					return;
 				}//이메일 란이 공백일 때
-			}else {
+			
 				signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
 				signUp.dispose();
 			}//가입하기 버튼 눌렀을 때
