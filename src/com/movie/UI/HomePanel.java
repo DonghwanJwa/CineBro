@@ -16,7 +16,7 @@ public class HomePanel extends JPanel implements ActionListener{
 	CardLayout cards=new CardLayout();
 	JPanel buttons,card_panel;
 	JButton[] movie=new JButton[8];
-	
+
 	public HomePanel() {
 		//		card_panel=new JPanel();
 		/* 패널설정 */
@@ -33,12 +33,16 @@ public class HomePanel extends JPanel implements ActionListener{
 			buttons.add(movie[i]);		
 		}//for
 		add(buttons,"home");
-	
+
 	}//cons MoviePanel()
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==movie[0]){
-		new MovieInfoPlus(1);
+			new MovieInfoPlus(1);
+			return;
+		}//if
+		if(e.getSource()==movie[1]) {
+			new MovieInfoPlus(2);
 		}//if
 
 	}//aP() => 버튼을 눌렀을 때 실행
