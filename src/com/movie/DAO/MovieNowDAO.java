@@ -1,55 +1,48 @@
 package com.movie.DAO;
 
-import java.sql.ResultSet;
-
-import com.movie.VO.MovieNowVO;
-import com.movie.main.AppManager;
-
 public class MovieNowDAO {
 
-	DAOManager daoManager = AppManager.getInstance().getDAOManager();
-	MovieNowVO movieNowVO = AppManager.getInstance().getDataManager().getMovieNowVO();
-	
-	int result;
-	ResultSet rs;
-	
-	public MovieNowDAO() {
-		AppManager.getInstance().getDAOManager().setMovieNowDAO(this);
-	}//생성자
-	//-----------------------------영화정보 DB 입력-----------------------------//
-	public MovieNowVO movieNowList(String movie_code) {
-		String sql="SELECT  movie_code, movie_nameE, movie_img, age, gerne, director, actors FROM movietest where movie_code = ?";
-		try {
-			daoManager.connectDB();
+	// --------- 기본 영화 정보 --------- //
+	private String movieCode;//영화를 식별할 영화코드
+	private String title;//영화이름
+	private String genre;//영화장르
+	private String runningTime;//영화시간
+	private String director;//감독
+	private String Screentime;
+	private String actors;
 
-			daoManager.pt = daoManager.con.prepareStatement(sql);
-			daoManager.pt.setString(1, movie_code);
-			rs= daoManager.pt.executeQuery();
-			
-			while(rs.next()) {
-//				 movieNowVO.setMovie_code(rs.getInt("movie_code"));
-				 movieNowVO.setMovie_nameK(rs.getString("movie_nameK"));
-				 movieNowVO.setMovie_nameE(rs.getString("movie_nameE"));
-				 movieNowVO.setImg(rs.getString("movie_img"));
-				 movieNowVO.setAge(rs.getString("age"));
-				 movieNowVO.setGenre(rs.getString("genre"));
-				 movieNowVO.setDirector(rs.getString("director"));
-				 movieNowVO.setActors(rs.getString("actors"));
-			}
-		}catch(Exception e) {e.printStackTrace();
-		
-		}finally {
-			
-			try {
-				
-				if(rs!=null)rs.close();
-				daoManager.closeDB();
-				
-			}catch(Exception e) {e.printStackTrace();}
-			
-		}//finally
-		return movieNowVO;
-	}//movieNowList()
+	// ---------- 영화예고편 ---------- //
+	private String video;//배열 or 컬렉션으로
+	private String teaser;//영화 티저영상
+	private String preview1;
+	private String preview2;
+	
+	// ------------------------------ set ------------------------ //
+	public void setMovieCode(String movieCode)	 	{ 	this.movieCode = movieCode;		}
+	public void setTitle(String title) 				{	this.title = title;				}
+	public void setGenre(String genre) 				{ 	this.genre = genre;				}
+	public void setRunningTime(String runningTime) 	{	this.runningTime = runningTime; }
+	public void setDirector(String director) 		{	this.director = director;		}
+	public void setScreentime(String screentime) 	{	this.Screentime = screentime;	}
+	public void setActors(String actors) 	 		{	this.actors = actors;			}
+	public void setVideo(String video)				{	this.video = video;				}
+	public void setTeaser(String teaser)			{	this.teaser = teaser;			}
+	public void setPreview1(String preview1)		{	this.preview1 = preview1;		}
+	public void setPreview2(String preview2) 		{	this.preview2 = preview2;		}
+
+	// ------------------------------ get ----------------------------- //
+	public String getMovieCode()    {	 return movieCode;	 }
+	public String getTitle() 		{	 return title;		 }
+	public String getGenre() 		{	 return genre;		 }
+	public String getRunningTime()  { 	 return runningTime; }
+	public String getDirector()     {	 return director;	 }
+	public String getScreentime()   { 	 return Screentime;  }
+	public String getActors() 		{ 	 return actors;		 }
+	public String getVideo() 		{ 	 return video;		 }
+	public String getTeaser() 		{ 	 return teaser;	     }
+	public String getPreview1() 	{	 return preview1;	 }
+	public String getPreview2() 	{ 	 return preview2;	 }
+
 }
 
 
