@@ -25,7 +25,7 @@ public class AppManager {
 		}//if
 		return appManager;
 	}//getInstance
-
+	
 	// ------------------------------ get 메서드 ----------------------------- //
 	public LoginPage getLogin()	                {		return login_page;		}
 	public SignUpFrame getSignUpFrame()         {		return signUp;		    }
@@ -34,7 +34,7 @@ public class AppManager {
 	public MyActionListener getMyListener() 	{		return myListener;		}
 	public DAOManager getDAOManager() 	 	    {		return daoManager;	    }
 	public DataManager getDataManager()         { 		return dataManager;	    }
-
+	
 	// ------------------------------ set 메서드 ----------------------------- //
 	public void setLogin(LoginPage login)					   {		this.login_page = login;			}
 	public void setSignUpFrame(SignUpFrame signUp) 			   { 		this.signUp = signUp;               }

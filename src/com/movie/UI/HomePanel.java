@@ -10,11 +10,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.movie.main.AppManager;
+
 public class HomePanel extends JPanel implements ActionListener{
 	CardLayout cards=new CardLayout();
 	JPanel buttons,card_panel;
 	JButton[] movie=new JButton[8];
-	MovieInfoPlus movieInfo=new MovieInfoPlus();
 
 	public HomePanel() {
 		//		card_panel=new JPanel();
@@ -32,12 +33,16 @@ public class HomePanel extends JPanel implements ActionListener{
 			buttons.add(movie[i]);		
 		}//for
 		add(buttons,"home");
-		add(movieInfo,"movie_one");
+
 	}//cons MoviePanel()
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==movie[0]){
-			cards.show(this,"movie_one");
+			new MovieInfoPlus(1);
+			return;
+		}//if
+		if(e.getSource()==movie[1]) {
+			new MovieInfoPlus(2);
 		}//if
 
 	}//aP() => 버튼을 눌렀을 때 실행

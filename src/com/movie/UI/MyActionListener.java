@@ -6,11 +6,27 @@ import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import com.movie.DAO.DAOManager;
+import com.movie.DAO.MovieDAO;
+import com.movie.VO.DataManager;
+import com.movie.VO.MovieVO;
 import com.movie.main.AppManager;
 
 public class MyActionListener {
-	MainUI mainUi=new MainUI();
+	/* 동환 코멘트 20190810
+	 * MyActionListener를 MainClass에서 객체를 생성하고, MainUI를 호출하여 첫 화면(frame)을 보여주는데,
+	 * 이 때 MainUI내에서 필요한 DB구동 객체들(DataManager,DAOManager,VO들,DAO들)을 MyActionLisitener에서 생성해야
+	 * MainUI내에서 필요한 정보들을 DB로부터 가져올수 있게 된다.
+	 * (DAO,VO객체를 미리 생성하지 않았기 때문에 영화정보를 불러올때마다 NullPointerException 오류가 나타난것임)
+	 */
+	MainUI mainUi=new MainUI();						
+	DataManager dataManager = new DataManager();	
+	DAOManager daoManager = new DAOManager();		
+	MovieVO movievo = new MovieVO();				
+	MovieDAO moviedao = new MovieDAO();
 	LoginPage loginP;
 	SignUpFrame signUp;
 	FindIDPassFrame findF;
@@ -18,6 +34,7 @@ public class MyActionListener {
 	MainActionL mainL=new MainActionL();
 	SignupActionL signupL=new SignupActionL();
 	FindActionL findL=new FindActionL();
+	BookingActionL bookingL=new BookingActionL();
 
 	public MyActionListener() {
 		AppManager.getInstance().setMyListener(this);
@@ -270,17 +287,28 @@ public class MyActionListener {
 			}// 메인페이지 로그인버튼/회원가입 버튼 선택 이벤트
 		}//ap()
 	}// MainActionL class
+	class BookingActionL implements ActionListener,ListSelectionListener{
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			Object obj=e.getSource();
+			if(obj==mainUi.reservC.movieList) {
+				mainUi.reservC.movieNameL.setText(mainUi.reservC.movieList.getSelectedValue()+"");
+			}else if(obj==mainUi.reservC.cinemaList) {
+				mainUi.reservC.setCinemaL.setText(mainUi.reservC.cinemaList.getSelectedValue()+"");
+			}//if else
+		}//vC()
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+		
+	}//BookingActionL class
 	
-	public void loginListenerSet() {
-		loginP.addLoginListener(logL);
-	}
-	public void mainListenerSet() {
-		mainUi.addMainListener(mainL);
-	}
-	public void signupListenerSet() {
-		signUp.addSignupListener(signupL);
-	}
-	public void findListenerSet() {
-		findF.addFindListener(findL);
-	}
+	public void loginListenerSet() {		loginP.addLoginListener(logL);	}
+	public void mainListenerSet() {		mainUi.addMainListener(mainL);	}
+	public void signupListenerSet() {		signUp.addSignupListener(signupL);	}
+	public void findListenerSet() {		findF.addFindListener(findL); 	}
+	public void bookingListenerSet() { mainUi.addBookingListener(bookingL);  }
 }//MyActionListener class
