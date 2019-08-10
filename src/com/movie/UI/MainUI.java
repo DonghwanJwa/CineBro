@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionListener;
 
 import com.movie.main.AppManager;
 
@@ -132,6 +133,9 @@ public class MainUI {
 		mainP.add(menuTap,BorderLayout.WEST);
 		mainP.add(mainC,"Center");
 		mainP.add(logoP,"North");
+
+		// ------------ 컴포넌트 객체		
+//		AppManager.getInstance().getBookingP();
 		
 		/* -------------- 프레임 설정 ----------------- */
 		
@@ -151,5 +155,9 @@ public class MainUI {
 		myPageB.addActionListener(listener);
 		loginB.addActionListener(listener);
 		registB.addActionListener(listener);
+	}
+	public void addBookingListener(ListSelectionListener listener) {
+		reservC.movieList.addListSelectionListener(listener);
+		reservC.cinemaList.addListSelectionListener(listener);
 	}
 }//MainUI

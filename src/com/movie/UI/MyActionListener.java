@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.movie.main.AppManager;
 
@@ -18,6 +20,7 @@ public class MyActionListener {
 	MainActionL mainL=new MainActionL();
 	SignupActionL signupL=new SignupActionL();
 	FindActionL findL=new FindActionL();
+	BookingActionL bookingL=new BookingActionL();
 
 	public MyActionListener() {
 		AppManager.getInstance().setMyListener(this);
@@ -270,17 +273,28 @@ public class MyActionListener {
 			}// 메인페이지 로그인버튼/회원가입 버튼 선택 이벤트
 		}//ap()
 	}// MainActionL class
+	class BookingActionL implements ActionListener,ListSelectionListener{
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			Object obj=e.getSource();
+			if(obj==mainUi.reservC.movieList) {
+				mainUi.reservC.movieNameL.setText(mainUi.reservC.movieList.getSelectedValue()+"");
+			}else if(obj==mainUi.reservC.cinemaList) {
+				mainUi.reservC.setCinemaL.setText(mainUi.reservC.cinemaList.getSelectedValue()+"");
+			}//if else
+		}//vC()
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+		
+	}//BookingActionL class
 	
-	public void loginListenerSet() {
-		loginP.addLoginListener(logL);
-	}
-	public void mainListenerSet() {
-		mainUi.addMainListener(mainL);
-	}
-	public void signupListenerSet() {
-		signUp.addSignupListener(signupL);
-	}
-	public void findListenerSet() {
-		findF.addFindListener(findL);
-	}
+	public void loginListenerSet() {		loginP.addLoginListener(logL);	}
+	public void mainListenerSet() {		mainUi.addMainListener(mainL);	}
+	public void signupListenerSet() {		signUp.addSignupListener(signupL);	}
+	public void findListenerSet() {		findF.addFindListener(findL); 	}
+	public void bookingListenerSet() { mainUi.addBookingListener(bookingL);  }
 }//MyActionListener class

@@ -5,6 +5,7 @@ import com.movie.UI.FindIDPassFrame;
 import com.movie.UI.LoginPage;
 import com.movie.UI.MainUI;
 import com.movie.UI.MyActionListener;
+import com.movie.UI.ReservationPanel;
 import com.movie.UI.SignUpFrame;
 import com.movie.VO.DataManager;
 
@@ -34,7 +35,7 @@ public class AppManager {
 	public MyActionListener getMyListener() 	{		return myListener;		}
 	public DAOManager getDAOManager() 	 	    {		return daoManager;	    }
 	public DataManager getDataManager()         { 		return dataManager;	    }
-
+	
 	// ------------------------------ set 메서드 ----------------------------- //
 	public void setLogin(LoginPage login)					   {		this.login_page = login;			}
 	public void setSignUpFrame(SignUpFrame signUp) 			   { 		this.signUp = signUp;               }
