@@ -5,7 +5,6 @@ import com.movie.UI.FindIDPassFrame;
 import com.movie.UI.LoginPage;
 import com.movie.UI.MainUI;
 import com.movie.UI.MyActionListener;
-import com.movie.UI.ReservationPanel;
 import com.movie.UI.SignUpFrame;
 import com.movie.VO.DataManager;
 
@@ -26,7 +25,7 @@ public class AppManager {
 		}//if
 		return appManager;
 	}//getInstance
-
+	
 	// ------------------------------ get 메서드 ----------------------------- //
 	public LoginPage getLogin()	                {		return login_page;		}
 	public SignUpFrame getSignUpFrame()         {		return signUp;		    }

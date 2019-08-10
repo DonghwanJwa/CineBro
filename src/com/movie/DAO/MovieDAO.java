@@ -36,7 +36,7 @@ public class MovieDAO {
 				m.setCriticism(rs.getString("criticism"));
 				m.setActors(rs.getString("actors"));
 				m.setPeople(rs.getString("people"));
-				m.setGenre(rs.getString("genre"));
+				m.setGenre(rs.getString("gerne"));
 				m.setAge(rs.getString("age"));
 				m.setDirector(rs.getString("director"));
 				m.setTeaser(rs.getString("teaser"));
@@ -60,7 +60,6 @@ public class MovieDAO {
 			}
 		}
 		return m;
-		
 
 		//모든 영화 ArrayList 리턴
 	}

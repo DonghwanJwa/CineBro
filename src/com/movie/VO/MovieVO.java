@@ -4,7 +4,7 @@ import com.movie.main.AppManager;
 
 public class MovieVO {
 
-	//*********기본 영화 정보*********//
+	// ---------기본 영화 정보--------- //
 	
 	private String movie_code;		//영화를 식별할 영화코드
 	private String movie_nameK;		//한국영화이름 
@@ -19,7 +19,7 @@ public class MovieVO {
 	private String people;			//누적관객
 	
 	
-	//**********영화예고편**********//
+	// ----------영화예고편---------- //
 	
 	private String teaser;			//영화 티저영상
 	private String teaser_img;		//영화 티저영상 이미지
@@ -34,7 +34,7 @@ public class MovieVO {
 		AppManager.getInstance().getDataManager().setMovieVO(this);
 	}
 	
-	//******************************set*****************************//
+	// ------------------------------set----------------------------- //
  
 	public void setMovie_code	(String movie_code) 		{this.movie_code = movie_code;}
 	public void setMovie_nameK	(String movie_nameK) 		{this.movie_nameK = movie_nameK;}
@@ -56,7 +56,7 @@ public class MovieVO {
 	public void setThreeView	(String threeview) 			{this.threeview = threeview;}	
 	public void setThreeView_img(String threeview_img) 		{this.threeview_img = threeview_img;}
 
-	//******************************get*****************************//
+	// ------------------------------ get ----------------------------- //
 
 	public String getMovie_code() 		{return movie_code;}
 	public String getMovie_nameK() 		{return movie_nameK;}
