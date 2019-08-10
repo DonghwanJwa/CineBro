@@ -306,9 +306,9 @@ public class MyActionListener {
 		
 	}//BookingActionL class
 	
-	public void loginListenerSet() {		loginP.addLoginListener(logL);	}
-	public void mainListenerSet() {		mainUi.addMainListener(mainL);	}
-	public void signupListenerSet() {		signUp.addSignupListener(signupL);	}
-	public void findListenerSet() {		findF.addFindListener(findL); 	}
-	public void bookingListenerSet() { mainUi.addBookingListener(bookingL);  }
+	public void loginListenerSet() 	 {		loginP.addLoginListener(logL);		}
+	public void mainListenerSet() 	 {		mainUi.addMainListener(mainL);		}
+	public void signupListenerSet()  {		signUp.addSignupListener(signupL);	}
+	public void findListenerSet()	 {		findF.addFindListener(findL); 		}
+	public void bookingListenerSet() {   mainUi.addBookingListener(bookingL);  	}
 }//MyActionListener class

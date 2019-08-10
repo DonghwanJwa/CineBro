@@ -57,7 +57,7 @@ public class MainUI {
 	HomePanel homeC=new HomePanel();
 	MoviePage movieC=new MoviePage();
 	ReservationPanel reservC=new ReservationPanel();
-	JPanel checkC=new JPanel();
+	ReserveInfo checkC=new ReserveInfo();
 	JPanel myPageC=new JPanel();
 	
 	public MainUI() {
