@@ -30,18 +30,19 @@ import javax.swing.JScrollPane;
 //결제 날짜 년월일, 매수 몇매 
 //맨 아래 오른쪽에 예매취소버튼
 public class ReserveInfo extends JPanel implements ActionListener{
-	List<MovieUi> reserveP;
+	private List<MovieUi> reserveP;
 
 	/* 패널 생성 */
-	JPanel mainP = new JPanel();
-	JPanel movieP = new JPanel();
-	JLabel titleL;
+	private JPanel mainP = new JPanel();
+	private JPanel movieP = new JPanel();
+	private JLabel titleL;
 
 	Font labelFont = new Font("굴림체",Font.BOLD,30);
 	JScrollPane scroll;
 
 	FakeReserveDAO rdao = new FakeReserveDAO();
 	List<FakeReserveVO> rlist = rdao.list;
+
 	public ReserveInfo() {	
 		add(setMainP());
 	}//생성자
@@ -50,7 +51,8 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		titleL = new JLabel("예매정보조회");
 		titleL.setFont(labelFont);
 		return titleL;
-	}
+	}//setTitleL() : 타이틀 라벨 생성 메서드
+
 	public Component setMovieP() {
 		reserveP = new ArrayList<MovieUi>();
 		movieP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
@@ -63,7 +65,8 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		// panel_m 패널 하나의 높이가 220, 나중에 예약 하나당 220씩 증가하는식으로 수정해야함->스크롤바 때문
 
 		return movieP;
-	}
+	}//setMovieP각각의 예매정보 패널 
+
 	public Component setMainP() {
 		/* 메인패널 설정 */
 		mainP.setPreferredSize(new Dimension(1400,810));		
@@ -81,21 +84,30 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		return mainP;
 	}
 
+	/**getter**/	
+	public FakeReserveDAO getRdao() {
+		return rdao;
+	}
+	/**setter**/
+	public void setRdao(FakeReserveDAO rdao) {
+		this.rdao = rdao;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		for(int i=0;i<reserveP.size();i++) {
+		for(int i=0;i<rlist.size();i++) {
 			if(e.getSource()==reserveP.get(i).cancleB) {
-				new MovieCancelPanel();
+				new MovieCancelPanel(rlist.get(i));
 				reserveP.get(i).removeAll();	//해당하는 예매 내용을 삭제
 				reserveP.remove(i);				//배열 삭제
 				rlist.remove(i);				//DB삭제
 				revalidate();					//화면 재정리
 				repaint();						//화면 다시그리기
 				movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));//스크롤사이즈 재조정
+				break;
 			}//if
 		}//for
 	}//aP();
-
 }//MovieReservationCheckPanel class
 
 /* 예약정보패널 클래스 */

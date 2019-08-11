@@ -68,7 +68,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JButton videoB3;						//리뷰 동영상 세번째
 	private JButton videoB4;						//리뷰 동영상 네번쨰
 
-	MovieDAO dao = new MovieDAO();
+	MovieDAO dao = AppManager.getInstance().getDAOManager().getMovieDAO();
 	public MovieInfoPlus(int i) {
 		
 		
