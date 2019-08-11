@@ -1,6 +1,3 @@
-
-
-
 package com.movie.DAO;
 
 import java.sql.ResultSet;
@@ -20,7 +17,7 @@ public class MemberDAO {
 	}
 	//------------------------------회원가입------------------------------//
 	boolean Customer() {
-		daoManager.ConnectDB();
+		daoManager.connectDB();
 		String sql= "INSERT INTO ( memberVOber_id, memberVOber_pw, memberVOber_name, memberVOber_sex, memberVOber_birthday, memberVOber_email) VALUES(?, ?, ?, ?, ?, ?)";
 		try {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
@@ -44,7 +41,7 @@ public class MemberDAO {
 		daoManager =AppManager.getInstance().getDAOManager(); 
 		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
 		
-		daoManager.ConnectDB();
+		daoManager.connectDB();
 		String sql= "SELECT * FROM memberVOber WHERE memberVOber_id = ?";
 		try {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
@@ -75,7 +72,7 @@ public class MemberDAO {
 		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
 		
 
-		daoManager.ConnectDB();
+		daoManager.connectDB();
 		String sql="SELECT memberVOber_id FROM memberVOber";
 
 		try {

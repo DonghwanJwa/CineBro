@@ -22,7 +22,7 @@ public class MovieDAO {
 		 m = AppManager.getInstance().getDataManager().getMovieVO();
 		// 모든 DB를 뒤져 Movies에 저장
 		try {
-			daoManager.ConnectDB();
+			daoManager.connectDB();
 			String sql = "SELECT * FROM MovieData where movie_code=?";
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setInt(1, i);

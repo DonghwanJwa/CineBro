@@ -11,7 +11,9 @@ import javax.swing.event.ListSelectionListener;
 
 import com.movie.DAO.DAOManager;
 import com.movie.DAO.MovieDAO;
+import com.movie.DAO.MovieNowDAO;
 import com.movie.VO.DataManager;
+import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovieVO;
 import com.movie.main.AppManager;
 
@@ -22,11 +24,13 @@ public class MyActionListener {
 	 * MainUI내에서 필요한 정보들을 DB로부터 가져올수 있게 된다.
 	 * (DAO,VO객체를 미리 생성하지 않았기 때문에 영화정보를 불러올때마다 NullPointerException 오류가 나타난것임)
 	 */
-	MainUI mainUi=new MainUI();						
 	DataManager dataManager = new DataManager();	
 	DAOManager daoManager = new DAOManager();		
 	MovieVO movievo = new MovieVO();				
 	MovieDAO moviedao = new MovieDAO();
+	MovieNowVO movienowvo= new MovieNowVO();
+	MovieNowDAO movienowdao= new MovieNowDAO();
+	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
 	SignUpFrame signUp;
 	FindIDPassFrame findF;

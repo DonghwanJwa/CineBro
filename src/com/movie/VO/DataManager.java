@@ -1,3 +1,4 @@
+
 package com.movie.VO;
 
 import com.movie.main.AppManager;
@@ -13,22 +14,16 @@ public class DataManager {
 	}
 	//------------------------------set-----------------------------//
 
-	public void setCinemaVO(CinemaVO cinemaVO) {	this.cinemaVO = cinemaVO;	}
-	
-	public void setMovieVO(MovieVO movieVO) {	this.movieVO = movieVO;	}
-	
-	public void setMovieNowVO(MovieNowVO movieNowVO) {	MovieNowVO = movieNowVO;	}
-	
-	public void setMemberVO(MemberVO memberVO) {	this.memberVO = memberVO;	}
-
+	public void setCinemaVO(CinemaVO cinemaVO) 		 {	this.cinemaVO = cinemaVO;		}
+	public void setMemberVO(MemberVO memberVO)		 {	this.memberVO = memberVO;		}
+	public void setMovieVO(MovieVO movieVO) 		 {	this.movieVO = movieVO;			}
+	public void setMovieNowVO(MovieNowVO movieNowVO) {	this.MovieNowVO = movieNowVO;	}
 
 	//------------------------------get-----------------------------//
-	public CinemaVO getCinemaVO() {		return cinemaVO;	}
-	
-	public MovieVO getMovieVO() {		return movieVO;		}
-	
+	public CinemaVO getCinemaVO() 	  {	return cinemaVO;	}
+	public MemberVO getMemberVO() 	  {	return memberVO;	}
+	public MovieVO getMovieVO() 	  {	return movieVO;		}
 	public MovieNowVO getMovieNowVO() {	return MovieNowVO;	}
-	
-	public MemberVO getMemberVO() {		return memberVO;	}
+
 
 }
