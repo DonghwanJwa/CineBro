@@ -26,7 +26,7 @@ public class DAOManager {
 		AppManager.getInstance().setDAOManager(this);
 	}
 
-	public void ConnectDB() {
+	public void connectDB() {
 		try {
 			Class.forName(driver);
 			con=DriverManager.getConnection(url, user, password);
