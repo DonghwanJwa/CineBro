@@ -55,10 +55,11 @@ public class MainUI {
 	protected final CardLayout card=new CardLayout();
 	JPanel mainC=new JPanel(card);
 	HomePanel homeC=new HomePanel();
-	MoviePage movieC=new MoviePage();
+//	MoviePage movieC=new MoviePage();
+	JPanel movieC = new JPanel();
 	ReservationPanel reservC=new ReservationPanel();
 	ReserveInfo checkC=new ReserveInfo();
-	JPanel myPageC=new JPanel();
+	MyPagePanel myPageC=new MyPagePanel();
 	
 	public MainUI() {
 		AppManager.getInstance().setMainUi(this);

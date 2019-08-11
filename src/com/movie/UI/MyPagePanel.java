@@ -519,14 +519,4 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		}//수정완료 버튼 클릭 시
 	}
 
-	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		MyPagePanel m = new MyPagePanel();
-		f.setTitle("MyPage");
-		f.setSize(1400,900);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.add(m);
-		f.setVisible(true);
-	}//main() 나중에 지울것
-
 }//MaPagePanel class

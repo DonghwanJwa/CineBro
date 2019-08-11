@@ -86,12 +86,12 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		for(int i=0;i<reserveP.size();i++) {
 			if(e.getSource()==reserveP.get(i).cancleB) {
 				new MovieCancelPanel();
-				reserveP.get(i).removeAll();
-				reserveP.remove(i);
-				rlist.remove(i);
-				revalidate();
-				repaint();
-				movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));
+				reserveP.get(i).removeAll();	//해당하는 예매 내용을 삭제
+				reserveP.remove(i);				//배열 삭제
+				rlist.remove(i);				//DB삭제
+				revalidate();					//화면 재정리
+				repaint();						//화면 다시그리기
+				movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));//스크롤사이즈 재조정
 			}//if
 		}//for
 	}//aP();
@@ -106,16 +106,16 @@ class MovieUi extends JPanel{
 	JPanel cancleP = new JPanel();
 
 	/* 라벨 생성 */
-	JLabel posterName;
-	JLabel posterL;
-	JLabel titleL;
-	JLabel reservationnumberL;
-	JLabel dateL;
-	JLabel theaterL;
-	JLabel viewingplaceL;
-	JLabel seatnumberL;
-	JLabel paymentdateL;
-	JLabel sheetofpaperL;
+	JLabel posterName;			//포스터명
+	JLabel posterL;				//포스터를 올릴 라벨
+	JLabel titleL;				//영화명
+	JLabel reservationnumberL;	//예약번호
+	JLabel dateL;				//상영날짜
+	JLabel theaterL;			//상영극장
+	JLabel viewingplaceL;		//상영관
+	JLabel seatnumberL;			//좌석번호
+	JLabel paymentdateL;		//결제날짜
+	JLabel sheetofpaperL;		//티켓수
 
 	/* 폰트 객체생성&폰트만드는 곳 */
 	Font titleFont = new Font("굴림체",Font.BOLD,30);

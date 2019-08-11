@@ -56,7 +56,7 @@ public class MoviePage extends JPanel {
 			
 			MovieList.add(new MP(i));
 			add(MovieList);
-			MovieList.add(contents,BorderLayout.CENTER);
+//			MovieList.add(contents,BorderLayout.CENTER);
 		}
 
 
