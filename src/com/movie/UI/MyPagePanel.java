@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
@@ -49,6 +50,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	private JLabel email_mentCL = new JLabel("아이디 및 비밀번호 찾기시 메세가 전송되며, 쿠폰 & 이벤트 정보 등을 제공 받으실 수 있습니다.");//이메일 안내정보 라벨
 
 	private JPanel menuP = new JPanel();		 //메뉴 라벨(기본정보) 패널
+	private JPanel buttonP = new JPanel();		 //수정,탈퇴 버튼 패널
 	private JPanel titleP = new JPanel();		 //타이틀 라벨 패널
 	private JPanel contentP = new JPanel();		 //출력 라벨 패널
 	private JPanel titleContentP = new JPanel(); //타이틀 라벨 패널과 출력 라벨 패널 두개를 올릴 패널
@@ -74,6 +76,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	private JPanel email_mentCP = new JPanel();               
 
 	protected JButton updateB = new JButton("수정하기");     //기본정보 수정 버튼
+	protected JButton deleteB = new JButton("탈퇴하기");	   //회원탈퇴 버튼
 
 	/**기본정보 수정 페이지에 추가적으로 필요한 변수**/
 	private JLabel passF_UpdateL = new JLabel("비밀번호 입력");			 //비밀번호 입력 제목용 라벨 (password number_update label)					 
@@ -87,20 +90,24 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	protected JLabel error_emailL = new JLabel();	 //이메일 입력 오류 라벨
 	
 	protected JPasswordField passF_UpdatePF = new JPasswordField(); //비밀번호 입력용 패스워드필드(password number_update password field)
-	protected JPasswordField passS_UpdatePF = new JPasswordField();;
+	protected JPasswordField passS_UpdatePF = new JPasswordField();
 	private JPanel update_ConfirmP = new JPanel();			 //수정 완료 버튼 올라갈 패널
 	protected JTextField year_UpdateTF = new JTextField();      //생년월일 년,월,일 입력용 텍스트필드(update_text field)
 	protected JTextField month_UpdateTF = new JTextField();
 	protected JTextField date_UpdateTF = new JTextField();
 	protected JTextField email_UpdateTF = new JTextField();	 //이메일 입력용 텍스트필드(email_update text field)
-	protected JComboBox<String> sex_UpdateCB;//성별 입력용 콤보박스(update_combo box)
-	protected JButton update_ConfirmB = new JButton("수정 완료");; 		 //수정 완료버튼
+	protected JComboBox<String> sex_UpdateCB;				 //성별 입력용 콤보박스(update_combo box)
+	protected JButton update_ConfirmB = new JButton("수정하기"); 		 //수정하기 버튼
 
 	String[] sex = {"남자","여자"};                          //성별 콤보박스 내용물
 
 	protected CardLayout card = new CardLayout();
 	protected JOptionPane dialog = new JOptionPane();
 
+	/**기본정보 삭제 페이지에 추가적으로 필요한 변수**/
+	protected JPasswordField delete_passPF = new JPasswordField();   //탈퇴시 입력할 비밀번호란
+	protected JButton delete_ConfirmB = new JButton("탈퇴하기");		 //탈퇴하기 버튼
+	
 	/*폰트 만들기*/
 	Font menuF = new Font("맑은 고딕",Font.BOLD,30);
 	Font titleTF = new Font("맑은 고딕",Font.BOLD,20);
@@ -123,6 +130,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	public void setViewUI() {
 		/*제목,내용들 올라갈 패널들 설정*/
 		menuP.setPreferredSize(new Dimension(920,60));            //사이즈설정
+		buttonP.setPreferredSize(new Dimension(160,60));
 		titleP.setPreferredSize(new Dimension(240,640));
 		contentP.setPreferredSize(new Dimension(680,640));
 		titleContentP.setPreferredSize(new Dimension(920,640));
@@ -139,6 +147,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 
 
 		menuP.setLayout(new BorderLayout(0,0));     //배치관리자 설정
+		buttonP.setLayout(new GridLayout(1,2));
 		titleP.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));    //Flow 좌측정렬, 상하좌우여백 0
 		contentP.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		titleContentP.setLayout(new BorderLayout());              //titleContentP만 보더레이아웃
@@ -310,12 +319,24 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		updateB.setForeground(Color.WHITE);
 		updateB.setFocusPainted(false);
 		updateB.setBorderPainted(false);
-		menuP.add(updateB,BorderLayout.EAST);
+		updateB.setMargin(new Insets(1,1,1,1));
+		
+		/*삭제 버튼 생성*/
+		deleteB.setBackground(Color.RED);
+		deleteB.setForeground(Color.WHITE);
+		deleteB.setFocusPainted(false);
+		deleteB.setBorderPainted(false);
+		deleteB.setMargin(new Insets(1,1,1,1));
+		
+		buttonP.add(updateB);
+		buttonP.add(deleteB);
+		menuP.add(buttonP,BorderLayout.EAST);
 
 		updateB.addActionListener(this);            //버튼 이벤트 추가
+		deleteB.addActionListener(this);
 	}//setViewUI()
 
-	/**기본정보 수정페이지에 필요한 컴포넌트 추가**/
+	/**기본정보 수정페이지,탈퇴페이지에 필요한 컴포넌트 추가**/
 	public void setUpdateUI() {
 
 		/*제목 라벨 생성 : 각항목의 제목용 라벨(title label)*/
@@ -326,18 +347,18 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		passS_UpdateTP.add(passS_UpdateL);
 
 		/*비밀번호 패스워드 필드*/
-		passF_UpdatePF = new JPasswordField();                     //패스워드 필드 생성
-		passS_UpdatePF = new JPasswordField();
-
 		passF_UpdatePF.setPreferredSize(new Dimension(200,30));    //패스워드 필드 크기 지정
 		passS_UpdatePF.setPreferredSize(new Dimension(200,30));
-
+		delete_passPF.setPreferredSize(new Dimension(200,30));
+		
 		passF_UpdatePF.setBorder(new LineBorder(Color.LIGHT_GRAY));//패널 테두리 색 지정
 		passS_UpdatePF.setBorder(new LineBorder(Color.LIGHT_GRAY));
-
+		delete_passPF.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		
 		passF_UpdateCP.add(passF_UpdatePF); 					   //각 패널에 패스워드 필드 추가
 		passS_UpdateCP.add(passS_UpdatePF);
-
+		passF_UpdateCP.add(delete_passPF);
+		
 		/*콤포 박스*/
 		sex_UpdateCB = new JComboBox<>(sex);                       //콤보박스 객체생성(내용물 등록)
 		sex_UpdateCB.setPreferredSize(new Dimension(100,30));	   //사이즈 지정
@@ -401,12 +422,22 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		update_ConfirmB.setFocusPainted(false);
 		update_ConfirmB.setBorderPainted(false);
 		update_ConfirmP.add(update_ConfirmB);
+		
+		/*삭제하기 버튼*/
+		delete_ConfirmB.setPreferredSize(new Dimension(150,50));
+		delete_ConfirmB.setFont(confirmBF);
+		delete_ConfirmB.setBackground(Color.BLACK);
+		delete_ConfirmB.setForeground(Color.WHITE);
+		delete_ConfirmB.setFocusPainted(false);
+		delete_ConfirmB.setBorderPainted(false);
+		update_ConfirmP.add(delete_ConfirmB);
 
 		/*수정전에 수정하기 컴포턴트들 숨겨두기*/
 		passF_UpdateL.setVisible(false);
 		passS_UpdateL.setVisible(false);
 		passF_UpdatePF.setVisible(false);
 		passS_UpdatePF.setVisible(false);
+		delete_passPF.setVisible(false);
 		year_UpdateTF.setVisible(false);
 		year_UpdateL.setVisible(false);
 		month_UpdateTF.setVisible(false);
@@ -416,6 +447,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		email_UpdateTF.setVisible(false);
 		sex_UpdateCB.setVisible(false);
 		update_ConfirmB.setVisible(false);
+		delete_ConfirmB.setVisible(false);
 		error_passL.setVisible(false);
 		error_birthL.setVisible(false);
 		error_emailL.setVisible(false);
@@ -431,12 +463,13 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			sexCL.setVisible(true);
 			birthCL.setVisible(true);
 			emailCL.setVisible(true);
-			updateB.setVisible(true);
+			buttonP.setVisible(true);
 			/*수정하기 컴포넌트 숨기기*/
 			passF_UpdateL.setVisible(false);
 			passS_UpdateL.setVisible(false);
 			passF_UpdatePF.setVisible(false);
 			passS_UpdatePF.setVisible(false);
+			delete_passPF.setVisible(false);
 			year_UpdateTF.setVisible(false);
 			year_UpdateL.setVisible(false);
 			month_UpdateTF.setVisible(false);
@@ -449,6 +482,8 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			error_passL.setVisible(false);
 			error_birthL.setVisible(false);
 			error_emailL.setVisible(false);
+			/*삭제하기 컴포넌트 숨기기*/
+			delete_ConfirmB.setVisible(false);
 			/*텍스트필드 비우기*/
 			passF_UpdatePF.setText("");
 			passS_UpdatePF.setText("");
@@ -465,7 +500,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			sexCL.setVisible(false);
 			birthCL.setVisible(false);
 			emailCL.setVisible(false);
-			updateB.setVisible(false);
+			buttonP.setVisible(false);
 			/*수정하기 컴포넌트 보이기*/
 			passF_UpdateL.setVisible(true);
 			passS_UpdateL.setVisible(true);
@@ -483,6 +518,37 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			error_passL.setVisible(true);
 			error_birthL.setVisible(true);
 			error_emailL.setVisible(true);
+			/*삭제하기 컴포넌트 숨기기*/
+			delete_passPF.setVisible(false);
+			delete_ConfirmB.setVisible(false);
+		}else if(c==2) {
+			/*정보보기 컴포넌트 보이고 숨기기*/
+			passTL.setVisible(true);
+			passCL.setVisible(false);
+			sexCL.setVisible(true);
+			birthCL.setVisible(true);
+			emailCL.setVisible(true);
+			buttonP.setVisible(false);
+			/*수정하기 컴포넌트 숨기기*/
+			passF_UpdateL.setVisible(false);
+			passS_UpdateL.setVisible(false);
+			passF_UpdatePF.setVisible(false);
+			passS_UpdatePF.setVisible(false);
+			year_UpdateTF.setVisible(false);
+			year_UpdateL.setVisible(false);
+			month_UpdateTF.setVisible(false);
+			month_UpdateL.setVisible(false);
+			date_UpdateTF.setVisible(false);
+			date_UpdateL.setVisible(false);
+			email_UpdateTF.setVisible(false);
+			sex_UpdateCB.setVisible(false);
+			update_ConfirmB.setVisible(false);
+			error_passL.setVisible(false);
+			error_birthL.setVisible(false);
+			error_emailL.setVisible(false);
+			/*삭제하기 컴포넌트 보이기*/
+			delete_passPF.setVisible(true);
+			delete_ConfirmB.setVisible(true);
 		}
 	}//changeVisible()
 
@@ -491,6 +557,9 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		if(e.getSource()==updateB) {
 			changeVisible(1); //정보입력용 컴포넌트 보여줌, 출력용 라벨 숨김 
 		}//수정하기 버튼 클릭 시
+		if(e.getSource()==deleteB) {
+			changeVisible(2);
+		}//탈퇴하기 버튼 클릭 시 
 		if(e.getSource()==update_ConfirmB) {
 			error_passL.setText("");
 			error_birthL.setText("");
