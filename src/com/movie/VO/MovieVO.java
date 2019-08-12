@@ -70,12 +70,12 @@ public class MovieVO {
 	public String getAge()				{return age;}
 	public String getDirector()     	{return director;}
 	public String getTeaser() 			{return teaser;}
-	public String setTeaser_img()		{return teaser_img;}				
-	public String setOneView()			{return oneview;}			
-	public String setOneView_img()		{return oneview_img;}		
-	public String setTwoView()			{return twoview;}			
-	public String setTwoView_img()		{return twoview_img;} 		
-	public String setThreeView()		{return threeview;} 				
-	public String setThreeView_img()	{return threeview_img;} 		
+	public String getTeaser_img()		{return teaser_img;}				
+	public String getOneView()			{return oneview;}			
+	public String getOneView_img()		{return oneview_img;}		
+	public String getTwoView()			{return twoview;}			
+	public String getTwoView_img()		{return twoview_img;} 		
+	public String getThreeView()		{return threeview;} 				
+	public String getThreeView_img()	{return threeview_img;} 		
 	
 }
