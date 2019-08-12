@@ -11,6 +11,7 @@ public class DAOManager {
 	private MovieDAO movieDAO;
 	private MovieNowDAO movieNowDAO;
 	private MemberDAO memberDAO;
+	private SignUpDAO signupDAO;
 	
 	// ------- DB 커넥트 변수 ------- //
 	String driver="oracle.jdbc.OracleDriver";
@@ -50,14 +51,20 @@ public class DAOManager {
 	
 	public void setMemberDAO(MemberDAO memberDAO) 		{ this.memberDAO = memberDAO;	}
 	
+	public void setSignupDAO(SignUpDAO signupDAO) 		{ this.signupDAO = signupDAO;   }
+
+	
 	// ------------------------------get 메서드----------------------------- //
 	public CinemaDAO getCinemaDAO() 	{ return cinemaDAO;	}
 	
 	public MovieDAO getMovieDAO()		{ return movieDAO; }
 	
-	public MovieNowDAO getMovieNowDAO() { return movieNowDAO;	}
+	public MovieNowDAO getMovieNowDAO() { return movieNowDAO; }
 	
 	public MemberDAO getMemberDAO() 	{ return memberDAO;	}
+	
+	public SignUpDAO getSignupDAO()		{ return signupDAO;  }
+
 
 
 }//DAOManager
