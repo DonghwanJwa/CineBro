@@ -145,11 +145,11 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(result == JOptionPane.CLOSED_OPTION) {    //그냥 닫기버튼을 눌렀을때
-			System.exit(0);
+			
 		}else if(result == JOptionPane.YES_OPTION) {//Yes버튼을 눌렀을 때
 			//DAO delete 실행(?)
 		}else if(result == JOptionPane.NO_OPTION)  {//NO버튼을 눌렀을떄(그냥 else써도됨)
-			System.exit(0);
+			
 		}
 	}//ap()
 

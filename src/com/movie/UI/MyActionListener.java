@@ -138,8 +138,9 @@ public class MyActionListener {
 				signUp.emailDoTF.setText(str);
 				signUp.emailDoTF.setEditable(false);
 				if(str.equals("직접입력")) {
-					signUp.emailDoTF.setText("@");
+					signUp.emailDoTF.setText("");
 					signUp.emailDoTF.setEditable(true);
+					signUp.emailDoTF.requestFocus();
 					return;
 				}else if(str.equals("선택")){
 					signUp.emailDoTF.setText("");
