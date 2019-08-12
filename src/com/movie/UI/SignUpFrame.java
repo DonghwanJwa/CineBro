@@ -29,7 +29,7 @@ public class SignUpFrame extends JFrame{
 	private JPanel mainP = new JPanel();         	//메인패널(바탕)
 
 	private JLabel emptyL1 = new JLabel();			 //아이디 텍스트 필드와 버튼 사이 공백
-	private JLabel emptyL2 = new JLabel();			 //이메일 텍스트 필드와 이메일 도메인 텍스트필드 사이 공백
+	private JLabel emptyL2 = new JLabel("@");		 //이메일 텍스트 필드와 이메일 도메인 텍스트필드 사이 공백(@)
 	private JLabel emptyL3 = new JLabel();			 //이메일 도메인 텍스트필드와 이메일 도메인 콤보박스 사이 공백 
 	private JLabel emptyL4 = new JLabel(); 			 //이메일 텍스트필드와 가입하기 버튼사이 공백
 	private JLabel logoL = new JLabel();           	 //로고 넣을 라벨
@@ -71,7 +71,7 @@ public class SignUpFrame extends JFrame{
 	String[] sex = {"남자","여자"};//성별 콤보박스 내용물
 	protected JComboBox<String> sexC = new JComboBox<>(sex);//성별 콤보박스
 	
-	String[] emaillist= {"선택","@naver.com","@hanmail.net","@gmail.com","@nate.com","직접입력"};
+	String[] emaillist= {"선택","naver.com","hanmail.net","gmail.com","nate.com","직접입력"};
 	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
 	
 	
@@ -114,7 +114,7 @@ public class SignUpFrame extends JFrame{
 		emailL.setPreferredSize(new Dimension(340,35));
 
 		emptyL1.setPreferredSize(new Dimension(10,35));//공백라벨
-		emptyL2.setPreferredSize(new Dimension(10,35));
+		emptyL2.setPreferredSize(new Dimension(20,35));
 		emptyL3.setPreferredSize(new Dimension(10,35));
 		emptyL4.setPreferredSize(new Dimension(340,20));
 
@@ -133,8 +133,8 @@ public class SignUpFrame extends JFrame{
 		yearTF.setPreferredSize(new Dimension(90,35));
 		monthTF.setPreferredSize(new Dimension(80,35));
 		dateTF.setPreferredSize(new Dimension(80,35));
-		emailTF.setPreferredSize(new Dimension(110,35));
-		emailDoTF.setPreferredSize(new Dimension(110,35));
+		emailTF.setPreferredSize(new Dimension(105,35));
+		emailDoTF.setPreferredSize(new Dimension(105,35));
 
 		passPF.setPreferredSize(new Dimension(340,35));//패스워드필드
 		passrePF.setPreferredSize(new Dimension(340,35));
@@ -150,11 +150,14 @@ public class SignUpFrame extends JFrame{
 		passreL.setFont(font);      nameL.setFont(font);
 		birthL.setFont(font);       sexL.setFont(font);
 		emailL.setFont(font);	    sexC.setFont(font);
+		emptyL2.setFont(font);
 
 		error_idL.setFont(warnF);    error_passL.setFont(warnF);
 		error_emailL.setFont(warnF); error_nameL.setFont(warnF);
 		error_birthL.setFont(warnF);
 
+		emptyL2.setHorizontalAlignment(JLabel.CENTER);			 //라벨 중앙정렬
+		
 		idL.setForeground(Color.WHITE);							 //라벨 글씨색 지정
 		passL.setForeground(Color.WHITE);
 		passreL.setForeground(Color.WHITE);
@@ -162,6 +165,7 @@ public class SignUpFrame extends JFrame{
 		birthL.setForeground(Color.WHITE);
 		sexL.setForeground(Color.WHITE);
 		emailL.setForeground(Color.WHITE);
+		emptyL2.setForeground(Color.WHITE);
 
 		yearL.setForeground(Color.WHITE);
 		monthL.setForeground(Color.WHITE);
@@ -179,6 +183,7 @@ public class SignUpFrame extends JFrame{
 		monthTF.setBorder(new LineBorder(Color.BLACK));
 		dateTF.setBorder(new LineBorder(Color.BLACK));
 		emailTF.setBorder(new LineBorder(Color.BLACK));
+		emailDoTF.setBorder(new LineBorder(Color.BLACK));
 
 		passPF.setBorder(new LineBorder(Color.BLACK));
 		passrePF.setBorder(new LineBorder(Color.BLACK));
