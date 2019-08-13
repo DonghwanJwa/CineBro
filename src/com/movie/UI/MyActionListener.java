@@ -12,7 +12,9 @@ import javax.swing.event.ListSelectionListener;
 import com.movie.DAO.DAOManager;
 import com.movie.DAO.MovieDAO;
 import com.movie.DAO.MovieNowDAO;
+import com.movie.DAO.SignUpDAO;
 import com.movie.VO.DataManager;
+import com.movie.VO.MemberVO;
 import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovieVO;
 import com.movie.main.AppManager;
@@ -30,6 +32,8 @@ public class MyActionListener {
 	MovieDAO moviedao = new MovieDAO();
 	MovieNowVO movienowvo= new MovieNowVO();
 	MovieNowDAO movienowdao= new MovieNowDAO();
+	SignUpDAO signupdao = new SignUpDAO();
+	MemberVO membervo = new MemberVO();
 	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
 	SignUpFrame signUp;
@@ -43,7 +47,7 @@ public class MyActionListener {
 	public MyActionListener() {
 		AppManager.getInstance().setMyListener(this);
 	}//cons MyActionListener()
-	
+
 	class SignupActionL implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -52,9 +56,15 @@ public class MyActionListener {
 						!(Pattern.matches("^[a-z]+[a-z0-9]*$",signUp.idTF.getText()))) {
 					signUp.error_idL.setText("아이디는 영문소문자로 시작하는 6~16자리 영문 소문자와 숫자로만 입력하세요!");
 					return;
-				}else {//아이디 경고문 출력
+				}else {	//아이디 경고문 출력
 					/**DB에서 id search=>비교 if절 추가해야됨**/		
-					signUp.check_idB.setEnabled(false);
+					if (signupdao.selectIdcheck(signUp.idTF.getText()) == 1) {
+						signUp.dialog.showMessageDialog(signUp, "중복된 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
+					} else if (signupdao.selectIdcheck(signUp.idTF.getText()) == 0) {
+						signUp.dialog.showMessageDialog(signUp, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
+						signUp.error_idL.setText("");
+						signUp.check_idB.setEnabled(false);	// 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
+					}// 아이디 비교함							// true이면 기능이 동작하고 false면 기능이 동작하지 않는다				
 					return;
 				}
 			}//아이디 중복체크 버튼 선택시
@@ -69,13 +79,13 @@ public class MyActionListener {
 				signUp.error_nameL.setText("");
 				signUp.error_birthL.setText("");
 				signUp.error_emailL.setText("");
-				
+
 				if(signUp.check_idB.isEnabled()==true) { //중복검색 안했을때(버튼 활성화되어있을때)
 					signUp.error_idL.setText("아이디를 입력한 후 중복확인을 해주세요!");
 					signUp.idTF.requestFocus();
 					return;
 				}//아이디 중복검색 버튼 안눌렀을 때
-				
+
 				if(signUp.passPF.getText().length()<6 || signUp.passPF.getText().length()>16 || 
 						!(Pattern.matches("^[a-z0-9]*$",signUp.passPF.getText()))) {
 					signUp.error_passL.setText("비밀번호는 6~16사이 영문소문자와 숫자로만 입력하세요!");
@@ -84,7 +94,7 @@ public class MyActionListener {
 					signUp.passPF.requestFocus();
 					return;
 				}//비밀번호 입력값이 올바르지 않을 때
-				
+
 				if(!signUp.passPF.getText().equals(signUp.passrePF.getText())) {
 					signUp.error_passL.setText("두 비밀번호가 일치하지 않습니다!");
 					signUp.passPF.setText(""); 
@@ -92,15 +102,20 @@ public class MyActionListener {
 					signUp.passPF.requestFocus();
 					return;
 				}//비밀번호 입력값과 재입력값이 다른경우
-				
-				if(signUp.nameTF.getText().trim().equals("")) {
-					signUp.error_nameL.setText("이름을 입력하세요!");
+
+				if (signUp.nameTF.getText().length() < 1 || signUp.nameTF.getText().length() > 6
+						|| !(Pattern.matches("^[가-힣]*$", signUp.nameTF.getText()))) {
+					signUp.error_nameL.setText("올바른 입력 값이 아닙니다");
+					signUp.nameTF.setText("");
 					signUp.nameTF.requestFocus();
 					return;
-				}//이름란이 공백일 때
-				
-				if(signUp.yearTF.getText().trim().equals("") || signUp.monthTF.getText().trim().equals("") ||
-						signUp.dateTF.getText().trim().equals("") ||                     //생년월일에 공백이 있을 때 
+				}//이름란에 적절한 문자길이가 입력되지 않거나, 적절한 문자가 입력되지 않을 때
+
+				if(signUp.yearTF.getText().trim().length() != 4             //생년월일 중 년이 4자리가 아닐때
+						|| signUp.monthTF.getText().trim().length() < 1		//생년월일 중 월이 1~2자리가 아닐때
+						|| signUp.monthTF.getText().trim().length() > 3		
+						|| signUp.dateTF.getText().trim().length() < 1 		//생년월일 중 일이 1~2자리가 아닐때
+						|| signUp.dateTF.getText().trim().length() > 3 ||  
 						(!(Pattern.matches("^[0-9]*$", signUp.yearTF.getText()))) ||     //연 텍스트필드에 숫자가 아닌것이 있을때
 						(!(Pattern.matches("^[0-9]*$", signUp.monthTF.getText()))) ||    //월 텍스트필드에 숫자가 아닌것이 있을때
 						(!(Pattern.matches("^[0-9]*$", signUp.dateTF.getText())))) {     //일 텍스트필드에 숫자가 아닌것이 있을때
@@ -108,20 +123,34 @@ public class MyActionListener {
 					signUp.yearTF.requestFocus();
 					return;
 				}//생년월일 란에 문제가 있을 때
-				
+
 				if(signUp.emailTF.getText().trim().equals("")) {
 					signUp.error_emailL.setText("이메일을 입력하세요!");
 					signUp.emailTF.requestFocus();
 					return;
 				}//이메일 란이 공백일 때
-			
 				signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
 				signUp.dispose();
 			}//가입하기 버튼 눌렀을 때
-			
+
+			if(e.getSource()==signUp.emailC) {
+				String str = (String)signUp.emailC.getSelectedItem();
+				signUp.emailDoTF.setText(str);
+				signUp.emailDoTF.setEditable(false);
+				if(str.equals("직접입력")) {
+					signUp.emailDoTF.setText("");
+					signUp.emailDoTF.setEditable(true);
+					signUp.emailDoTF.requestFocus();
+					return;
+				}else if(str.equals("선택")){
+					signUp.emailDoTF.setText("");
+					signUp.emailDoTF.setEditable(false);
+					return;
+				}
+			}//이메일 콤보박스 선택시
 		}//aP()
 	}//SignupActionL inner class
-	
+
 	class FindActionL implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -133,13 +162,13 @@ public class MyActionListener {
 				findF.name_idTF.requestFocus();                    //텍스트 커서(깜빡이)를 성함입력창에 둠
 				findF.cardlayout.show(findF.card_backgroundP,"find_idB"); //아이디찾기 버튼 클릭 시 아이디 찾기 패널로 전환
 			}//좌측상단 아이디찾기 버튼 클릭 시
-			
+
 			if(e.getSource()==findF.find_passB) {
 				findF.find_idB.setBackground(Color.WHITE);          //상단의 버튼 색 변경
 				findF.find_passB.setBackground(Color.RED);
 				findF.cardlayout.show(findF.card_backgroundP,"find_passB");//비밀번호 찾기 버튼 클릭 시 비밀번호 찾기 패널로 전환
 			}//좌측상단 비밀번호찾기 버튼 클릭 시
-			
+
 			/*아이디 찾기 패널의 액션*/
 			if(e.getSource()==findF.confirm_idB) {
 				/**아이디 찾기 중 : 입력된 아이디,이메일과 DB의 아이디,이메일 같은지 비교하여, 같으면 페이지 넘어가기 활성**/
@@ -154,11 +183,11 @@ public class MyActionListener {
 					findF.cardlayout.show(findF.find_idP,"confirm_idB"); //결과 패널로 전환
 				}
 			}//아이디 찾기 패널(정보입력란)에서 확인 버튼 클릭 시
-			
+
 			if(e.getSource()==findF.back_closeidB) {
 				findF.dispose();
 			}//아이디 찾기 패널(아이디확인란)에서 돌아가기 버튼 클릭 시
-			
+
 			/*비밀번호 찾기 패널의 액션*/
 			if(e.getSource()==findF.confirm_passB) {
 				if((findF.id_passTF.getText().trim().equals("")) ||        //텍스트 필드가 비어있을 때
@@ -170,7 +199,7 @@ public class MyActionListener {
 					findF.cardlayout.show(findF.find_passP,"confirm_passB");//비밀번호 재입력 패널로 이동
 				}
 			}//비밀번호 찾기 패널(정보입력란)에서 확인 버튼 클릭 시
-			
+
 			if(e.getSource()==findF.update_passB) {
 				if((findF.pass_PF.getText().length()<6 || findF.passre_PF.getText().length()>16) ||
 						!(Pattern.matches("^[a-z0-9]*$", findF.pass_PF.getText()))) {
@@ -192,7 +221,7 @@ public class MyActionListener {
 			}//비밀번호 재입력 패널에서 확인 버튼 클릭 시
 		}//aP()
 	}//FindActionL inner class
-	
+
 	class LoginActionL implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -305,11 +334,11 @@ public class MyActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 		}
-		
+
 	}//BookingActionL class
-	
+
 	public void loginListenerSet() 	 {		loginP.addLoginListener(logL);		}
 	public void mainListenerSet() 	 {		mainUi.addMainListener(mainL);		}
 	public void signupListenerSet()  {		signUp.addSignupListener(signupL);	}

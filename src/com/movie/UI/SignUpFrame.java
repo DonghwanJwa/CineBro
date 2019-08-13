@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
@@ -28,8 +29,9 @@ public class SignUpFrame extends JFrame{
 	private JPanel mainP = new JPanel();         	//메인패널(바탕)
 
 	private JLabel emptyL1 = new JLabel();			 //아이디 텍스트 필드와 버튼 사이 공백
-	private JLabel emptyL2 = new JLabel();			 //이메일 텍스트 필드와 버튼 사이 공백
-	private JLabel emptyL3 = new JLabel(); 			 //이메일 텍스트필드와 가입하기 버튼사이 공백
+	private JLabel emptyL2 = new JLabel("@");		 //이메일 텍스트 필드와 이메일 도메인 텍스트필드 사이 공백(@)
+	private JLabel emptyL3 = new JLabel();			 //이메일 도메인 텍스트필드와 이메일 도메인 콤보박스 사이 공백 
+	private JLabel emptyL4 = new JLabel(); 			 //이메일 텍스트필드와 가입하기 버튼사이 공백
 	private JLabel logoL = new JLabel();           	 //로고 넣을 라벨
 	private JLabel idL = new JLabel("아이디");		 //아이디 타이틀 라벨
 	private JLabel passL = new JLabel("비밀번호");		 //비밀번호 타이틀 라벨
@@ -55,19 +57,24 @@ public class SignUpFrame extends JFrame{
 	protected JTextField monthTF = new JTextField();//월 입력 텍스트 필드
 	protected JTextField dateTF = new JTextField(); //일 입력 텍스트 필드
 	protected JTextField emailTF = new JTextField(); //이메일 입력 텍스트 필드
+	protected JTextField emailDoTF = new JTextField();//이메일 도메인 입력 텍스트 필드
 
 	protected JPasswordField passPF = new JPasswordField();  //비밀번호 입력 패스워드 필드
 	protected JPasswordField passrePF = new JPasswordField();//비밀번호 재입력 패스워드 필드
 
 	protected JButton check_idB = new JButton("중복확인");		 //아이디 중복확인 버튼
-	protected JButton check_emailB = new JButton("인증번호 받기");//이메일 인증번호 버튼
+	protected JButton check_emailB = new JButton("이메일 인증번호 받기");//이메일 인증번호 버튼
 	protected JButton confirmB = new JButton("가입하기"); 		 //가입하기 버튼 
 
 	protected JOptionPane dialog = new JOptionPane();         //회원가입 완료 옵션패널
 	
 	String[] sex = {"남자","여자"};//성별 콤보박스 내용물
 	protected JComboBox<String> sexC = new JComboBox<>(sex);//성별 콤보박스
-
+	
+	String[] emaillist= {"선택","naver.com","hanmail.net","gmail.com","nate.com","직접입력"};
+	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
+	
+	
 	Font font = new Font("맑은 고딕",Font.BOLD,15);
 	Font warnF = new Font("맑은 고딕",Font.BOLD,9);
 
@@ -75,7 +82,7 @@ public class SignUpFrame extends JFrame{
 		AppManager.getInstance().setSignUpFrame(this);
 
 		setTitle("회원가입");
-		setSize(new Dimension(540,757));
+		setSize(new Dimension(540,792));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null); // 팝업창 뜨는 위치를 화면 중앙으로 설정
 		setResizable(false);
@@ -107,8 +114,9 @@ public class SignUpFrame extends JFrame{
 		emailL.setPreferredSize(new Dimension(340,35));
 
 		emptyL1.setPreferredSize(new Dimension(10,35));//공백라벨
-		emptyL2.setPreferredSize(new Dimension(10,35));
-		emptyL3.setPreferredSize(new Dimension(340,20));
+		emptyL2.setPreferredSize(new Dimension(20,35));
+		emptyL3.setPreferredSize(new Dimension(10,35));
+		emptyL4.setPreferredSize(new Dimension(340,20));
 
 		yearL.setPreferredSize(new Dimension(30,35));//년월일라벨
 		monthL.setPreferredSize(new Dimension(30,35));
@@ -125,26 +133,31 @@ public class SignUpFrame extends JFrame{
 		yearTF.setPreferredSize(new Dimension(90,35));
 		monthTF.setPreferredSize(new Dimension(80,35));
 		dateTF.setPreferredSize(new Dimension(80,35));
-		emailTF.setPreferredSize(new Dimension(240,35));
+		emailTF.setPreferredSize(new Dimension(105,35));
+		emailDoTF.setPreferredSize(new Dimension(105,35));
 
 		passPF.setPreferredSize(new Dimension(340,35));//패스워드필드
 		passrePF.setPreferredSize(new Dimension(340,35));
 
 		check_idB.setPreferredSize(new Dimension(90,35));//버튼
-		check_emailB.setPreferredSize(new Dimension(90,35));
+		check_emailB.setPreferredSize(new Dimension(340,35));
 		confirmB.setPreferredSize(new Dimension(340,35));
 
 		sexC.setPreferredSize(new Dimension(340,35));//콤보박스
+		emailC.setPreferredSize(new Dimension(100,35));
 
 		idL.setFont(font);          passL.setFont(font);      	 //글씨체 지정
 		passreL.setFont(font);      nameL.setFont(font);
 		birthL.setFont(font);       sexL.setFont(font);
 		emailL.setFont(font);	    sexC.setFont(font);
+		emptyL2.setFont(font);
 
 		error_idL.setFont(warnF);    error_passL.setFont(warnF);
 		error_emailL.setFont(warnF); error_nameL.setFont(warnF);
 		error_birthL.setFont(warnF);
 
+		emptyL2.setHorizontalAlignment(JLabel.CENTER);			 //라벨 중앙정렬
+		
 		idL.setForeground(Color.WHITE);							 //라벨 글씨색 지정
 		passL.setForeground(Color.WHITE);
 		passreL.setForeground(Color.WHITE);
@@ -152,6 +165,7 @@ public class SignUpFrame extends JFrame{
 		birthL.setForeground(Color.WHITE);
 		sexL.setForeground(Color.WHITE);
 		emailL.setForeground(Color.WHITE);
+		emptyL2.setForeground(Color.WHITE);
 
 		yearL.setForeground(Color.WHITE);
 		monthL.setForeground(Color.WHITE);
@@ -169,14 +183,15 @@ public class SignUpFrame extends JFrame{
 		monthTF.setBorder(new LineBorder(Color.BLACK));
 		dateTF.setBorder(new LineBorder(Color.BLACK));
 		emailTF.setBorder(new LineBorder(Color.BLACK));
+		emailDoTF.setBorder(new LineBorder(Color.BLACK));
 
 		passPF.setBorder(new LineBorder(Color.BLACK));
 		passrePF.setBorder(new LineBorder(Color.BLACK));
 
 		sexC.setBorder(new LineBorder(Color.BLACK));             //콤보박스 테두리 색 지정
 
-		check_idB.setFont(new Font("맑은 고딕",Font.BOLD,10)); 
-		check_emailB.setFont(new Font("맑은 고딕",Font.BOLD,8));
+		check_idB.setFont(new Font("맑은 고딕",Font.BOLD,15)); 
+		check_emailB.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		confirmB.setFont(new Font("맑은 고딕",Font.BOLD,18));
 
 		check_idB.setForeground(Color.WHITE);                    //버튼 글씨색
@@ -186,6 +201,9 @@ public class SignUpFrame extends JFrame{
 		check_idB.setBackground(Color.BLACK);					 //버튼 배경색
 		check_emailB.setBackground(Color.BLACK);
 		confirmB.setBackground(Color.BLACK);
+		
+		check_idB.setMargin(new Insets(0,0,0,0));				 //버튼 내부 공백설정(없에버림)
+		check_emailB.setMargin(new Insets(0,0,0,0));
 
 		check_idB.setFocusPainted(false);						 //버튼 클릭시 테두리 색 설정해제
 		check_emailB.setFocusPainted(false);
@@ -208,9 +226,10 @@ public class SignUpFrame extends JFrame{
 		mainP.add(dateL);		mainP.add(error_birthL);
 		mainP.add(sexL);		mainP.add(sexC);
 		mainP.add(emailL);		mainP.add(emailTF);
-		mainP.add(emptyL2);		mainP.add(check_emailB);
-		mainP.add(error_emailL);mainP.add(emptyL3);
-		mainP.add(confirmB);
+		mainP.add(emptyL2);		mainP.add(emailDoTF);
+		mainP.add(emptyL3); 	mainP.add(emailC);
+		mainP.add(error_emailL);mainP.add(check_emailB);
+		mainP.add(emptyL4);		mainP.add(confirmB);
 
 		return mainP;
 	}//mainP()
@@ -219,6 +238,7 @@ public class SignUpFrame extends JFrame{
 		check_idB.addActionListener(listener);
 		check_emailB.addActionListener(listener);
 		confirmB.addActionListener(listener);
+		emailC.addActionListener(listener);
 	}
 
 

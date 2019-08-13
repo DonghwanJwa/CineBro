@@ -41,7 +41,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JPanel viewcountpanel=new JPanel();			//흥행 관람숫자 패널
 	private JPanel videopanel=new JPanel();				//동영상을 올릴패널
 	private JPanel infopanel=new JPanel();				//인포패널 클래스 객체생성
-	
+
 	private JLabel movienameL;
 	private JLabel movieingL;
 	private JLabel englishmovienameL;
@@ -59,8 +59,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JLabel appearancepanelL;					//출연자 이름 라벨
 	private JLabel viewtitleL;							//누적관객 라벨
 	private JLabel viewL;								//누적관객수 라벨
-	
-	
+
+
 
 	private JButton reserveB;						//예매하기 버튼
 	private JButton videoB;							//리뷰 동영상 맨왼쪽
@@ -68,130 +68,159 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JButton videoB3;						//리뷰 동영상 세번째
 	private JButton videoB4;						//리뷰 동영상 네번쨰
 
-	MovieDAO dao = new MovieDAO();
-	public MovieInfoPlus(int i) {
-		
-		
-		setposterpanel(dao.getMovieInfo(i));
-		setinfopanel();
-		seriespanel();
+	MovieDAO dao = AppManager.getInstance().getDAOManager().getMovieDAO();	//싱글톤입력
 
-//		/** 뒤로가기 버튼 만들기 **/
-//		back = new JButton("BACK");
-//		back.setBackground(Color.RED); //버튼배경
-//		back.setForeground(Color.WHITE);//버튼글짜색
-//		back.setFocusPainted(false); //클릭테두리색
-//		back.setBorderPainted(false);//그냥테두리색
-//		back.setOpaque(true);		//투명도 true면 불투명 false면 투명
-//		back.addActionListener(this); //클릭이벤트
-//
-//
-//		backpanel = new JPanel(); //뒤로가기 패널 생성
-//		backpanel.setPreferredSize(new Dimension(550,40));// 뒤로가기 패널 사이즈 설정
-//		backpanel.setLayout(new FlowLayout(FlowLayout.RIGHT));//뒤로가기 패널 오른쪽 정렬
-//		backpanel.setBackground(Color.WHITE);
-//		backpanel.add(back);// 뒤로가기패널에 뒤로가기 버튼 추가
+	public MovieInfoPlus(int i) {
+
+
+		setposterpanel(dao.getMovieInfo(i));	// setposterpanel 메서드에 getMovieInfo가져오기
+		setinfopanel(dao.getMovieInfo(i));		// setinfopanel메서드에 getMovieInfo가져오기
+		seriespanel(dao.getMovieInfo(i));		// seriespanel메서드에 getMovieInfo가져오기 
+
+		//		/** 뒤로가기 버튼 만들기 **/
+		//		back = new JButton("BACK");
+		//		back.setBackground(Color.RED); //버튼배경
+		//		back.setForeground(Color.WHITE);//버튼글짜색
+		//		back.setFocusPainted(false); //클릭테두리색
+		//		back.setBorderPainted(false);//그냥테두리색
+		//		back.setOpaque(true);		//투명도 true면 불투명 false면 투명
+		//		back.addActionListener(this); //클릭이벤트
+		//
+		//
+		//		backpanel = new JPanel(); //뒤로가기 패널 생성
+		//		backpanel.setPreferredSize(new Dimension(550,40));// 뒤로가기 패널 사이즈 설정
+		//		backpanel.setLayout(new FlowLayout(FlowLayout.RIGHT));//뒤로가기 패널 오른쪽 정렬
+		//		backpanel.setBackground(Color.WHITE);
+		//		backpanel.add(back);// 뒤로가기패널에 뒤로가기 버튼 추가
 
 		/** 패널 위에 올릴 패널 **/
 
 
 
-		button_infopanel = new JPanel();//패널 1 객체 생성
-		button_infopanel.setPreferredSize(new Dimension(550,550));//패널1 사이즈 설정
-//		button_infopanel.add(backpanel,BorderLayout.NORTH);//뒤로가기 패널을 패널1에 추가
-		button_infopanel.add(infopanel,BorderLayout.CENTER);
-		button_infopanel.setBackground(Color.WHITE);
-		infopanel.setBackground(Color.white);
+		button_infopanel = new JPanel();							//인포패널을 올릴 큰 패널
+		button_infopanel.setPreferredSize(new Dimension(550,550));	//버튼패널 사이즈 설정
+		button_infopanel.add(infopanel,BorderLayout.CENTER);		//버튼패널에 인포패널 중앙 배치
 
-		/** 포스터패널과 패널1을 올릴 패널만들기 **/
-		//포스터패널 객체 생성
-					//패널2 객체 생성
-		toppanel.setPreferredSize(new Dimension(900,525));//패널2 사이즈 설정
-		toppanel.add(posterpanel,BorderLayout.WEST); 
-		toppanel.add(button_infopanel);//인포버튼패널을 탑패널에 올림!!
-		toppanel.setBackground(Color.WHITE);
-	
-		/** 패널2와 시리즈패널을 메인 패널에 올리기**/
-		
-		seriespanel.setPreferredSize(new Dimension(900,700));
-		seriespanel.setBackground(Color.BLACK);
-		add(toppanel); 
-		
-		add(seriespanel);//메인 패널에 올림
-		setSize(new Dimension(900,800));
-		setBackground(Color.white);
-		setVisible(true);
+		button_infopanel.setBackground(Color.WHITE);				//버튼패널 배경색 지정
+
+		infopanel.setBackground(Color.white);						//인포패널 배경색 지정
+
+		/** 	포스터패널과 패널1을 올릴 패널만들기 		**/
+		toppanel.setPreferredSize(new Dimension(900,525));			//탑패널 사이즈 설정
+		toppanel.add(posterpanel,BorderLayout.WEST); 				//탑패널에 포스터패널을 왼쪽에 배치
+		toppanel.add(button_infopanel);								//인포버튼패널을 탑패널에 올림!!
+		toppanel.setBackground(Color.WHITE);						//탑패널 배경색 지정
+
+		/** 	패널2와 시리즈패널을 메인 패널에 올리기	**/
+
+		seriespanel.setPreferredSize(new Dimension(900,700));		//동영상패널과 동영상글자패널을 올릴 시리즈 패널 생성
+		seriespanel.setBackground(Color.BLACK);						//시리즈 패널 배경색 검정
+		add(toppanel); 												//시리즈 패널에 탑패널 올림
+
+
+		add(seriespanel);											//메인 패널에 시리즈 패널올림
+		setSize(new Dimension(900,800));							//제일큰패널 사이즈 지정
+		setBackground(Color.white);									//배경색 지정
+		setVisible(true);											//패널을 보이게함
 	}//MovieInfoPlus생성자
-
+		/** 동영상 버튼들에 url 연결하기 **/
 	@Override
-	public void actionPerformed(ActionEvent e) {
-	
-		if(e.getSource()==videoB) {
+	public void actionPerformed(ActionEvent e) {							//엑션이벤트 e객체 생성
+		MovieVO m =AppManager.getInstance().getDataManager().getMovieVO();	//싱글톤 사용
+		if(e.getSource()==videoB) {											//videoB 버튼에 이벤트 생성
+			try {															//videoB를 눌렀을떄 
+				Thread.sleep(500);											//0.5초후 실행하기
+				Runtime.getRuntime().exec(m.getTeaser());					//Runtime.getRuntime().exec(url)메서드로 url 불러오기
+			}catch(Exception ie) {												
+				ie.printStackTrace();										//이하 반복
+			}//try~catch	
+			return; 														//다음 if 절 자동실행 방지
+		}//if
+		if(e.getSource()==videoB2) {
 			try {
-				Thread.sleep(5000);		
-				Runtime.getRuntime().exec("C:\\Program Files\\Internet Explorer\\iexplore.exe \"https://movie.naver.com/movie/bi/mi/mediaView.nhn?code=174903&mid=42940#tab");
+				Thread.sleep(500);
+				Runtime.getRuntime().exec(m.getOneView());
 			}catch(Exception ie) {
 				ie.printStackTrace();
-			}	
-		return; 					//다음 if 절 자동실행 방지
-		}
-		if(e.getSource()=="") {
-
-		}
+			}//try~catch
+			return;
+		}//if
+		if(e.getSource()==videoB3) {
+			try {
+				Thread.sleep(500);
+				Runtime.getRuntime().exec(m.getTwoView());
+			}catch(Exception ie) {
+				ie.printStackTrace();
+			}//try~catch
+			return;
+		}//if
+		if(e.getSource()==videoB4) {
+			try {
+				Thread.sleep(500);
+				Runtime.getRuntime().exec(m.getThreeView());
+			}catch(Exception ie) {
+				ie.printStackTrace();
+			}//try~catch
+			return;
+		}//if
 	}//actionPerformed()
 
 	/**영화 포스터 넣을 패널(PosetPenel)**/
+	
+	public void setposterpanel(MovieVO m) { 								//setposterpanel()메서드에 MovieVO 내용 저장한 m객체 생성
 
-
-
-
-	public void setposterpanel(MovieVO m) { 
+		posterpanel.setBackground(Color.WHITE);								//포스터패널 색 지정
+		posterpanel.setPreferredSize(new Dimension(300,490));				//포스터를 올릴 패널 사이즈 지정 
+		posterpanel.setLayout(new FlowLayout());							
+		posterpanel.setBorder(BorderFactory.createEmptyBorder(30,0,0,0));	//BorderFactory.createEmptyBorder는 패딩이라고 부르며
+																			//상좌하우 순이며 그쪽에 얼마만큼 띄울건지 숫자 입력
 		
-		posterpanel.setBackground(Color.WHITE);//포스터패널 색 지정
-		posterpanel.setPreferredSize(new Dimension(300,490));//setPreferredSize 는 
-		posterpanel.setLayout(new FlowLayout());
-		posterpanel.setBorder(BorderFactory.createEmptyBorder(30,0,0,0));
-		//강력한 크기지정 메서드이다. >setSize
-
-		/** 포스터 이미지 조정**/
-		ImageIcon mainposter = new ImageIcon("pic/"+m.getMovie_img());//포스터 넣는칸
-		Image originImg = mainposter.getImage();//ImagIcon을 Image로 전환
-		Image changeImg = originImg.getScaledInstance(275,400,java.awt.Image.SCALE_SMOOTH);
+		
+							/** 	포스터 이미지 조정		**/
+		
+		ImageIcon mainposter = new ImageIcon("pic/"+m.getMovie_img());							//포스터 넣는칸
+		Image originImg = mainposter.getImage();												//ImagIcon을 Image로 전환
+		Image changeImg = originImg.getScaledInstance(275,400,java.awt.Image.SCALE_SMOOTH);		
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
-		ImageIcon poster = new ImageIcon(changeImg);
+		ImageIcon poster = new ImageIcon(changeImg);											//
+		/* ImageIcon에는 이미지 크기 변환하는 
+		 * 
+		 */
+		
+		
+		/** 포스터에 버튼넣기	**/
+		
+		posterL =new JLabel(poster);			//posterL이란 라벨에 poster 넣음
+		posterL.setBackground(Color.WHITE);		//posterL 배경색 지정
+		posterL.setOpaque(true);				//posterL 보이게 함
+		posterpanel.add(posterL);				//포스터패널에 포스터L 올림
 
-		/** 포스터에 버튼넣기**/
-		posterL =new JLabel(poster);
-		posterL.setBackground(Color.WHITE);		
-		posterL.setOpaque(true);
-		posterpanel.add(posterL);
 
+		reserveB=new JButton("예매하기");				//예매하기 버튼 생성
+		reserveB.setBackground(Color.RED); 			//버튼배경
+		reserveB.setForeground(Color.WHITE);		//버튼글짜색
+		reserveB.setFocusPainted(false); 			//클릭테두리색
+		reserveB.setBorderPainted(false);			//그냥테두리색
+		reserveB.setOpaque(true);					//투명도 true면 불투명 false면 투명
+		reserveB.addActionListener(this);			//클릭이벤트 넣기
 
-		reserveB=new JButton("예매하기");
-		reserveB.setBackground(Color.RED); //버튼배경
-		reserveB.setForeground(Color.WHITE);//버튼글짜색
-		reserveB.setFocusPainted(false); //클릭테두리색
-		reserveB.setBorderPainted(false);//그냥테두리색
-		reserveB.setOpaque(true);		//투명도 true면 불투명 false면 투명
-		reserveB.addActionListener(this);
+		posterpanel.add(reserveB);					//포스터패널에 reserveB 버튼 넣음
 
-		posterpanel.add(reserveB);
-
-	}//PostPanel 생성자
-	//PosterPanel
+	}//PosterPanel 생성자
+	
 	/** 영화정보를 넣을 InfoPanel **/
 
-	//static class InfoPanel extends JPanel{
-	public void setinfopanel() {
-		/*iNFO PANEL 설정*/
-		
+	
+			/**	iNFO PANEL 설정	**/
+	public void setinfopanel(MovieVO m) {
+
 		infopanel.setBackground(Color.GREEN);
 		infopanel.setPreferredSize(new Dimension(550,500));
 		infopanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 		//infopanel은 Infoin,infoin2 올릴 패널
-		
-		
+
+
 		moviename.setBackground(Color.WHITE);
 		moviename.setPreferredSize(new Dimension(530,100));
 		koreanmoviepanel.setBackground(Color.WHITE);
@@ -199,8 +228,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		englishmoviepanel.setBackground(Color.WHITE);
 		englishmoviepanel.setPreferredSize(new Dimension(520,25));
 		infopanel.add(moviename);
-		
-		movienameL=new JLabel("엑시트");
+
+		movienameL=new JLabel(m.getMovie_nameK());
 		movieingL=new JLabel(" 상영중▶");
 
 
@@ -208,34 +237,35 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		movienameL.setBackground(Color.WHITE);
 
 		movieingL.setBackground(Color.blue);
-		movieingL.setForeground(Color.blue);
+		movieingL.setForeground(Color.white);
 		movieingL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		movieingL.setOpaque(true);
 
 		koreanmoviepanel.add(movienameL);koreanmoviepanel.add(movieingL);
 		moviename.setLayout(new FlowLayout(FlowLayout.LEFT));
 		koreanmoviepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		moviename.add(koreanmoviepanel);  moviename.add(englishmoviepanel);
 
-		englishmovienameL=new JLabel(" Exit,2019");
-		englishmovienameL.setFont(new Font("맑은 고딕",Font.BOLD,15));
+		englishmovienameL=new JLabel(m.getMovie_nameE());
+		englishmovienameL.setFont(new Font("맑은 고딕",Font.BOLD,20));
 
 		englishmoviepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		englishmovienameL.setBackground(Color.WHITE);
 		englishmoviepanel.add(englishmovienameL);
 
 		/** 영화이름과 영화점수 사이 공백을 위한 패널 **/
-		
+
 		nullpanel.setPreferredSize(new Dimension(530,3));
 		nullpanel.setBackground(Color.white);
 		infopanel.add(nullpanel);
 
 
-		
+
 		moviescore.setPreferredSize(new Dimension(530,100));
 		infopanel.add(moviescore);
 		moviescore.setBackground(Color.WHITE);
 
-		
+
 		audiencescore.setPreferredSize(new Dimension(520,40));
 		audiencescore.setBackground(Color.WHITE);
 		infopanel.add(audiencescore);
@@ -243,25 +273,25 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 
 		/** audiencescore 관람객 평점 설정 **/
 
-		audiencescoreL=new JLabel(" 관람객    ★★★★☆  8.42  네티즌  ★★★☆☆  6.43");
+		audiencescoreL=new JLabel(m.getAudience());
 		audiencescoreL.setFont(new Font("맑은 고딕",Font.BOLD,20));
 		audiencescore.setLayout(new FlowLayout(FlowLayout.LEFT));
 		audiencescoreL.setBackground(Color.WHITE);
 		audiencescore.add(audiencescoreL);
 
-		
+
 		reporterscore.setPreferredSize(new Dimension(520,40));
 		reporterscore.setBackground(Color.WHITE);
 		infopanel.add(reporterscore);
 		moviescore.add(reporterscore);
 
-		reporterscoreL=new JLabel(" 평론가    ★★★★☆  8.11");
+		reporterscoreL=new JLabel(m.getCriticism());
 		reporterscoreL.setFont(new Font("맑은 고딕",Font.BOLD,20));
 		reporterscore.setLayout(new FlowLayout(FlowLayout.LEFT));
 		reporterscoreL.setBackground(Color.WHITE);
 		reporterscore.add(reporterscoreL);
-		
-		
+
+
 		genrepanel.setPreferredSize(new Dimension(520,45));
 		genrepanel.setBackground(Color.WHITE);
 		infopanel.add(genrepanel);
@@ -271,12 +301,12 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		genrepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		genrepanel.add(genretitleL);
 
-		genreL=new JLabel(" 액션,코미디   한국   103분   2019.07.31개봉");
-		genreL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		genreL=new JLabel(m.getGenre());
+		genreL.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		genreL.setForeground(Color.GRAY);
 		genrepanel.add(genreL);			
 
-		
+
 		directorpanel.setPreferredSize(new Dimension(520,45));
 		directorpanel.setBackground(Color.WHITE);
 		infopanel.add(directorpanel);
@@ -286,27 +316,27 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		directorpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		directorpanel.add(directortitleL);
 
-		directorL=new JLabel(" 이상근");
-		directorL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		directorL=new JLabel(m.getDirector());
+		directorL.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		directorL.setForeground(Color.GRAY);
 		directorpanel.add(directorL);
 
-		
+
 		appearancepanel.setPreferredSize(new Dimension(520,45));
 		appearancepanel.setBackground(Color.WHITE);
 		infopanel.add(appearancepanel);
-		
+
 		appearancepaneltitleL=new JLabel(" 출연  ");
 		appearancepaneltitleL.setFont(new Font("맑은 고딕",Font.BOLD,25));
 		appearancepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		appearancepanel.add(appearancepaneltitleL);
 
-		appearancepanelL=new JLabel(" 조정석(용남), 윤아(의주), 고두심(현옥)");
-		appearancepanelL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		appearancepanelL=new JLabel(m.getActors());
+		appearancepanelL.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		appearancepanelL.setForeground(Color.GRAY);
 		appearancepanel.add(appearancepanelL);
 
-		
+
 		agepanel.setPreferredSize(new Dimension(520,45));
 		agepanel.setBackground(Color.WHITE);
 		infopanel.add(agepanel);
@@ -316,12 +346,12 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		agepanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		agepanel.add(agetitleL);
 
-		ageL=new JLabel(" 12세 관람가");
-		ageL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		ageL=new JLabel(m.getAge());
+		ageL.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		ageL.setForeground(Color.GRAY);
 		agepanel.add(ageL);
 
-		
+
 		viewcountpanel.setPreferredSize(new Dimension(520,45));
 		viewcountpanel.setBackground(Color.WHITE);
 		infopanel.add(viewcountpanel);
@@ -331,8 +361,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		viewcountpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		viewcountpanel.add(viewtitleL);
 
-		viewL=new JLabel(" 누적관객 4,532,156명");
-		viewL.setFont(new Font("맑은 고딕",Font.BOLD,20));
+		viewL=new JLabel(m.getPeople());
+		viewL.setFont(new Font("맑은 고딕",Font.BOLD,15));
 		viewL.setForeground(Color.GRAY);
 		viewcountpanel.add(viewL);
 
@@ -341,12 +371,12 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	//ReviewPanel
 	/** 영화 시리즈 연관 영화 정보 넣을 패널(Series) **/
 	//class SeriesPanel extends JPanel implements ActionListener{
-	public void seriespanel() {
-		
+	public void seriespanel(MovieVO m) {
+
 		seriespanel.setBackground(Color.WHITE);
 		seriespanel.setPreferredSize(new Dimension(900,230));
 
-		
+
 		videopanel.setPreferredSize(new Dimension(900,27));
 		videopanel.setBackground(Color.WHITE);
 		videopanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -359,7 +389,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		videopanel.add(videoL);
 
 		/** 미리보기 동영상 넣기 **/
-		ImageIcon videoposter1 = new ImageIcon("pic/1video1.jpg");//포스터 넣는칸
+		ImageIcon videoposter1 = new ImageIcon("pic/"+m.getTeaser_img());//포스터 넣는칸
 		Image origin_videoI = videoposter1.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI = origin_videoI.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -376,7 +406,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		seriespanel.add(videoB);
 
 		/** 미리보기 동영상 2번쨰 **/
-		ImageIcon videoposter2 = new ImageIcon("pic/1video2.jpg");//포스터 넣는칸
+		ImageIcon videoposter2 = new ImageIcon("pic/"+m.getOneView_img());//포스터 넣는칸
 		Image origin_videoI2 = videoposter2.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI2 = origin_videoI2.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -393,7 +423,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		seriespanel.add(videoB2);
 
 		/** 미리보기 동영상 3번쨰 **/
-		ImageIcon videoposter3 = new ImageIcon("pic/1video3.jpg");//포스터 넣는칸
+		ImageIcon videoposter3 = new ImageIcon("pic/"+m.getTwoView_img());//포스터 넣는칸
 		Image origin_videoI3 = videoposter3.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI3 = origin_videoI3.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -410,7 +440,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		seriespanel.add(videoB3);
 
 		/** 미리보기 동영상 4번째 **/
-		ImageIcon videoposter4 = new ImageIcon("pic/1video4.jpg");//포스터 넣는칸
+		ImageIcon videoposter4 = new ImageIcon("pic/"+m.getThreeView_img());//포스터 넣는칸
 		Image origin_videoI4 = videoposter4.getImage();//ImagIcon을 Image로 전환
 		Image change_videoI4 = origin_videoI4.getScaledInstance(200,160,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로 269,385이미지를 스무스하게 만들어줌
@@ -433,8 +463,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	public static void main(String[] args) {
 		MovieInfoPlus re=new MovieInfoPlus(1);
 
-		
-		
+
+
 
 	}//main()
 }//movieinfoplusclass
