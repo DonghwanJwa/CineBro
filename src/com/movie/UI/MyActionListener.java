@@ -13,10 +13,16 @@ import com.movie.DAO.DAOManager;
 import com.movie.DAO.MovieDAO;
 import com.movie.DAO.MovieNowDAO;
 import com.movie.DAO.SignUpDAO;
+import com.movie.VO.BookedseatVO;
+import com.movie.VO.BookingVO;
+import com.movie.VO.CinemaVO;
 import com.movie.VO.DataManager;
+import com.movie.VO.DayseatVO;
 import com.movie.VO.MemberVO;
 import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovieVO;
+import com.movie.VO.MovietimeVO;
+import com.movie.VO.SeatVO;
 import com.movie.main.AppManager;
 
 public class MyActionListener {
@@ -34,6 +40,12 @@ public class MyActionListener {
 	MovieNowDAO movienowdao= new MovieNowDAO();
 	SignUpDAO signupdao = new SignUpDAO();
 	MemberVO membervo = new MemberVO();
+	CinemaVO cinemavo = new CinemaVO();
+	SeatVO seatvo = new SeatVO();
+	MovietimeVO movietimevo = new MovietimeVO();
+	DayseatVO dayseatvo = new DayseatVO();
+	BookingVO bookingvo = new BookingVO();
+	BookedseatVO bookedseatvo = new BookedseatVO();
 	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
 	SignUpFrame signUp;
