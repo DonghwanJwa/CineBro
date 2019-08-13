@@ -142,10 +142,6 @@ public class MyActionListener {
 					signUp.emailDoTF.setEditable(true);
 					signUp.emailDoTF.requestFocus();
 					return;
-				}else if(str.equals("선택")){
-					signUp.emailDoTF.setText("");
-					signUp.emailDoTF.setEditable(false);
-					return;
 				}
 			}//이메일 콤보박스 선택시
 		}//aP()

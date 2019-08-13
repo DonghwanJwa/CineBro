@@ -71,7 +71,7 @@ public class SignUpFrame extends JFrame{
 	String[] sex = {"남자","여자"};//성별 콤보박스 내용물
 	protected JComboBox<String> sexC = new JComboBox<>(sex);//성별 콤보박스
 	
-	String[] emaillist= {"선택","naver.com","hanmail.net","gmail.com","nate.com","직접입력"};
+	String[] emaillist= {"직접입력","naver.com","hanmail.net","gmail.com","nate.com"};
 	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
 	
 	
