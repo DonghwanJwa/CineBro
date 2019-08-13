@@ -5,11 +5,16 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionListener;
 
 import com.movie.main.AppManager;
@@ -27,7 +33,18 @@ public class MainUI {
 	static int height=screensize.height; // 화면높이
 	
 	JFrame frame=new JFrame("CineBRO"); // 프레임 설정
-	private JPanel mainP=new JPanel(); // 프레임을 덮을 패널	
+	private JPanel mainP=new JPanel() {	// 프레임을 덮을 패널	
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			try {
+				Image backgroundI = ImageIO.read(new File("pic/background.jpg"));
+				g.drawImage(backgroundI, 0, 0, null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}//try~catch()
+		}//paintComponent();	
+	};//패널에 이미지 넣기(배경)
 	
 	/* 메뉴탭 */
 	private JPanel menuTap=new JPanel();
@@ -38,7 +55,7 @@ public class MainUI {
 	protected JButton myPageB=new JButton("MY PAGE");
 	
 	/* 로고 이미지 */
-	ImageIcon preImg=new ImageIcon("logo.png"); // 포스터
+	ImageIcon preImg=new ImageIcon("pic/logo.png"); // 포스터
 	Image originImg=preImg.getImage(); // ImageIcon을 Image로 전환
 	Image changeImg=originImg.getScaledInstance(735,150,java.awt.Image.SCALE_SMOOTH); // 이미지 사이즈 가로 150, 세로 214
 	ImageIcon logoImage=new ImageIcon(changeImg);
@@ -79,10 +96,22 @@ public class MainUI {
 		logo.setBounds(593,0,735,150);
 		
 		/* 로그인&회원가입 버튼 */
+		loginB.setBackground(Color.WHITE);					//버튼색
+		registB.setBackground(Color.WHITE);
+		loginB.setFont(new Font("맑은 고딕",Font.BOLD,15));		//버튼폰트
+		registB.setFont(new Font("맑은 고딕",Font.BOLD,15));
+		loginB.setPreferredSize(new Dimension(100,40));		//버튼사이즈
+		registB.setPreferredSize(new Dimension(100,40));
+		loginB.setBorder(new LineBorder(Color.BLACK));		//버튼테두리
+		registB.setBorder(new LineBorder(Color.BLACK));
+		loginB.setFocusPainted(false);						//버튼 선택시 테두리 삭제
+		registB.setFocusPainted(false);
 		log_regBP.add(loginB); log_regBP.add(registB);
 		
 		logoP.add(log_regBP);
-		log_regBP.setBounds(1700,5,200,30);
+		log_regBP.setOpaque(false);
+		log_regBP.setBounds(1600,5,250,60);
+		
 		
 		/* -------------------- 메뉴탭 -------------------- */
 		menuTap.setLayout(new GridLayout(0,1));
@@ -121,10 +150,11 @@ public class MainUI {
 		menuTap.add(checkB); menuTap.add(myPageB);
 		
 		/* ------------------- 카드레이아웃 ------------------- */
-		homeC.setBackground(Color.BLACK);
+		mainC.setOpaque(false);
+		homeC.setOpaque(false);
 		movieC.setBackground(Color.GRAY);
 		reservC.setBackground(Color.BLUE);
-		checkC.setBackground(Color.CYAN);
+		checkC.setOpaque(false);
 		myPageC.setBackground(Color.GREEN);
 		
 		mainC.add(homeC,"homeB"); mainC.add(movieC,"movieB"); mainC.add(reservC,"reservB");
@@ -141,9 +171,10 @@ public class MainUI {
 		/* -------------- 프레임 설정 ----------------- */
 		
 		JScrollPane mainScroll=new JScrollPane(mainP,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
-				,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); // 메인패널 스크롤판 생성 수직바 항상 보이게, 수평바 필요할때만 보이게 
-		mainScroll.getVerticalScrollBar().setValue((1080-height)/2);
+				,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 			// 메인패널 스크롤판 생성 수직바 항상 보이게, 수평바 필요할때만 보이게 
+		mainScroll.getVerticalScrollBar().setValue((1080-height)/2);	//프레임 열릴시 스크롤 시작위치 지정
 		mainScroll.getHorizontalScrollBar().setValue((1920-width)/2);
+		mainScroll.getVerticalScrollBar().setUnitIncrement(16);			// 스크롤 속도 지정
 		frame.add(mainScroll); // 프레임에 스크롤 추가
 		frame.setVisible(true); // 프레임을 항상 보이게함
 	}//cons MainUI()

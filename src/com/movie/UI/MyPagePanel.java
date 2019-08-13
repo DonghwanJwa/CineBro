@@ -134,7 +134,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		setPreferredSize(new Dimension(1400,800));
 		setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		setOpaque(false);
-		setBorder(BorderFactory.createEmptyBorder(50,240,50,240));
+		setBorder(BorderFactory.createEmptyBorder(20,100,90,370));
 		setViewUI();
 		setUpdateUI();
 	}//기본생성자

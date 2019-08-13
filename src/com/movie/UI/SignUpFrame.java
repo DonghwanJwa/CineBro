@@ -97,7 +97,7 @@ public class SignUpFrame extends JFrame{
 		mainP.setBackground(Color.DARK_GRAY);
 
 		/* 로고 넣을 패널 및 라벨 만들기 */
-		ImageIcon preImg = new ImageIcon("logo.png");//포스터 넣는란
+		ImageIcon preImg = new ImageIcon("pic/logo.png");//포스터 넣는란
 		Image originImg = preImg.getImage();//ImageIcon을 Image로 전환
 		Image changeImg = originImg.getScaledInstance(390,80,java.awt.Image.SCALE_SMOOTH);
 		ImageIcon image = new ImageIcon(changeImg);

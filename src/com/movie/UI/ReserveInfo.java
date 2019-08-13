@@ -70,7 +70,7 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	public Component setMainP() {
 		/* 메인패널 설정 */
 		mainP.setPreferredSize(new Dimension(1400,810));		
-		mainP.setBorder(BorderFactory.createEmptyBorder(50,90,80,210));//메인패널 패딩
+		mainP.setBorder(BorderFactory.createEmptyBorder(50,40,80,260));//메인패널 패딩
 		mainP.setLayout(new BorderLayout());
 		mainP.add(setTitleL(),BorderLayout.NORTH);
 		/* 스크롤 만들기 */
