@@ -1,5 +1,5 @@
 --	영화정보를 저장할 테이블 생성
-CREATE TABLE MovieData(
+CREATE TABLE MovieData(				--영화 테이블
 movie_code INT PRIMARY KEY			--영화코드
 ,movie_nameK VARCHAR2(40) NOT NULL	--영화이름
 ,movie_nameE VARCHAR2(70) NOT NULL	--영화이름
@@ -22,7 +22,7 @@ movie_code INT PRIMARY KEY			--영화코드
 ,twoview_img	  	VARCHAR2(40)  	NOT NULL   --예고편2 이미지
 ,threeview_img      VARCHAR2(40) 	NOT NULL   --예고편3 이미지
 );
-DROP Table MovieData;
+--DROP Table MovieData;
 INSERT INTO MovieData VALUES(
 '01','엑시트','Exit',
 '1movie.jpg','관람객    ★★★★☆  8.42  네티즌  ★★★☆☆  6.43','평론가    ★★★★☆  8.11',

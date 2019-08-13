@@ -21,7 +21,7 @@ public class SignUpDAO {
 		int re = -1;
 		try {
 			daomanager.connectDB();
-			sql = "insert into MemberVO values(?,?,?,?,?,?)";
+			sql = "insert into member values(?,?,?,?,?,?)";
 			daomanager.pt = daomanager.con.prepareStatement(sql);
 			daomanager.pt.setString(1, m.getId());
 			daomanager.pt.setString(2, m.getPwd());

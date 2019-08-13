@@ -48,60 +48,69 @@ public class MyActionListener {
 		AppManager.getInstance().setMyListener(this);
 	}//cons MyActionListener()
 
-	class SignupActionL implements ActionListener{
+	class SignupActionL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource()==signUp.check_idB) {
-				if((signUp.idTF.getText().length()<6 || signUp.idTF.getText().length()>16) || 
-						!(Pattern.matches("^[a-z]+[a-z0-9]*$",signUp.idTF.getText()))) {
+			if (e.getSource() == signUp.check_idB) {
+				if ((signUp.idTF.getText().length() < 6 
+						|| signUp.idTF.getText().length() > 16)
+						|| !(Pattern.matches("^[a-z]+[a-z0-9]*$", signUp.idTF.getText()))) {
 					signUp.error_idL.setText("아이디는 영문소문자로 시작하는 6~16자리 영문 소문자와 숫자로만 입력하세요!");
 					return;
-				}else {	//아이디 경고문 출력
-					/**DB에서 id search=>비교 if절 추가해야됨**/		
+				} else { // 아이디 경고문 출력
+					/** DB에서 id search=>비교 if절 추가해야됨 **/
 					if (signupdao.selectIdcheck(signUp.idTF.getText()) == 1) {
 						signUp.dialog.showMessageDialog(signUp, "중복된 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
 					} else if (signupdao.selectIdcheck(signUp.idTF.getText()) == 0) {
 						signUp.dialog.showMessageDialog(signUp, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
 						signUp.error_idL.setText("");
-						signUp.check_idB.setEnabled(false);	// 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
-					}// 아이디 비교함							// true이면 기능이 동작하고 false면 기능이 동작하지 않는다				
+						signUp.check_idB.setEnabled(false); // 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
+					} // 아이디 비교함 // true이면 기능이 동작하고 false면 기능이 동작하지 않는다
 					return;
 				}
-			}//아이디 중복체크 버튼 선택시
+			} // 아이디 중복체크 버튼 선택시
 
-			if(e.getSource()==signUp.check_emailB) {
+			if (e.getSource() == signUp.check_emailB) {
 				return;
-			}//이메일 인증번호 버튼 선택시
+			} // 이메일 인증번호 버튼 선택시
 
-			if(e.getSource()==signUp.confirmB) {
-				signUp.error_idL.setText("");   //회원가입 버튼 선택시 경고문 초기화
+			if (e.getSource() == signUp.confirmB) {
+				signUp.error_idL.setText(""); // 회원가입 버튼 선택시 경고문 초기화
 				signUp.error_passL.setText("");
 				signUp.error_nameL.setText("");
 				signUp.error_birthL.setText("");
 				signUp.error_emailL.setText("");
 
-				if(signUp.check_idB.isEnabled()==true) { //중복검색 안했을때(버튼 활성화되어있을때)
-					signUp.error_idL.setText("아이디를 입력한 후 중복확인을 해주세요!");
+				if (signUp.idTF.getText().length() < 5 || !(Pattern.matches("^[a-z0-9]*$", signUp.passPF.getText()))) {
+					signUp.error_idL.setText("아이디는 5자 이상, 영문소문자와 숫자만 사용 가능합니다");
+					signUp.idTF.setText("");
 					signUp.idTF.requestFocus();
-					return;
-				}//아이디 중복검색 버튼 안눌렀을 때
 
-				if(signUp.passPF.getText().length()<6 || signUp.passPF.getText().length()>16 || 
-						!(Pattern.matches("^[a-z0-9]*$",signUp.passPF.getText()))) {
-					signUp.error_passL.setText("비밀번호는 6~16사이 영문소문자와 숫자로만 입력하세요!");
+					if (signUp.check_idB.isEnabled() == true) { // 중복검색 안했을때(버튼 활성화되어있을때)
+
+						signUp.error_idL.setText("중복확인을 해주세요");
+						signUp.idTF.setText("");
+						signUp.idTF.requestFocus();
+
+						return;
+					} // 아이디 제약조건 : 중복검색 안했을때, 아이디가 5자 이상이어야 하고 영문소문자와 숫자만 사용 가능
+				}
+				if (signUp.passPF.getText().length() < 8 || signUp.passPF.getText().length() > 19
+						|| !(Pattern.matches("^[a-z0-9]*$", signUp.passPF.getText()))) {
+					signUp.error_passL.setText("비밀번호는 8자 이상, 영문소문자와 숫자로만 입력하세요!");
 					signUp.passPF.setText("");
 					signUp.passrePF.setText("");
 					signUp.passPF.requestFocus();
 					return;
-				}//비밀번호 입력값이 올바르지 않을 때
+				} // 비밀번호 제약조건 : 8자 이상이면서 19자 이하와 영문소문자와 숫자로만 입력하는 조건
 
-				if(!signUp.passPF.getText().equals(signUp.passrePF.getText())) {
+				if (!signUp.passPF.getText().equals(signUp.passrePF.getText())) {
 					signUp.error_passL.setText("두 비밀번호가 일치하지 않습니다!");
-					signUp.passPF.setText(""); 
+					signUp.passPF.setText("");
 					signUp.passrePF.setText("");
 					signUp.passPF.requestFocus();
 					return;
-				}//비밀번호 입력값과 재입력값이 다른경우
+				} // 비밀번호 확인 제약조건 : 첫번쨰 비밀번호와 비교해서 같은 값인지 확인하는 조건
 
 				if (signUp.nameTF.getText().length() < 1 || signUp.nameTF.getText().length() > 6
 						|| !(Pattern.matches("^[가-힣]*$", signUp.nameTF.getText()))) {
@@ -109,43 +118,65 @@ public class MyActionListener {
 					signUp.nameTF.setText("");
 					signUp.nameTF.requestFocus();
 					return;
-				}//이름란에 적절한 문자길이가 입력되지 않거나, 적절한 문자가 입력되지 않을 때
-
-				if(signUp.yearTF.getText().trim().length() != 4             //생년월일 중 년이 4자리가 아닐때
-						|| signUp.monthTF.getText().trim().length() < 1		//생년월일 중 월이 1~2자리가 아닐때
-						|| signUp.monthTF.getText().trim().length() > 3		
-						|| signUp.dateTF.getText().trim().length() < 1 		//생년월일 중 일이 1~2자리가 아닐때
-						|| signUp.dateTF.getText().trim().length() > 3 ||  
-						(!(Pattern.matches("^[0-9]*$", signUp.yearTF.getText()))) ||     //연 텍스트필드에 숫자가 아닌것이 있을때
-						(!(Pattern.matches("^[0-9]*$", signUp.monthTF.getText()))) ||    //월 텍스트필드에 숫자가 아닌것이 있을때
-						(!(Pattern.matches("^[0-9]*$", signUp.dateTF.getText())))) {     //일 텍스트필드에 숫자가 아닌것이 있을때
+				} // 이름 제약조건 : 이름은 5글자만 가능하고 한글만 가능한 제약 조건
+				//2자리 이하
+				if (signUp.yearTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
+						|| signUp.monthTF.getText().trim().length() > 2 // 생년월일 중 월이 1~2자리가 아닐때
+						|| signUp.dateTF.getText().trim().length() > 2 // 생년월일 중 일이 1~2자리가 아닐때
+						|| (!(Pattern.matches("^[0-9]*$", signUp.yearTF.getText())))
+						|| (!(Pattern.matches("^[0-9]*$", signUp.monthTF.getText())))
+						|| (!(Pattern.matches("^[0-9]*$", signUp.dateTF.getText())))) {
+					// 일 텍스트필드에 숫자가 아닌것이 있을때
 					signUp.error_birthL.setText("생년월일을 정확히 입력해 주세요!");
+					signUp.yearTF.setText("");
+					signUp.monthTF.setText("");
+					signUp.dateTF.setText("");
 					signUp.yearTF.requestFocus();
 					return;
-				}//생년월일 란에 문제가 있을 때
+				} // 생년월일 제약조건 : 매 텍스트필드마다 년은 4자리 이면서 숫자만 ,월은 2자리 숫자만, 일은 2자리 숫자만 제약을 줌
 
-				if(signUp.emailTF.getText().trim().equals("")) {
-					signUp.error_emailL.setText("이메일을 입력하세요!");
+				if (!(Pattern.matches("^[a-z0-9]*$", signUp.emailTF.getText()))) {
+					signUp.emailTF.getText().trim().equals("");
+					signUp.error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
+					signUp.emailTF.equals("");
+					signUp.emailDoTF.equals("");
 					signUp.emailTF.requestFocus();
+					// 잘못 적었을 때 이메일 택스트필드로 돌아가서 써진 것 지우고 커서를 이메일 텍스트로 위치시킴
 					return;
-				}//이메일 란이 공백일 때
+				} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
 				signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
-				signUp.dispose();
-			}//가입하기 버튼 눌렀을 때
+				signUp.dispose();// 회원가입이 안되었을 때 잘못되었다는 메시지 창을 만들어줘야 한다
 
-			if(e.getSource()==signUp.emailC) {
-				String str = (String)signUp.emailC.getSelectedItem();
+				membervo.setId(signUp.idTF.getText());
+				membervo.setPwd(signUp.passPF.getText());
+				membervo.setName(signUp.nameTF.getText());
+				membervo.setBirthday(
+						signUp.yearTF.getText() + "-" + signUp.monthTF.getText() + "-" + signUp.dateTF.getText());
+				membervo.setSex((String) signUp.sexC.getSelectedItem());
+				membervo.setEmail(signUp.emailTF.getText() + "@" + signUp.emailDoTF.getText());
+
+				// 이메일 텍스트필드랑 콤보박스 값을 한번에?
+				signupdao.insertMember(membervo);
+
+			} // 가입하기 버튼 눌렀을 때
+
+			if (e.getSource() == signUp.emailC) {
+				String str = (String) signUp.emailC.getSelectedItem();
 				signUp.emailDoTF.setText(str);
 				signUp.emailDoTF.setEditable(false);
-				if(str.equals("직접입력")) {
+				if (str.equals("직접입력")) {
 					signUp.emailDoTF.setText("");
 					signUp.emailDoTF.setEditable(true);
 					signUp.emailDoTF.requestFocus();
 					return;
+				} else if (str.equals("선택")) {
+					signUp.emailDoTF.setText("");
+					signUp.emailDoTF.setEditable(false);
+					return;
 				}
-			}//이메일 콤보박스 선택시
-		}//aP()
-	}//SignupActionL inner class
+			} // 이메일 콤보박스 선택시
+		}// aP()
+	}// SignupActionL inner class
 
 	class FindActionL implements ActionListener{
 		@Override

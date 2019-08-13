@@ -1,8 +1,8 @@
-create table member(
- member_id varchar2(20) primary key
- ,member_pwd varchar2(20) NOT NULL
- ,member_name varchar2(20) NOT NULL
- ,member_sex varchar2(20) NOT NULL
- ,member_birth varchar2(20) NOT NULL
- ,member_email varchar2(20) NOT NULL
+create table member(					--회원 테이블
+ member_id varchar2(20) primary key		--회원아이디
+ ,member_pwd varchar2(20) NOT NULL		--비밀번호
+ ,member_name varchar2(20) NOT NULL		--회원 이름
+ ,member_sex varchar2(20) NOT NULL		--성별
+ ,member_birth varchar2(20) NOT NULL	--생일
+ ,member_email varchar2(50) NOT NULL	--이메일
 );

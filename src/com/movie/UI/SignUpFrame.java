@@ -7,9 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -240,7 +238,6 @@ public class SignUpFrame extends JFrame{
 		confirmB.addActionListener(listener);
 		emailC.addActionListener(listener);
 	}
-
 
 //	public static void main(String[] args) {
 //		new SignUpFrame();
