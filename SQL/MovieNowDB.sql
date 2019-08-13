@@ -13,14 +13,14 @@ movie_code INT PRIMARY KEY			--영화코드
 ,people	    VARCHAR2(30) NOT NULL	--누적관객수
 
 --영화 동영상 주소를 저장할 컬럼생성
-,teaser	      	VARCHAR2(200)    NOT NULL   --티져영상 URL
+,teaser	      	    VARCHAR2(200)   NOT NULL   --티져영상 URL
 ,oneview		  	VARCHAR2(200)	NOT NULL   --예고편1 URL
 ,twoview	      	VARCHAR2(200)	NOT NULL   --예고편2 URL
-,threeview	    VARCHAR2(200)	NOT NULL   --예고편3 URL
+,threeview	        VARCHAR2(200)	NOT NULL   --예고편3 URL
 ,teaser_img 	  	VARCHAR2(40) 	NOT NULL   --티저이미지
-,oneview_img   	VARCHAR2(40)	NOT NULL   --예고편1 이미지
+,oneview_img   	    VARCHAR2(40)	NOT NULL   --예고편1 이미지
 ,twoview_img	  	VARCHAR2(40)  	NOT NULL   --예고편2 이미지
-,threeview_img   VARCHAR2(40) 	NOT NULL   --예고편3 이미지
+,threeview_img      VARCHAR2(40) 	NOT NULL   --예고편3 이미지
 );
 DROP Table MovieData;
 INSERT INTO MovieData VALUES(

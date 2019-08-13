@@ -104,7 +104,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 
 		add(seriespanel);											//메인 패널에 시리즈 패널올림
 		setSize(new Dimension(900,800));							//제일큰패널 사이즈 지정
-		getContentPane().setBackground(Color.BLACK);									//배경색 지정
+		getContentPane().setBackground(Color.BLACK);				//배경색 지정
+		setLocationRelativeTo(null);								//창이 켜졌을때 어디에 배치 할지 정함 Null값은 중앙
 		setVisible(true);											//패널을 보이게함
 	}//MovieInfoPlus생성자
 	
@@ -174,15 +175,15 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 
 		/** 포스터에 버튼넣기	**/
 
-		posterL =new JLabel(poster);			//posterL이란 라벨에 poster 넣음
-		posterL.setBackground(Color.BLACK);		//posterL 배경색 지정
-		posterL.setOpaque(true);				//posterL 보이게 함
-		posterpanel.add(posterL);				//포스터패널에 포스터L 올림
+		posterL =new JLabel(poster);				//posterL이란 라벨에 poster 넣음
+		posterL.setBackground(Color.BLACK);			//posterL 배경색 지정
+		posterL.setOpaque(true);					//posterL 보이게 함
+		posterpanel.add(posterL);					//포스터패널에 포스터L 올림
 
 
 		reserveB=new JButton("예매하기");				//예매하기 버튼 생성
-		reserveB.setBackground(Color.RED); 			//버튼배경
-		reserveB.setForeground(Color.WHITE);		//버튼글짜색
+		reserveB.setBackground(Color.red); 			//버튼배경
+		reserveB.setForeground(Color.black);		//버튼글짜색
 		reserveB.setFocusPainted(false); 			//클릭테두리색
 		reserveB.setBorderPainted(false);			//그냥테두리색
 		reserveB.setOpaque(true);					//투명도 true면 불투명 false면 투명
@@ -371,14 +372,14 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		seriespanel.setPreferredSize(new Dimension(900,230));		//시리즈 패널 사이즈 지정
 
 
-		videopanel.setPreferredSize(new Dimension(900,27));			//'동영상' 글자 입력할 패널 비디오 패널 생성
-		videopanel.setBackground(Color.BLACK);						//비디오 패널 배경색 지정
+		videopanel.setPreferredSize(new Dimension(850,27));			//'동영상' 글자 입력할 패널 비디오 패널 생성
+		videopanel.setBackground(Color.DARK_GRAY);					//비디오 패널 배경색 지정
 		videopanel.setLayout(new FlowLayout(FlowLayout.LEFT));		//비디오 패널 왼쪽 정렬
 		seriespanel.add(videopanel);								//시리즈패널에 비디오 패널 추가
 
 		videoL=new JLabel("   동영상");								//'동영상' 라벨 생성
-		videoL.setFont(new Font("맑은 고딕",Font.BOLD,18));			//'동영상' 라벨 폰트 지정
-		videoL.setBackground(Color.BLACK);
+		videoL.setFont(new Font("맑은 고딕",Font.BOLD,17));			//'동영상' 라벨 폰트 지정
+		videoL.setBackground(Color.DARK_GRAY);
 		videoL.setOpaque(true);										//'동영상' 라벨을 보이게 함
 		videoL.setForeground(Color.WHITE); 							//'동영상' 라벨 글자색 지정
 		videopanel.add(videoL);										//비디오 패널에 '동영상'라벨 추가

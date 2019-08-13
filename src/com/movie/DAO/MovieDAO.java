@@ -7,10 +7,10 @@ import com.movie.VO.MovieVO;
 import com.movie.main.AppManager;
 
 public class MovieDAO {
-	DAOManager daoManager = AppManager.getInstance().getDAOManager();
-	MovieVO m=AppManager.getInstance().getDataManager().getMovieVO();
-	String sql=null;
-	ResultSet rs;
+	DAOManager daoManager = AppManager.getInstance().getDAOManager();	//싱글톤 사용
+	MovieVO m=AppManager.getInstance().getDataManager().getMovieVO();	//싱글톤 내용을 객체 m으로 저장
+	String sql=null;													//sql 초기값 지정
+	ResultSet rs;														//ResultSet rs로 객체초기화
 
 	public MovieDAO(){
 		AppManager.getInstance().getDAOManager().setMovieDAO(this);
