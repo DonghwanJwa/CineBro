@@ -26,9 +26,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 
+import com.movie.DAO.MovieNowDAO;
+import com.movie.VO.MovieNowVO;
+
 public class ReservationPanel extends JPanel implements ActionListener{
 	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
-
+	MovieNowVO mvo=new MovieNowVO();
+	MovieNowDAO mdao=new MovieNowDAO();
 	// 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
@@ -135,7 +139,7 @@ public class ReservationPanel extends JPanel implements ActionListener{
 
 	// ----------------------------------- 리스트
 
-	Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
+	Vector<MovieNowVO> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
 	Vector<String> cinemaVector=new Vector<>();
 	protected JList movieList=new JList(movieVector);
 	protected JList cinemaList=new JList(cinemaVector);
@@ -237,10 +241,12 @@ public class ReservationPanel extends JPanel implements ActionListener{
 		cinemaList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
 
 		/* 리스트 항목 작성 */
-		for(int i=0;i<12;i++) {
-			movieVector.add(i+"번째 영화");
-			cinemaVector.add(i+"번째 상영관");
-		}//for			
+		Vector<MovieNowVO> mV=mdao.movieNameList();
+		if((mV != null) && mV.size()>0) {
+			for(int i=0;i<mV.size();i++) {
+				mvo=mV.get(i);
+			}
+		}
 
 		// --- 리스트 스크롤생성
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
