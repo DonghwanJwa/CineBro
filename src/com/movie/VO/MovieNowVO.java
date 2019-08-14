@@ -1,5 +1,7 @@
 package com.movie.VO;
 
+import java.util.Vector;
+
 import com.movie.main.AppManager;
 
 public class MovieNowVO {
@@ -21,7 +23,7 @@ public class MovieNowVO {
 
 	//------------------------------set메서드-----------------------------//
 
-	public void setMovie_code(String movie_code)		{ this.movie_code = movie_code;	 	}
+	public void setMovie_code(String movie_code)	{ this.movie_code = movie_code;	 	}
 	public void setMovie_nameE(String movie_nameE) 	{ this.movie_nameE = movie_nameE;	}
 	public void setMovie_nameK(String movie_nameK) 	{ this.movie_nameK = movie_nameK;	}
 	public void setGenre(String genre) 				{ this.genre = genre;				}

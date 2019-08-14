@@ -189,8 +189,4 @@ public class MainUI {
 		loginB.addActionListener(listener);
 		registB.addActionListener(listener);
 	}
-	public void addBookingListener(ListSelectionListener listener) {
-		reservC.movieList.addListSelectionListener(listener);
-		reservC.cinemaList.addListSelectionListener(listener);
-	}
 }//MainUI

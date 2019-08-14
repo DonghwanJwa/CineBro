@@ -5,8 +5,7 @@ import com.movie.main.AppManager;
 /**상영관 테이블 VO**/
 public class CinemaVO {
 	private String screen;		//상영관
-	private int movie_code;		//영화코드
-	
+	private int movie_code;		//영화코드	
 	
 	public CinemaVO() {
 		AppManager.getInstance().getDataManager().setCinemaVO(this);
