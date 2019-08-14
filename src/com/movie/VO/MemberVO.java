@@ -9,7 +9,7 @@ public class MemberVO {
 	private String pwd;
 	private String name;
 	private String sex;
-	private String birthday;
+	private String birth;
 	private String email;
 	
 	public MemberVO() {
@@ -21,7 +21,7 @@ public class MemberVO {
 	public void setPwd(String pwd) 			{		this.pwd = pwd;				}
 	public void setName(String name) 		{		this.name = name;			}
 	public void setSex(String sex) 			{ 		this.sex = sex;				}
-	public void setBirthday(String birthday){		this.birthday = birthday;	}
+	public void setBirth(String birth)		{		this.birth = birth;			}
 	public void setEmail(String email) 		{		this.email = email;			}
 
 	// ------------------------------ get ----------------------------- //
@@ -29,7 +29,7 @@ public class MemberVO {
 	public String getPwd() 					{ 	  	return pwd;			}
 	public String getName() 				{	 	return name; 		}
 	public String getSex() 					{	  	return sex;			}
-	public String getBirthday() 			{ 		return birthday;	}
+	public String getBirth() 				{ 		return birth;		}
 	public String getEmail() 				{	  	return email;		}
 	
 	

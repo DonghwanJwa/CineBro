@@ -27,7 +27,7 @@ public class SignUpDAO {
 			daomanager.pt.setString(2, m.getPwd());
 			daomanager.pt.setString(3, m.getName());
 			daomanager.pt.setString(4, m.getSex());
-			daomanager.pt.setString(5, m.getBirthday());
+			daomanager.pt.setString(5, m.getBirth());
 			daomanager.pt.setString(6, m.getEmail());
 			re = daomanager.pt.executeUpdate();
 

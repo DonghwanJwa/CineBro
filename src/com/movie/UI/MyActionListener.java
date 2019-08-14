@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.movie.DAO.DAOManager;
+import com.movie.DAO.MemberDAO;
 import com.movie.DAO.MovieDAO;
 import com.movie.DAO.MovieNowDAO;
 import com.movie.DAO.SignUpDAO;
@@ -40,6 +41,7 @@ public class MyActionListener {
 	MovieNowDAO movienowdao= new MovieNowDAO();
 	SignUpDAO signupdao = new SignUpDAO();
 	MemberVO membervo = new MemberVO();
+	MemberDAO memberdao = new MemberDAO();
 	CinemaVO cinemavo = new CinemaVO();
 	SeatVO seatvo = new SeatVO();
 	MovietimeVO movietimevo = new MovietimeVO();
@@ -162,7 +164,7 @@ public class MyActionListener {
 				membervo.setId(signUp.idTF.getText());
 				membervo.setPwd(signUp.passPF.getText());
 				membervo.setName(signUp.nameTF.getText());
-				membervo.setBirthday(
+				membervo.setBirth(
 						signUp.yearTF.getText() + "-" + signUp.monthTF.getText() + "-" + signUp.dateTF.getText());
 				membervo.setSex((String) signUp.sexC.getSelectedItem());
 				membervo.setEmail(signUp.emailTF.getText() + "@" + signUp.emailDoTF.getText());
@@ -271,6 +273,7 @@ public class MyActionListener {
 					loginP.idField.requestFocus();
 					loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // 외곽선 설정 오류시 붉은선
 					loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // 정상작동시 검은선
+					return;
 				}else {
 					/* 비밀번호를 적지 않았을 때 */
 					if(loginP.passwordField.getText().equals("")) {
@@ -280,13 +283,20 @@ public class MyActionListener {
 						loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 					}else {
 						/* 확인 이벤트 */
-						if(loginP.idField.getText().equals("abcd") && loginP.passwordField.getText().equals("abcd")) { 
-							// idField와 passwordField에 정확한 id와 password가 적혔을때
+						membervo.setId(loginP.idField.getText());
+						membervo.setPwd(loginP.passwordField.getText());
+						/* 아아디 비밀번호가 제대로 입력 되었을 때 */
+						if(memberdao.login()) { 
 							loginP.error.setText(""); // error문구 없음
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							/* 로그인 됐을때 실행할 문장 */
-
+							/* 1. 메인 frame 로그인버튼,회원가입 버튼 setVisible(false),
+							 *    아이디 출력되는 Label에 setText(); "어서오세요, ~회원님"
+							 * 2. 예매 정보를 reservation panel에 부름(where id,order by booking_code)
+							 * 3. 개인 정보를 mypage panel에 부름(where id)
+							 */
+							
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
@@ -294,7 +304,9 @@ public class MyActionListener {
 							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // passwordField 테두리색 변경
 						}// 아이디,비밀번호 오입력시 
 					}// 비밀번호 미입력시
+					return;
 				}// 아이디 미입력시
+
 			}// 로그인버튼 클릭시
 			if(obj==loginP.addMem) {
 				signUp = new SignUpFrame();
