@@ -146,4 +146,6 @@ INSERT INTO MovieData VALUES(
 
 SELECT * FROM MovieData;
 
+DELETE FROM MovieData WHERE movie_code=12;
+
 --DROP TABLE MovieData;
