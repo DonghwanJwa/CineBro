@@ -25,7 +25,7 @@ public class MemberDAO {
 			daoManager.pt.setString(2, memberVO.getPwd());
 			daoManager.pt.setString(3, memberVO.getName());
 			daoManager.pt.setString(4, memberVO.getSex());
-			daoManager.pt.setString(5, memberVO.getBirthday());
+			daoManager.pt.setString(5, memberVO.getBirth());
 			daoManager.pt.setString(6, memberVO.getEmail());
 
 		}catch(Exception e) {e.printStackTrace();}
@@ -36,33 +36,40 @@ public class MemberDAO {
 			return false;
 		}//if else
 	}
+	
 	//------------------------------로그인 기능------------------------------//
-	boolean login() {
+	public boolean login() {
 		daoManager =AppManager.getInstance().getDAOManager(); 
 		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
-		
-		daoManager.connectDB();
-		String sql= "SELECT * FROM memberVOber WHERE memberVOber_id = ?";
+
 		try {
+			daoManager.connectDB();
+			String sql= "SELECT * FROM member WHERE member_id = ?";
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setString(1, memberVO.getId());
 			rs=daoManager.pt.executeQuery();
+			
 			//--------------------아이디와 비밀번호가 같다면 회원정보를 불러와 저장-------------------//
 			if(rs.next()) {
-				if(memberVO.getPwd().equals(rs.getString(3))) {
-					memberVO.setId(rs.getString("memberVO_id"));
-					memberVO.setPwd(rs.getString("memberVO_pwd"));
-					memberVO.setName(rs.getString("memberVO_name"));
-					memberVO.setSex(rs.getString("memberVO_sex"));
-					memberVO.setBirthday(rs.getString("memberVO_birthday"));
-					memberVO.setEmail(rs.getString("memberVO_email"));
+				if(memberVO.getPwd().equals(rs.getString("member_pwd"))) {
+					memberVO.setId(rs.getString("member_id"));
+					memberVO.setPwd(rs.getString("member_pwd"));
+					memberVO.setName(rs.getString("member_name"));
+					memberVO.setSex(rs.getString("member_sex"));
+					memberVO.setBirth(rs.getString("member_birth"));
+					memberVO.setEmail(rs.getString("member_email"));
 					return true;
-				}
-			}
-			rs.close();
-			daoManager.closeDB();
+				}//if
+			}//if
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				daoManager.closeDB();			
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -70,7 +77,7 @@ public class MemberDAO {
 	boolean idCheck() {
 		daoManager =AppManager.getInstance().getDAOManager(); 
 		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
-		
+
 
 		daoManager.connectDB();
 		String sql="SELECT memberVOber_id FROM memberVOber";

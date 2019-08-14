@@ -656,6 +656,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			}else if(deleteResult==dialog.YES_OPTION) {				//예 버튼 눌렀을 때
 				
 				dialog.showMessageDialog(null, "이용해주셔서 감사합니다");
+				changeVisible(0);
 				/**로그아웃 기능 실행**/
 				/**DB delete 구문 실행**/
 				/**텍스트필드 비우기**/
