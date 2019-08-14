@@ -2,7 +2,9 @@ package com.movie.DAO;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Vector;
 
+import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovieVO;
 import com.movie.main.AppManager;
 
@@ -19,7 +21,7 @@ public class MovieDAO {
 	// DB에 저장되어 있는 모든 영화를 리턴해주는 메소드
 	public MovieVO getMovieInfo(int i){
 		daoManager = AppManager.getInstance().getDAOManager();
-		 m = AppManager.getInstance().getDataManager().getMovieVO();
+		m = AppManager.getInstance().getDataManager().getMovieVO();
 		// 모든 DB를 뒤져 Movies에 저장
 		try {
 			daoManager.connectDB();
@@ -28,7 +30,7 @@ public class MovieDAO {
 			daoManager.pt.setInt(1, i);
 			rs = daoManager.pt.executeQuery();
 			while(rs.next()){
-				m.setMovie_code(rs.getString("movie_code"));
+				m.setMovie_code(rs.getInt("movie_code"));
 				m.setMovie_nameK(rs.getString("movie_nameK"));
 				m.setMovie_nameE(rs.getString("movie_nameE"));
 				m.setMovie_img(rs.getString("movie_img"));
@@ -47,7 +49,7 @@ public class MovieDAO {
 				m.setTwoView_img(rs.getString("twoview_img"));
 				m.setThreeView(rs.getString("threeview"));
 				m.setThreeView_img(rs.getString("threeview_img"));
-				
+
 			}
 		} catch (Exception e){
 			e.printStackTrace();
@@ -60,7 +62,6 @@ public class MovieDAO {
 			}
 		}
 		return m;
-
 		//모든 영화 ArrayList 리턴
-	}
+	}	
 }

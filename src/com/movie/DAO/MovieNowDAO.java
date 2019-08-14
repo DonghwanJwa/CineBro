@@ -80,27 +80,7 @@ public class MovieNowDAO {
 			}catch(Exception e) {e.printStackTrace();}
 		}//finally
 		return nlist;
-	}//movieNowList()
-
-	public Vector<MovieNowVO> movieNameList(){
-		daoManager.connectDB();
-
-		Vector<MovieNowVO> nameList=new Vector<MovieNowVO>();
-		String sql="SELECT movie_nameK, movie_nameE FROM MovieData";
-		try {
-			daoManager.pt=daoManager.con.prepareStatement(sql);
-			rs=daoManager.pt.executeQuery();
-			while(rs.next()) {
-				mvo.setMovie_nameE(rs.getString("movie_nameE"));
-				mvo.setMovie_nameK(rs.getString("movie_nameK"));
-				nameList.add(mvo);
-			} // while
-			if(rs != null) rs.close();
-			daoManager.connectDB();
-		}catch(Exception e) {e.printStackTrace();}// try-catch		
-		
-		return nameList;
-	}// movieNameList()
+	}//movieNowList()	
 }
 
 

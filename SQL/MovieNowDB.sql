@@ -144,8 +144,6 @@ INSERT INTO MovieData VALUES(
 'C:\\Program Files\\Internet Explorer\\iexplore.exe "https://movie.naver.com/movie/bi/mi/mediaView.nhn?code=168054&mid=43096#tab',
 '12video1.jpg','12video2.jpg','12video3.jpg','12video4.jpg');
 
-SELECT * FROM MovieData;
-
 DELETE FROM MovieData WHERE movie_code=12;
 
 --DROP TABLE MovieData;
