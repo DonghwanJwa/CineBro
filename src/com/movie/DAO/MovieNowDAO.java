@@ -2,60 +2,86 @@ package com.movie.DAO;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.movie.VO.MovieNowVO;
 import com.movie.main.AppManager;
 
 public class MovieNowDAO {
-	//
+	//d
 	DAOManager daoManager = AppManager.getInstance().getDAOManager();
 	MovieNowVO mvo= AppManager.getInstance().getDataManager().getMovieNowVO();
-	int result ;
-	ResultSet rs = null;
-	String sql =null;	//sql 값 초기화
-	
+	int result;
+	ResultSet rs;
+
 	public MovieNowDAO() {
 		AppManager.getInstance().getDAOManager().setMovieNowDAO(this);
 	}//생성자
-	public List<MovieNowVO> movieNowList() {
+	//입력된 영화정보를 되돌려주는 컬렉션 메서드 생성 //
+//	public MovieNowVO movieList(int i) {
+//		daoManager = AppManager.getInstance().getDAOManager();
+//		m = AppManager.getInstance().getDataManager().getMovieNowVO();
+//		try {
+//			String sql="SELECT  movie_code, movie_nameE, movie_img, age, gerne, director, actors FROM movietest where movie_code = ? ";
+//			daoManager.connectDB();//DB연결 메서드
+//			daoManager.pt = daoManager.con.prepareStatement(sql);//쿼리문
+//			daoManager.pt.setInt(1, i);
+//			rs= daoManager.pt.executeQuery();
+//
+//			while(rs.next()) {
+//				//sql문에 해당되는 데이터를 DB에서 찾아 nlist에 순서대로 저장
+//				m.setMovie_code(rs.getString("movie_code"));
+//				m.setMovie_nameK(rs.getString("movie_nameK"));
+//				m.setMovie_nameE(rs.getString("movie_nameE"));
+//				m.setImg(rs.getString("movie_img"));
+//				m.setAge(rs.getString("age"));
+//				m.setGenre(rs.getString("genre"));
+//				m.setDirector(rs.getString("director"));
+//				m.setActors(rs.getString("actors"));
+//			}
+//		}catch(Exception e) {e.printStackTrace();
+//		}finally {
+//			try {	
+//				if(rs!=null)rs.close();
+//				daoManager.closeDB();
+//			}catch(Exception e) {e.printStackTrace();}
+//		}//finally
+//		return m;
+//	}	
+//}
+	public ArrayList<MovieNowVO> movieNowList() {
 		//---------sql 문 작성---------//
-		String sql="SELECT  movie_code, movie_nameK, movie_nameE, movie_img, age, gerne, director, actors FROM moviedata ";
+		String sql="SELECT  movie_code,movie_nameK, movie_nameE, movie_img, age, gerne, director, actors FROM moviedata";
 		//---------데이터를 넣어줄 list 생성---------//
-		List<MovieNowVO> nlist = new ArrayList<MovieNowVO>();
+		ArrayList<MovieNowVO> nlist = new ArrayList<MovieNowVO>();
 		try {
 			daoManager.connectDB();//DB연결 메서드
 			daoManager.pt = daoManager.con.prepareStatement(sql);//쿼리문
-			//						daoManager.pt.setString(1, "movie_code");
+//			daoManager.pt.setString(1, movie_code);
 			rs= daoManager.pt.executeQuery();
+			
 			while(rs.next()) {
-				MovieNowVO movie =new MovieNowVO();
-				/*DAO를 통해 입력되는 데이터를 전부 담기위해서는 초기화 과정을 통해 새로운 객체를 생성해주어야 한다.(기억하자)
-				 * 만일 이사항을 무시하고 지나가게되면 해당 객체의 주소값이 같아지며 마지막에 남아있는 객체만이 데이터에 들어가게된다.*/
-				
 				//sql문에 해당되는 데이터를 DB에서 찾아 nlist에 순서대로 저장
-				movie.setMovie_code(rs.getInt("movie_code"));
-				movie.setMovie_nameK(rs.getString("movie_nameK"));
-				movie.setMovie_nameE(rs.getString("movie_nameE"));
-				movie.setImg(rs.getString("movie_img"));
-				movie.setAge(rs.getString("age"));
-				movie.setGenre(rs.getString("gerne"));
-				movie.setDirector(rs.getString("director"));
-				movie.setActors(rs.getString("actors"));
-				nlist.add(movie);
+				 mvo.setMovie_code(rs.getString("movie_code"));
+				 mvo.setMovie_nameK(rs.getString("movie_nameK"));
+				 mvo.setMovie_nameE(rs.getString("movie_nameE"));
+				 mvo.setImg(rs.getString("movie_img"));
+				 mvo.setAge(rs.getString("age"));
+				 mvo.setGenre(rs.getString("gerne"));
+				 mvo.setDirector(rs.getString("director"));
+				 mvo.setActors(rs.getString("actors"));
+				nlist.add(mvo);
 
 			}
-			
 		}catch(Exception e) {e.printStackTrace();
-
+		
 		}finally {
 			try {	
 				if(rs!=null)rs.close();
 				daoManager.closeDB();
 			}catch(Exception e) {e.printStackTrace();}
-		}//finally
+			}//finally
 		return nlist;
 	}//movieNowList()
+	}
 
 
-}
