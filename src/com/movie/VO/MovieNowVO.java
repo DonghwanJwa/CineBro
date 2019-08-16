@@ -4,7 +4,7 @@ import com.movie.main.AppManager;
 
 public class MovieNowVO {
 	//---------기본 영화 정보---------//
-	private String movie_code;//영화를 식별할 영화코드
+	private int	   movie_code;//영화를 식별할 영화코드
 	private String movie_nameK;//영화이름(한국)
 	private String movie_nameE;//영화이름(영어)
 	private String img;	//영화 이미지
@@ -21,7 +21,7 @@ public class MovieNowVO {
 
 	//------------------------------set메서드-----------------------------//
 
-	public void setMovie_code(String movie_code)		{ this.movie_code = movie_code;	 	}
+	public void setMovie_code(int movie_code)		{ this.movie_code = movie_code;	 	}
 	public void setMovie_nameE(String movie_nameE) 	{ this.movie_nameE = movie_nameE;	}
 	public void setMovie_nameK(String movie_nameK) 	{ this.movie_nameK = movie_nameK;	}
 	public void setGenre(String genre) 				{ this.genre = genre;				}
@@ -32,7 +32,7 @@ public class MovieNowVO {
 	
 	//------------------------------get 메서드-----------------------------//
 
-	public String getMovie_code() 		{ 	return movie_code; 	}
+	public int getMovie_code() 		{ 	return movie_code; 	}
 	public String getMovie_nameE() 	{ 	return movie_nameE;	}
 	public String getMovie_nameK() 	{ 	return movie_nameK;	}
 	public String getGenre() 		{ 	return genre;		}
@@ -42,3 +42,4 @@ public class MovieNowVO {
 		public String getAge() 		{	return age;			}
 	
 }
+

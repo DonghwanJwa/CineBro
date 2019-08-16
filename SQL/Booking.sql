@@ -9,3 +9,8 @@ booking_code NUMBER(38) PRIMARY KEY 						--예약번호
 );
 
 CREATE SEQUENCE booked_seq
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+SELECT booked_seq.currval FROM DUAL;

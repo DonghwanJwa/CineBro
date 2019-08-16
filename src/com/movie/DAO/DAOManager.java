@@ -12,6 +12,7 @@ public class DAOManager {
 	private MovieNowDAO movieNowDAO;
 	private MemberDAO memberDAO;
 	private SignUpDAO signupDAO;
+	private BookingDAO bookingDAO;
 	
 	// ------- DB 커넥트 변수 ------- //
 	String driver="oracle.jdbc.OracleDriver";
@@ -43,27 +44,21 @@ public class DAOManager {
 
 	// ------------------------------set 메서드----------------------------- //
 
-	public void setCinemaDAO(CinemaDAO cinemaDAO) 		{ this.cinemaDAO = cinemaDAO;	}
-	
-	public void setMovieDAO(MovieDAO movieDAO) 			{ this.movieDAO = movieDAO; }
-	
-	public void setMovieNowDAO(MovieNowDAO movieNowDAO) { this.movieNowDAO = movieNowDAO; }
-	
-	public void setMemberDAO(MemberDAO memberDAO) 		{ this.memberDAO = memberDAO;	}
-	
-	public void setSignupDAO(SignUpDAO signupDAO) 		{ this.signupDAO = signupDAO;   }
-
+	public void setCinemaDAO(CinemaDAO cinemaDAO) 		{ this.cinemaDAO = cinemaDAO;	  }	
+	public void setMovieDAO(MovieDAO movieDAO) 			{ this.movieDAO = movieDAO;       }	
+	public void setMovieNowDAO(MovieNowDAO movieNowDAO) { this.movieNowDAO = movieNowDAO; }	
+	public void setMemberDAO(MemberDAO memberDAO) 		{ this.memberDAO = memberDAO;     }	
+	public void setSignupDAO(SignUpDAO signupDAO) 		{ this.signupDAO = signupDAO;     }
+	public void setBookingDAO(BookingDAO bookingDAO) 	{ this.bookingDAO = bookingDAO;   }
 	
 	// ------------------------------get 메서드----------------------------- //
-	public CinemaDAO getCinemaDAO() 	{ return cinemaDAO;	}
 	
-	public MovieDAO getMovieDAO()		{ return movieDAO; }
-	
-	public MovieNowDAO getMovieNowDAO() { return movieNowDAO; }
-	
-	public MemberDAO getMemberDAO() 	{ return memberDAO;	}
-	
-	public SignUpDAO getSignupDAO()		{ return signupDAO;  }
+	public CinemaDAO getCinemaDAO() 	{ return cinemaDAO;	  } 	
+	public MovieDAO getMovieDAO()		{ return movieDAO;    }	
+	public MovieNowDAO getMovieNowDAO() { return movieNowDAO; }	
+	public MemberDAO getMemberDAO() 	{ return memberDAO;	  }	
+	public SignUpDAO getSignupDAO()		{ return signupDAO;   }
+	public BookingDAO getBookingDAO()   { return bookingDAO;  }
 
 
 

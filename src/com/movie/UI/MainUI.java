@@ -57,7 +57,7 @@ public class MainUI {
 	/* 로고 이미지 */
 	ImageIcon preImg=new ImageIcon("pic/logo.png"); // 포스터
 	Image originImg=preImg.getImage(); // ImageIcon을 Image로 전환
-	Image changeImg=originImg.getScaledInstance(735,150,java.awt.Image.SCALE_SMOOTH); // 이미지 사이즈 가로 150, 세로 214
+	Image changeImg=originImg.getScaledInstance(630,110,java.awt.Image.SCALE_SMOOTH); // 이미지 사이즈 가로 150, 세로 214
 	ImageIcon logoImage=new ImageIcon(changeImg);
 	
 	/* 로고 패널  */
@@ -83,7 +83,7 @@ public class MainUI {
 		frame.setSize(800,600);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 프레임 항상 최대화
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // X누르면 프레임종료
-		mainP.setPreferredSize(new Dimension(1920,1040)); // 프레임 덮을 패널 1920x1080해상도 기준으로 사이즈 설정 ※하단 작업표시줄 감안
+		mainP.setPreferredSize(new Dimension(1900,1080)); // 프레임 덮을 패널 1920x1080해상도 기준으로 사이즈 설정 ※하단 작업표시줄 감안
 		mainP.setLayout(new BorderLayout());
 		
 		/* ---------------------- 로고 ---------------------- */
@@ -92,25 +92,25 @@ public class MainUI {
 		logoP.setOpaque(false);
 		
 		logo.setOpaque(false);
+		logo.setBounds(593,15,735,150);
 		logoP.add(logo);
-		logo.setBounds(593,0,735,150);
 		
 		/* 로그인&회원가입 버튼 */
 		loginB.setBackground(Color.WHITE);					//버튼색
 		registB.setBackground(Color.WHITE);
-		loginB.setFont(new Font("맑은 고딕",Font.BOLD,15));		//버튼폰트
-		registB.setFont(new Font("맑은 고딕",Font.BOLD,15));
-		loginB.setPreferredSize(new Dimension(100,40));		//버튼사이즈
-		registB.setPreferredSize(new Dimension(100,40));
+		loginB.setFont(new Font("맑은 고딕",Font.BOLD,11));		//버튼폰트
+		registB.setFont(new Font("맑은 고딕",Font.BOLD,11));
+		loginB.setPreferredSize(new Dimension(80,25));		//버튼사이즈
+		registB.setPreferredSize(new Dimension(80,25));
 		loginB.setBorder(new LineBorder(Color.BLACK));		//버튼테두리
 		registB.setBorder(new LineBorder(Color.BLACK));
 		loginB.setFocusPainted(false);						//버튼 선택시 테두리 삭제
 		registB.setFocusPainted(false);
 		log_regBP.add(loginB); log_regBP.add(registB);
 		
-		logoP.add(log_regBP);
 		log_regBP.setOpaque(false);
-		log_regBP.setBounds(1600,5,250,60);
+		log_regBP.setBounds(1600,0,250,60);
+		logoP.add(log_regBP);
 		
 		
 		/* -------------------- 메뉴탭 -------------------- */
@@ -177,6 +177,7 @@ public class MainUI {
 		mainScroll.getVerticalScrollBar().setUnitIncrement(16);			// 스크롤 속도 지정
 		frame.add(mainScroll); // 프레임에 스크롤 추가
 		frame.setVisible(true); // 프레임을 항상 보이게함
+		
 	}//cons MainUI()
 	
 	public void addMainListener(ActionListener listener) {
@@ -187,9 +188,5 @@ public class MainUI {
 		myPageB.addActionListener(listener);
 		loginB.addActionListener(listener);
 		registB.addActionListener(listener);
-	}
-	public void addBookingListener(ListSelectionListener listener) {
-		reservC.movieList.addListSelectionListener(listener);
-		reservC.cinemaList.addListSelectionListener(listener);
 	}
 }//MainUI

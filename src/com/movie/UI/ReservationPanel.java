@@ -25,10 +25,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class ReservationPanel extends JPanel implements ActionListener{
+import com.movie.DAO.BookingDAO;
+import com.movie.VO.CinemaVO;
+import com.movie.VO.MovieVO;
+import com.movie.main.AppManager;
+
+public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
 	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
-
+	BookingDAO bdao=AppManager.getInstance().getDAOManager().getBookingDAO();
 	// 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
@@ -135,10 +142,12 @@ public class ReservationPanel extends JPanel implements ActionListener{
 
 	// ----------------------------------- 리스트
 
+	int movie_code;
+	Vector<Integer> codeVector=new Vector<>();
 	Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
 	Vector<String> cinemaVector=new Vector<>();
 	protected JList movieList=new JList(movieVector);
-	protected JList cinemaList=new JList(cinemaVector);
+	protected JList cinemaList=new JList();
 
 	// ---------------------------------- 정보라벨
 
@@ -237,10 +246,14 @@ public class ReservationPanel extends JPanel implements ActionListener{
 		cinemaList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
 
 		/* 리스트 항목 작성 */
-		for(int i=0;i<12;i++) {
-			movieVector.add(i+"번째 영화");
-			cinemaVector.add(i+"번째 상영관");
-		}//for			
+		Vector<MovieVO> mV=bdao.movieNameList();
+		if((mV != null) && mV.size()>0) {
+			for(int i=0;i<mV.size();i++) {
+				MovieVO mvo=mV.get(i);
+				movieVector.add(mvo.getMovie_nameK());
+				codeVector.add(mvo.getMovie_code());
+			}// for
+		}// if
 
 		// --- 리스트 스크롤생성
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -251,6 +264,9 @@ public class ReservationPanel extends JPanel implements ActionListener{
 		cinemaListSp.setPreferredSize(new Dimension(240,400));
 
 		Font choiceLabelFont=new Font("맑은 고딕",Font.BOLD,20);
+
+		movieList.addListSelectionListener(this);
+		cinemaList.addListSelectionListener(this);
 
 		/* --- 라벨, 리스트 추가한 패널 구성 */
 		movieListPanel.add(movieChoiceLabel,"North");   movieListPanel.add(movieListSp,"Center");
@@ -671,6 +687,32 @@ public class ReservationPanel extends JPanel implements ActionListener{
 			index=0;
 		}// if
 	}//aP()
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		Object obj=e.getSource();
+		if(!e.getValueIsAdjusting()) {
+			if(obj==movieList) {
+				movieNameL.setText((String)movieList.getSelectedValue());
+				for(int i=0;i<movieVector.size();i++) {
+					if(movieNameL.getText().equals(movieVector.get(i))){
+						movie_code=codeVector.get(i);
+					}// if
+				}// for
+				Vector<CinemaVO> cV=bdao.cinemaList(movie_code);
+				if((cV != null) && cV.size()>0) {
+					for(int i=0;i<cV.size();i++) {
+						CinemaVO cvo=cV.get(i);
+						cinemaVector.clear();
+						cinemaVector.add(cvo.getScreen());
+					}// for
+					cinemaList.setListData(cinemaVector);
+				}// if				
+			}else if(obj==cinemaList) {						
+				setCinemaL.setText(cinemaList.getSelectedValue()+"");				
+			}//if else
+		}
+	}//vC()
 
 	public void nextCard() {
 		infoNextB.setVisible(false);
