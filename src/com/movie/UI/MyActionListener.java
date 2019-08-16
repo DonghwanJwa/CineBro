@@ -303,13 +303,8 @@ public class MyActionListener {
 							mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
 							mainUi.after_loginLP.setVisible(true);
 							/* (3) */
-							mainUi.myPageC.idCL.setText(membervo.getId());
-							mainUi.myPageC.nameCL.setText(membervo.getName());
-							mainUi.myPageC.sexCL.setText(membervo.getSex());
-							mainUi.myPageC.birthCL.setText(membervo.getBirth());
-							mainUi.myPageC.emailCL.setText(membervo.getEmail());
-
-
+							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
+							
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
