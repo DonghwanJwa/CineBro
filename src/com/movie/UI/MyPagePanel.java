@@ -41,7 +41,6 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	private JLabel emailTL = new JLabel("이메일");	//이메일 타이틀 라벨
 
 	protected JLabel idCL = new JLabel();		//아이디 출력 라벨		//각항목의 내용 출력용 라벨(content label)
-	protected JLabel passCL = new JLabel();		/**(나중에 지울것)비밀번호 출력용 라벨**/
 	protected JLabel nameCL = new JLabel();		//이름 출력 라벨
 	protected JLabel sexCL = new JLabel();		//성별 출력 라벨
 	protected JLabel birthCL = new JLabel();	//생년월일 출력 라벨
@@ -307,12 +306,12 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		birthTP.add(birthTL); emailTP.add(emailTL);
 
 		/*내용 라벨 생성 : 각항목의 내용 출력용 라벨(content label)*/
-		idCL.setText("아이디 출력VO");     passCL.setText("비밀번호 공백!!");   //출력 라벨 객체 생성
+		idCL.setText("아이디 출력VO");     							  	    //출력 라벨 객체 생성
 		nameCL.setText("이름 출력VO");     sexCL.setText("성별 출력VO");
 		birthCL.setText("생년월일 출력VO"); emailCL.setText("이메일 출력VO");
 
 
-		idCL.setFont(contentTF);    passCL.setFont(contentTF);           //출력 라벨 폰트 지정
+		idCL.setFont(contentTF);   							            //출력 라벨 폰트 지정
 		nameCL.setFont(contentTF);  sexCL.setFont(contentTF);
 		birthCL.setFont(contentTF); emailCL.setFont(contentTF);
 		birth_mentCL.setFont(content_mentTF);
@@ -321,7 +320,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		birth_mentCL.setForeground(Color.LIGHT_GRAY);                   //안내문 글자색 지정
 		email_mentCL.setForeground(Color.LIGHT_GRAY);                   	
 
-		idCP.add(idCL);       passF_UpdateCP.add(passCL);                       //출력 라벨 패널에 추가
+		idCP.add(idCL);       					                        //출력 라벨 패널에 추가
 		nameCP.add(nameCL);   sexCP.add(sexCL);
 		birthCP.add(birthCL); emailCP.add(emailCL);
 		birth_mentCP.add(birth_mentCL);
@@ -507,7 +506,6 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		if(c==0) {
 			/*정보보기 컴포넌트 보이기*/
 			passTL.setVisible(true);
-			passCL.setVisible(true);
 			sexCL.setVisible(true);
 			birthCL.setVisible(true);
 			emailCL.setVisible(true);
@@ -547,7 +545,6 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		}else if(c==1) {
 			/*정보보기 컴포넌트 숨기기*/
 			passTL.setVisible(false);
-			passCL.setVisible(false);
 			sexCL.setVisible(false);
 			birthCL.setVisible(false);
 			emailCL.setVisible(false);
@@ -578,7 +575,6 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		}else if(c==2) {
 			/*정보보기 컴포넌트 보이고 숨기기*/
 			passTL.setVisible(true);
-			passCL.setVisible(false);
 			sexCL.setVisible(true);
 			birthCL.setVisible(true);
 			emailCL.setVisible(true);

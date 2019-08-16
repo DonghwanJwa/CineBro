@@ -16,6 +16,15 @@ public class MemberVO {
 		AppManager.getInstance().getDataManager().setMemberVO(this);
 	}
 	
+	public void resetMemberVO() {
+		setId(null);
+		setPwd(null);
+		setName(null);
+		setSex(null);
+		setBirth(null);
+		setEmail(null);
+	}
+	
 	// ------------------------------ set ----------------------------- //
 	public void setId(String id) 			{   	this.id = id;				}
 	public void setPwd(String pwd) 			{		this.pwd = pwd;				}
