@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.movie.DAO.BookingDAO;
 import com.movie.DAO.DAOManager;
 import com.movie.DAO.MemberDAO;
 import com.movie.DAO.MovieDAO;
@@ -47,6 +48,7 @@ public class MyActionListener {
 	MovietimeVO movietimevo = new MovietimeVO();
 	DayseatVO dayseatvo = new DayseatVO();
 	BookingVO bookingvo = new BookingVO();
+	BookingDAO bookingDAO = new BookingDAO();
 	BookedseatVO bookedseatvo = new BookedseatVO();
 	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
@@ -55,8 +57,7 @@ public class MyActionListener {
 	LoginActionL logL=new LoginActionL();
 	MainActionL mainL=new MainActionL();
 	SignupActionL signupL=new SignupActionL();
-	FindActionL findL=new FindActionL();
-	BookingActionL bookingL=new BookingActionL();
+	FindActionL findL=new FindActionL();	
 
 	public MyActionListener() {
 		AppManager.getInstance().setMyListener(this);
@@ -371,28 +372,9 @@ public class MyActionListener {
 			}// 메인페이지 로그인버튼/회원가입 버튼 선택 이벤트
 		}//ap()
 	}// MainActionL class
-	class BookingActionL implements ActionListener,ListSelectionListener{
-
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			Object obj=e.getSource();
-			if(obj==mainUi.reservC.movieList) {
-				mainUi.reservC.movieNameL.setText(mainUi.reservC.movieList.getSelectedValue()+"");
-			}else if(obj==mainUi.reservC.cinemaList) {
-				mainUi.reservC.setCinemaL.setText(mainUi.reservC.cinemaList.getSelectedValue()+"");
-			}//if else
-		}//vC()
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-		}
-
-	}//BookingActionL class
-
+	
 	public void loginListenerSet() 	 {		loginP.addLoginListener(logL);		}
 	public void mainListenerSet() 	 {		mainUi.addMainListener(mainL);		}
 	public void signupListenerSet()  {		signUp.addSignupListener(signupL);	}
 	public void findListenerSet()	 {		findF.addFindListener(findL); 		}
-	public void bookingListenerSet() {   mainUi.addBookingListener(bookingL);  	}
 }//MyActionListener class
