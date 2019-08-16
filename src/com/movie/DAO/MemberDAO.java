@@ -96,4 +96,31 @@ public class MemberDAO {
 		}
 		return true;
 	}
+	//------------------------------정보수정------------------------------//
+	public int updateInfo() {
+		int re = -1;
+		daoManager =AppManager.getInstance().getDAOManager(); 
+		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
+		
+		daoManager.connectDB();
+		String sql = "update member set member_pwd=?,member_sex=?,member_birth=?,member_email=? where member_id=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,memberVO.getPwd());
+			daoManager.pt.setString(2,memberVO.getSex());
+			daoManager.pt.setString(3,memberVO.getBirth());
+			daoManager.pt.setString(4,memberVO.getEmail());
+			daoManager.pt.setString(5,memberVO.getId());
+			re = daoManager.pt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				daoManager.closeDB();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}//try~catch
+		}//finally	
+		return re;
+	}//updateInfo()
 }

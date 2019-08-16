@@ -1,7 +1,6 @@
 package com.movie.UI;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,7 +15,6 @@ import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,6 +23,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
+
+import com.movie.DAO.MemberDAO;
+import com.movie.VO.MemberVO;
+import com.movie.main.AppManager;
 /**코드가 길어진 이유**/
 /* 기본정보 페이지와 기본정보 수정 페이지를 각각 메서드로 나누어 뒀기 때문
  * - 패널의 리셋 혹은 내용 변화 실험을 위해 나눴음
@@ -100,13 +102,13 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	protected JTextField email_UpdateTF = new JTextField();	 		//이메일 입력용 텍스트필드(email_update text field)
 	protected JTextField email_UpdateDoTF = new JTextField();		//이메일 도메인용 텍스트 필드
 
-	String[] emaillist= {"선택","naver.com","hanmail.net","gmail.com","nate.com","직접입력"};//성별 콤보박스 내용물
+	String[] emaillist= {"직접입력","naver.com","hanmail.net","gmail.com","nate.com"};//성별 콤보박스 내용물
 	String[] sex = {"남자","여자"};                          			
 	protected JComboBox<String> sex_UpdateCB;				 		//성별 입력용 콤보박스(update_combo box)
 	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
 	protected JButton update_ConfirmB = new JButton("수정"); 		 	//수정하기 버튼
-	
-	
+
+
 
 	protected JOptionPane dialog = new JOptionPane();
 
@@ -119,6 +121,9 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	private JLabel delete_ment2L = new JLabel();
 
 	private JPanel delete_mentP = new JPanel();						 //회원탈퇴 안내 라벨 올라갈 패널 
+
+	MemberDAO mdao = AppManager.getInstance().getDAOManager().getMemberDAO();
+	MemberVO mvo = AppManager.getInstance().getDataManager().getMemberVO();
 
 	/*폰트 만들기*/
 	Font menuF = new Font("맑은 고딕",Font.BOLD,30);
@@ -388,7 +393,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		/*이메일 @ 표현 라벨*/
 		email_AtL.setFont(comboF);								  //폰트지정
 		email_AtL.setHorizontalAlignment(JLabel.CENTER);		  //라벨 중앙정렬
-		
+
 		/*텍스트 필드*/		
 		year_UpdateTF.setPreferredSize(new Dimension(80,30));     //사이즈 지정
 		month_UpdateTF.setPreferredSize(new Dimension(80,30));
@@ -401,16 +406,17 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		date_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		email_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY));		
 		email_UpdateDoTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		
+
 		/*콤보박스*/
 		emailC.setFont(comboF);
 		emailC.setPreferredSize(new Dimension(110,30));
 		emailC.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		
+
 		emailCP.add(email_UpdateTF);                  			   //이메일 패널에 텍스트필드 추가
 		emailCP.add(email_AtL);
 		emailCP.add(email_UpdateDoTF);
 		emailCP.add(emailC);
+		emailC.addActionListener(this);
 
 		/*생년월일 패널에 컴포넌트 추가*/
 		birthCP.add(year_UpdateTF);
@@ -485,15 +491,23 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		delete_ConfirmB.addActionListener(this);
 	}//setUpdateUI()
 
+	public void setInfoLabel() {
+		idCL.setText(mvo.getId());
+		nameCL.setText(mvo.getName());
+		sexCL.setText(mvo.getSex());
+		birthCL.setText(mvo.getBirth());
+		emailCL.setText(mvo.getEmail());
+	}//setInfoLabel : 현재 로그인되어있는 정보로 회원정보 보여주는 메서드
+
 	public Component setDialog() {
 		delete_mentP.setLayout(new BorderLayout());
-		
+
 		delete_ment1L.setText("탈퇴하시겠습니까?");
 		delete_ment2L.setText("탈퇴 시 모든 회원정보는 삭제되며, 복원할 수 없습니다.");
 
 		delete_ment1L.setFont(comboF);//폰트설정
 		delete_ment2L.setFont(comboF);
-		
+
 		delete_ment2L.setForeground(Color.RED);
 
 		delete_mentP.add(delete_ment1L,BorderLayout.NORTH);//라벨 패널에 올림
@@ -607,6 +621,22 @@ public class MyPagePanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == emailC) {
+			String str = (String) emailC.getSelectedItem();
+			email_UpdateDoTF.setText(str);
+			email_UpdateDoTF.setEditable(false);
+			if (str.equals("직접입력")) {
+				email_UpdateDoTF.setText("");
+				email_UpdateDoTF.setEditable(true);
+				email_UpdateDoTF.requestFocus();
+				return;
+			} else if (str.equals("선택")) {
+				email_UpdateDoTF.setText("");
+				email_UpdateDoTF.setEditable(false);
+				return;
+			}
+		} // 이메일 콤보박스 선택시
+
 		if(e.getSource()==updateB) {
 			changeVisible(1); //정보입력용 컴포넌트 보여줌, 출력용 라벨 숨김 
 		}//수정하기 버튼 클릭 시
@@ -619,29 +649,61 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			error_passL.setText("");	//경고문들 초기화(비움)
 			error_birthL.setText("");
 			error_emailL.setText("");
-			
-			if(passF_UpdatePF.getText().length()<6 || passF_UpdatePF.getText().length()>16 || 
+
+			if(passF_UpdatePF.getText().length()<8 || passF_UpdatePF.getText().length()>19 || 
 					!(Pattern.matches("^[a-z0-9]*$",passF_UpdatePF.getText()))) {
-				error_passL.setText("비밀번호는 6~16사이 영문소문자와 숫자로만 입력하세요!");
+				error_passL.setText("비밀번호는 8~19사이 영문소문자와 숫자로만 입력하세요!");
+				passF_UpdatePF.setText("");
+				passS_UpdatePF.setText("");
+				passF_UpdatePF.requestFocus();
 				return;
-			}//비밀번호 입력값이 올바르지 않을 때
+			}// 비밀번호 제약조건 : 8자 이상이면서 19자 이하와 영문소문자와 숫자로만 입력하는 조건
 
 			if(!passF_UpdatePF.getText().equals(passS_UpdatePF.getText())) {
 				error_passL.setText("비밀번호가 일치하지 않습니다!");
+				passF_UpdatePF.setText("");
+				passS_UpdatePF.setText("");
+				passF_UpdatePF.requestFocus();
 				return;
-			}//비밀번호 입력값과 재입력값이 다른 경우
+			}// 비밀번호 확인 제약조건 : 첫번쨰 비밀번호와 비교해서 같은 값인지 확인하는 조건
 
-			/***앞으로 해야할 것*/
-			/*
-			 *  버튼에 대한 유효성 검증
-			 *  1. 비밀번호 검증
-			 *  2. 생년월일 검증(년 : 4자리, 월 : 1~2자리, 일: 1~2자리)
-			 *  3. 이메일 검증(@가 포함이 되어있는지)
-			 */
+			if (year_UpdateTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
+					|| month_UpdateTF.getText().trim().length() > 2 // 생년월일 중 월이 1~2자리가 아닐때
+					|| month_UpdateTF.getText().trim().length() == 0 // 생년월일 중 월이 입력되지 않았을 때
+					|| date_UpdateTF.getText().trim().length() > 2 // 생년월일 중 일이 1~2자리가 아닐때
+					|| date_UpdateTF.getText().trim().length() == 0 // 생년월일 중 일이 입력되지 않았을 때
+					|| (!(Pattern.matches("^[0-9]*$", year_UpdateTF.getText())))
+					|| (!(Pattern.matches("^[0-9]*$", month_UpdateTF.getText())))
+					|| (!(Pattern.matches("^[0-9]*$", date_UpdateTF.getText())))) {
+				// 일 텍스트필드에 숫자가 아닌것이 있을때
+				error_birthL.setText("생년월일을 정확히 입력해 주세요!");
+				year_UpdateTF.setText("");
+				month_UpdateTF.setText("");
+				date_UpdateTF.setText("");
+				year_UpdateTF.requestFocus();
+				return;
+			} // 생년월일 제약조건 : 매 텍스트필드마다 년은 4자리 이면서 숫자만 ,월은 2자리 숫자만, 일은 2자리 숫자만 제약을 줌
 
+			if (!(Pattern.matches("^[a-z0-9]*$", email_UpdateTF.getText())) ||
+					email_UpdateTF.getText().trim().equals("")) {
+				error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
+				emailC.setSelectedIndex(1);
+				email_UpdateTF.requestFocus();
+				// 잘못 적었을 때 이메일 택스트필드로 돌아가서 써진 것 지우고 커서를 이메일 텍스트로 위치시킴
+				return;
+			} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
 
-			changeVisible(0);//정보입력용 컴포넌트 숨김, 출력용 라벨 보여줌
-			/**텍스트필드 비우기**/
+			/** 입력된 정보를 VO저장 -> DAO를 통해서 Update**/
+			mvo.setPwd(passF_UpdatePF.getText());
+			mvo.setSex((String)sex_UpdateCB.getSelectedItem());
+			mvo.setBirth(year_UpdateTF.getText()+"-"+month_UpdateTF.getText()+"-"+date_UpdateTF.getText());
+			mvo.setEmail(email_UpdateTF.getText()+"@"+email_UpdateDoTF.getText());
+			if(mdao.updateInfo()==1) {
+				dialog.showMessageDialog(null, "회원정보가 수정되었습니다!");
+				setInfoLabel();
+			}
+
+			changeVisible(0);//정보입력용 컴포넌트 숨김, 출력용 라벨 보여줌, 텍스트필드 내용 비움
 		}//수정 버튼 클릭 시
 
 		if(e.getSource()==delete_ConfirmB) {
@@ -650,14 +712,14 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			if(deleteResult==dialog.CLOSED_OPTION) {				//닫기버튼 눌렀을 때
 
 			}else if(deleteResult==dialog.YES_OPTION) {				//예 버튼 눌렀을 때
-				
+
 				dialog.showMessageDialog(null, "이용해주셔서 감사합니다");
 				changeVisible(0);
 				/**로그아웃 기능 실행**/
 				/**DB delete 구문 실행**/
 				/**텍스트필드 비우기**/
 			}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
-				
+
 			}
 		}//탈퇴 버튼 클릭 시
 	}//aP()
