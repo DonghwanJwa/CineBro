@@ -6,7 +6,7 @@ import com.movie.VO.MemberVO;
 import com.movie.main.AppManager;
 
 public class MemberDAO {
-	DAOManager daoManager = AppManager.getInstance().getDAOManager();//데이터를 가져오는 클래스
+	DAOManager daoManager = AppManager.getInstance().getDAOManager();				//데이터를 가져오는 클래스
 	MemberVO memberVO = AppManager.getInstance().getDataManager().getMemberVO();	//데이터를 보관해줄 VO
 
 	int result;
@@ -36,7 +36,7 @@ public class MemberDAO {
 			return false;
 		}//if else
 	}
-	
+
 	//------------------------------로그인 기능------------------------------//
 	public boolean login() {
 		daoManager =AppManager.getInstance().getDAOManager(); 
@@ -48,7 +48,7 @@ public class MemberDAO {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setString(1, memberVO.getId());
 			rs=daoManager.pt.executeQuery();
-			
+
 			//--------------------아이디와 비밀번호가 같다면 회원정보를 불러와 저장-------------------//
 			if(rs.next()) {
 				if(memberVO.getPwd().equals(rs.getString("member_pwd"))) {
@@ -65,7 +65,7 @@ public class MemberDAO {
 			e.printStackTrace();
 		}finally {
 			try {
-				rs.close();
+				if(rs !=null) rs.close();
 				daoManager.closeDB();			
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -101,7 +101,7 @@ public class MemberDAO {
 		int re = -1;
 		daoManager =AppManager.getInstance().getDAOManager(); 
 		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
-		
+
 		daoManager.connectDB();
 		String sql = "update member set member_pwd=?,member_sex=?,member_birth=?,member_email=? where member_id=?";
 		try {
@@ -123,4 +123,52 @@ public class MemberDAO {
 		}//finally	
 		return re;
 	}//updateInfo()
+	//------------------------------탈퇴를 위한 비밀번호 정보가저오기------------------------------//
+	public String getPass(String id) {
+		daoManager = AppManager.getInstance().getDAOManager();
+		String pwd = null;
+
+		daoManager.connectDB();
+		String sql = "select member_pwd from member where member_id=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,id);
+			rs = daoManager.pt.executeQuery();
+			if(rs.next()) {
+				pwd = rs.getString("member_pwd");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs!=null) rs.close();
+				daoManager.closeDB();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}//try~catch
+		}//finally
+		return pwd;
+	}//showInfo()
+	//------------------------------회원탈퇴------------------------------//
+	public int deleteMember(String id) {
+		int re = -1;
+		daoManager = AppManager.getInstance().getDAOManager();
+
+		daoManager.connectDB();
+		String sql = "delete from member where member_id=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,id);	
+			re=daoManager.pt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				daoManager.closeDB();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}//try~catch
+		}//finally
+		return re;
+	}
 }

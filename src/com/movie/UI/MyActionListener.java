@@ -370,6 +370,7 @@ public class MyActionListener {
 				mainUi.checkB.setBackground(Color.GRAY.brighter());
 				mainUi.myPageB.setBackground(Color.RED);
 				mainUi.card.show(mainUi.mainC,"myPageB");
+				mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
 			}
 			if(obj==mainUi.loginB) {
 				loginP = new LoginPage();
@@ -400,12 +401,8 @@ public class MyActionListener {
 					mainUi.log_regBP.setVisible(true);
 					
 					/* (3) */
-					mainUi.myPageC.idCL.setText("");
-					mainUi.myPageC.nameCL.setText("");
-					mainUi.myPageC.sexCL.setText("");
-					mainUi.myPageC.birthCL.setText("");
-					mainUi.myPageC.emailCL.setText("");
-					membervo.resetMemberVO();
+					mainUi.myPageC.clearInfoLabel();	//회원정보 라벨 비움
+					membervo.resetMemberVO();			//membervo 정보 비움
 					/* (4) */
 					mainUi.homeB.setBackground(Color.RED); // 버튼클릭시 클릭한 버튼 배경색 변경
 					mainUi.movieB.setBackground(Color.GRAY.brighter());

@@ -27,12 +27,7 @@ import javax.swing.border.LineBorder;
 import com.movie.DAO.MemberDAO;
 import com.movie.VO.MemberVO;
 import com.movie.main.AppManager;
-/**코드가 길어진 이유**/
-/* 기본정보 페이지와 기본정보 수정 페이지를 각각 메서드로 나누어 뒀기 때문
- * - 패널의 리셋 혹은 내용 변화 실험을 위해 나눴음
- * - 패널의 새로고침 기능을 이해하고 나면 다시 재 수정 예정
- * - 생성자 내에서 따로 mainP를 add하지 않고, 메서드 호출만으로 클래스 패널에 추가됨
- */
+
 public class MyPagePanel extends JPanel implements ActionListener{
 	private JLabel menuL = new JLabel("기본정보",SwingConstants.CENTER);	//메뉴 라벨(기본정보)			//각항목의 제목용 라벨(title label)
 	private JLabel idTL = new JLabel("아이디");		//아이디 타이틀 라벨
@@ -491,6 +486,14 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		delete_ConfirmB.addActionListener(this);
 	}//setUpdateUI()
 
+	public void clearInfoLabel() {
+		idCL.setText("");
+		nameCL.setText("");
+		sexCL.setText("");
+		birthCL.setText("");
+		emailCL.setText("");
+	}
+	
 	public void setInfoLabel() {
 		idCL.setText(mvo.getId());
 		nameCL.setText(mvo.getName());
@@ -610,7 +613,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			emailC.setVisible(false);
 			sex_UpdateCB.setVisible(false);
 			update_ConfirmB.setVisible(false);
-			error_passL.setVisible(false);
+			error_passL.setVisible(true);
 			error_birthL.setVisible(false);
 			error_emailL.setVisible(false);
 			/*삭제하기 컴포넌트 보이기*/
@@ -694,6 +697,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
 
 			/** 입력된 정보를 VO저장 -> DAO를 통해서 Update**/
+			mvo.setId(idCL.getText());
 			mvo.setPwd(passF_UpdatePF.getText());
 			mvo.setSex((String)sex_UpdateCB.getSelectedItem());
 			mvo.setBirth(year_UpdateTF.getText()+"-"+month_UpdateTF.getText()+"-"+date_UpdateTF.getText());
@@ -701,26 +705,61 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			if(mdao.updateInfo()==1) {
 				dialog.showMessageDialog(null, "회원정보가 수정되었습니다!");
 				setInfoLabel();
+			}else {
+				dialog.showMessageDialog(null, "죄송합니다! 오류가 발생하였습니다!");
+				mvo.resetMemberVO();
+				return;
 			}
-
 			changeVisible(0);//정보입력용 컴포넌트 숨김, 출력용 라벨 보여줌, 텍스트필드 내용 비움
 		}//수정 버튼 클릭 시
 
 		if(e.getSource()==delete_ConfirmB) {
-			/** DB 패스워드 검증 **/
-			int deleteResult = dialog.showConfirmDialog(null,setDialog(),"회원탈퇴",dialog.YES_NO_OPTION,dialog.PLAIN_MESSAGE);
-			if(deleteResult==dialog.CLOSED_OPTION) {				//닫기버튼 눌렀을 때
-
-			}else if(deleteResult==dialog.YES_OPTION) {				//예 버튼 눌렀을 때
-
-				dialog.showMessageDialog(null, "이용해주셔서 감사합니다");
-				changeVisible(0);
-				/**로그아웃 기능 실행**/
-				/**DB delete 구문 실행**/
-				/**텍스트필드 비우기**/
-			}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
-
-			}
+			if(delete_passPF.getText().length()<8 || delete_passPF.getText().length()>19 || 
+					!(Pattern.matches("^[a-z0-9]*$",delete_passPF.getText()))) {
+				error_passL.setText("비밀번호는 8~19사이 영문소문자와 숫자로만 입력하세요!");
+				delete_passPF.setText("");
+				delete_passPF.requestFocus();
+				return;
+			}// 비밀번호 제약조건 : 8자 이상이면서 19자 이하와 영문소문자와 숫자로만 입력하는 조건
+			
+			if(mdao.getPass(idCL.getText()).equals(delete_passPF.getText())) { //DB의 pass와 입력된 pass가 같다면
+				int deleteResult = dialog.showConfirmDialog(null,setDialog(),"회원탈퇴",dialog.YES_NO_OPTION,dialog.PLAIN_MESSAGE);
+				if(deleteResult==dialog.CLOSED_OPTION) {				//닫기버튼 눌렀을 때
+					return;
+				}else if(deleteResult==dialog.YES_OPTION) {				//예 버튼 눌렀을 때
+					if(mdao.deleteMember(idCL.getText())==1) {
+						dialog.showMessageDialog(null, "이용해주셔서 감사합니다");						
+					}else {
+						dialog.showMessageDialog(null, "회원 탈퇴에 에러가 발생했습니다. /n 관리자에게 연락주시기 바랍니다 1588-0000");												
+						return;
+					}
+					changeVisible(0);
+					MainUI mainui = AppManager.getInstance().getMainUi();
+					mainui.after_loginLP.setVisible(false);				//로그아웃 기능
+					mainui.welcomeL.setText("");
+					mainui.log_regBP.setVisible(true);
+					
+					clearInfoLabel();									//회원정보라벨 비움
+					
+					mainui.homeB.setBackground(Color.RED); 				// 메인페이지 home페널로 돌아감
+					mainui.movieB.setBackground(Color.GRAY.brighter());
+					mainui.reservB.setBackground(Color.GRAY.brighter());
+					mainui.checkB.setBackground(Color.GRAY.brighter());
+					mainui.myPageB.setBackground(Color.GRAY.brighter());
+					mainui.card.show(mainui.mainC,"homeB");
+									
+					/**로그아웃 기능 실행**/
+					/**DB delete 구문 실행**/
+					/**텍스트필드 비우기**/
+				}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
+					return;
+				}
+			}else {
+				error_passL.setText("비밀번호가 맞지 않습니다!");
+				delete_passPF.setText("");
+				delete_passPF.requestFocus();
+				return;
+			}//if else : DB 비밀번호와 입력된 비밀번호 비교 조건
 		}//탈퇴 버튼 클릭 시
 	}//aP()
 
