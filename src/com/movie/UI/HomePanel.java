@@ -1,5 +1,6 @@
 package com.movie.UI;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -21,12 +22,12 @@ public class HomePanel extends JPanel implements ActionListener{
 
 	public HomePanel() {
 		/* 패널설정 */
-		setBorder(BorderFactory.createEmptyBorder(20,100,20,200));
-		setOpaque(false); //HomePanel 투명하게
+		setBorder(BorderFactory.createEmptyBorder(20,150,20,200));
 
 		/* 카드레이아웃 패널 설정 */
 		buttons=new JPanel();
-		buttons.setLayout(new GridLayout(2,4,40,20));
+		buttons.setLayout(new GridLayout(2,4,20,10));
+		buttons.setPreferredSize(new Dimension(1300,900));
 		buttons.setOpaque(false);	//buttons 투명하게
 
 		/* 버튼 생성 및 설정 */
