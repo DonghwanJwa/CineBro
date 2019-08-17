@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -37,18 +38,20 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	private JPanel movieP = new JPanel();
 	private JLabel titleL;
 
-	Font labelFont = new Font("굴림체",Font.BOLD,30);
+	Font labelFont = new Font("맑은 고딕",Font.BOLD,30);
 	JScrollPane scroll;
 
 	FakeReserveDAO rdao = new FakeReserveDAO();
 	List<FakeReserveVO> rlist = rdao.list;
 
-	public ReserveInfo() {	
+	public ReserveInfo() {
+		setOpaque(false);
 		add(setMainP());
 	}//생성자
 
 	public Component setTitleL() {
 		titleL = new JLabel("예매정보조회");
+		titleL.setForeground(Color.WHITE);
 		titleL.setFont(labelFont);
 		return titleL;
 	}//setTitleL() : 타이틀 라벨 생성 메서드
@@ -56,9 +59,11 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	public Component setMovieP() {
 		reserveP = new ArrayList<MovieUi>();
 		movieP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+		movieP.setOpaque(false);
 		for(int i=0;i<rlist.size();i++) {
 			reserveP.add(i,new MovieUi(rlist.get(i)));
 			movieP.add(reserveP.get(i));
+			reserveP.get(i).setOpaque(false);
 			reserveP.get(i).addReserveCheckListner(this);	//각 예약의 취소버튼 이벤트를 ReserveInfo 이벤트 리스너에 등록
 		}//for
 		movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));
@@ -69,14 +74,17 @@ public class ReserveInfo extends JPanel implements ActionListener{
 
 	public Component setMainP() {
 		/* 메인패널 설정 */
+		mainP.setOpaque(false);
 		mainP.setPreferredSize(new Dimension(1400,810));		
-		mainP.setBorder(BorderFactory.createEmptyBorder(50,40,80,260));//메인패널 패딩
+		mainP.setBorder(BorderFactory.createEmptyBorder(0,40,80,260));//메인패널 패딩
 		mainP.setLayout(new BorderLayout());
 		mainP.add(setTitleL(),BorderLayout.NORTH);
 		/* 스크롤 만들기 */
 		scroll=new JScrollPane(setMovieP(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // 내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김		
 		scroll.getVerticalScrollBar().setUnitIncrement(16);// 스크롤 속도 지정
+		scroll.getViewport().setBackground(Color.BLACK);
+		scroll.setBorder(BorderFactory.createEmptyBorder());
 
 		/* 스크롤패널 추가 */
 		mainP.add(scroll,BorderLayout.CENTER); // 메인패널에 스크롤패널 추가
@@ -97,14 +105,19 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		for(int i=0;i<rlist.size();i++) {
 			if(e.getSource()==reserveP.get(i).cancleB) {
-				new MovieCancelPanel(rlist.get(i));
-				reserveP.get(i).removeAll();	//해당하는 예매 내용을 삭제
-				reserveP.remove(i);				//배열 삭제
-				rlist.remove(i);				//DB삭제
-				revalidate();					//화면 재정리
-				repaint();						//화면 다시그리기
-				movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));//스크롤사이즈 재조정
-				break;
+				MovieCancelPanel mcpanel = new MovieCancelPanel(rlist.get(i));
+				if(mcpanel.result==JOptionPane.CLOSED_OPTION) {
+					return;
+				}else if(mcpanel.result==JOptionPane.NO_OPTION) {
+					return;
+				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
+					reserveP.get(i).removeAll();	//해당하는 예매 내용을 삭제
+					reserveP.remove(i);				//배열 삭제
+					rlist.remove(i);				//DB삭제
+					revalidate();					//화면 재정리
+					repaint();						//화면 다시그리기
+					movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));//스크롤사이즈 재조정
+				}
 			}//if
 		}//for
 	}//aP();
@@ -130,18 +143,19 @@ class MovieUi extends JPanel{
 	JLabel sheetofpaperL;		//티켓수
 
 	/* 폰트 객체생성&폰트만드는 곳 */
-	Font titleFont = new Font("굴림체",Font.BOLD,30);
-	Font subLabelFont = new Font("굴림체",Font.BOLD,20);
+	Font titleFont = new Font("맑은 고딕",Font.BOLD,30);
+	Font subLabelFont = new Font("맑은 고딕",Font.BOLD,20);
 
 	JButton cancleB = new JButton("예매취소");
 
 	public MovieUi(FakeReserveVO vo) {
+		setOpaque(false);
 		add(setReservePanel(vo));
 	}//생성자
 
 	public Component setReservePanel(FakeReserveVO vo) {
 		/* 메인패널 */
-		panel_m.setBackground(null);
+		panel_m.setOpaque(false);
 		panel_m.setLayout(new FlowLayout());
 
 		/* 메인패널에 포스터패널이랑 인포패널추가 */
@@ -186,12 +200,20 @@ class MovieUi extends JPanel{
 		paymentdateL = new JLabel(vo.getRes_date());
 		sheetofpaperL = new JLabel(vo.getRes_ticketnum());
 
+		/* 버튼 설정*/
+		cancleB.setPreferredSize(new Dimension(90,30));
+		cancleB.setFont(new Font("맑은 고딕",Font.BOLD,13));
+		cancleB.setBackground(Color.RED);
+		cancleB.setBorderPainted(false);
+		cancleB.setFocusPainted(false);
+
+
 		/* 인포(설명)패널 */
 		infoP.setLayout(new GridLayout(4,1));
 		infoP.setBackground(Color.white);
 		infoP.setPreferredSize(new Dimension(800,300));
 		infoP.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
-		cancleP.setLayout(new FlowLayout(FlowLayout.RIGHT,80,10));
+		cancleP.setLayout(new FlowLayout(FlowLayout.RIGHT,80,20));
 		cancleP.setBackground(Color.white);
 		cancleP.add(cancleB);
 
