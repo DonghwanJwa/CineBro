@@ -291,12 +291,19 @@ public class MyActionListener {
 							loginP.error.setText(""); // error문구 없음
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+							loginP.dispose();
 							/* 로그인 됐을때 실행할 문장 */
 							/* 1. 메인 frame 로그인버튼,회원가입 버튼 setVisible(false),
 							 *    아이디 출력되는 Label에 setText(); "어서오세요, ~회원님"
 							 * 2. 예매 정보를 reservation panel에 부름(where id,order by booking_code)
 							 * 3. 개인 정보를 mypage panel에 부름(where id)
 							 */
+							/* (1) */
+							mainUi.log_regBP.setVisible(false);
+							mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
+							mainUi.after_loginLP.setVisible(true);
+							/* (3) */
+							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
 							
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
@@ -363,16 +370,52 @@ public class MyActionListener {
 				mainUi.checkB.setBackground(Color.GRAY.brighter());
 				mainUi.myPageB.setBackground(Color.RED);
 				mainUi.card.show(mainUi.mainC,"myPageB");
-			}else if(obj==mainUi.loginB) {
+				mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
+			}
+			if(obj==mainUi.loginB) {
 				loginP = new LoginPage();
 				loginListenerSet();
-			}else if(obj==mainUi.registB) {
+			}
+			if(obj==mainUi.registB) {
 				signUp = new SignUpFrame();
 				signupListenerSet();
 			}// 메인페이지 로그인버튼/회원가입 버튼 선택 이벤트
+			if(obj==mainUi.logoutB) {
+				int logoutresult = mainUi.dialog.showConfirmDialog(null,"로그아웃 하시겠습니까?",
+						"로그아웃",mainUi.dialog.YES_NO_OPTION,mainUi.dialog.PLAIN_MESSAGE);
+				if(logoutresult == mainUi.dialog.CLOSED_OPTION) {
+					
+				}else if(logoutresult == mainUi.dialog.NO_OPTION) {
+					
+				}else if(logoutresult == mainUi.dialog.YES_OPTION) {
+					mainUi.dialog.showMessageDialog(null, "감사합니다. 다음에 또 뵙겠습니다^^");
+					/* 로그아웃 시
+					 * 1. 로그인,회원가입 버튼 복구/웰컴라벨 텍스트 제거 및 숨기기
+					 * 2. 예약정보 지우기 & reservation vo를 null로 초기화
+					 * 3. 회원정보 페이지 정보 지우기 & member vo를 null로 초기화
+					 * 4. mainframe의 home panel로 이동
+					 */
+					/* (1) */
+					mainUi.after_loginLP.setVisible(false);
+					mainUi.welcomeL.setText("");
+					mainUi.log_regBP.setVisible(true);
+					
+					/* (3) */
+					mainUi.myPageC.clearInfoLabel();	//회원정보 라벨 비움
+					membervo.resetMemberVO();			//membervo 정보 비움
+					/* (4) */
+					mainUi.homeB.setBackground(Color.RED); // 버튼클릭시 클릭한 버튼 배경색 변경
+					mainUi.movieB.setBackground(Color.GRAY.brighter());
+					mainUi.reservB.setBackground(Color.GRAY.brighter());
+					mainUi.checkB.setBackground(Color.GRAY.brighter());
+					mainUi.myPageB.setBackground(Color.GRAY.brighter());
+					mainUi.card.show(mainUi.mainC,"homeB"); // "homeB"키가 적용된 카드레이아웃 보여줌
+					
+				}
+			}
 		}//ap()
 	}// MainActionL class
-	
+
 	public void loginListenerSet() 	 {		loginP.addLoginListener(logL);		}
 	public void mainListenerSet() 	 {		mainUi.addMainListener(mainL);		}
 	public void signupListenerSet()  {		signUp.addSignupListener(signupL);	}

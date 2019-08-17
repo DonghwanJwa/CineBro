@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -20,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
@@ -64,16 +66,22 @@ public class MainUI {
 	private JPanel logoP=new JPanel();
 	private JLabel logo=new JLabel(logoImage);
 	
-	private JPanel log_regBP=new JPanel();
+	protected JPanel log_regBP=new JPanel();
 	protected JButton loginB=new JButton("로그인");
 	protected JButton registB=new JButton("회원가입");
+	
+	protected JPanel after_loginLP = new JPanel();
+	protected JLabel welcomeL = new JLabel();
+	protected JButton logoutB = new JButton("로그아웃");
+	
+	/* 다이어로그 객체생성*/
+	protected JOptionPane dialog = new JOptionPane();
 	
 	/* 카드레이아웃 패널 */
 	protected final CardLayout card=new CardLayout();
 	JPanel mainC=new JPanel(card);
 	HomePanel homeC=new HomePanel();
-//	MoviePage movieC=new MoviePage();
-	JPanel movieC = new JPanel();
+	MoviePage movieC=new MoviePage();
 	ReservationPanel reservC=new ReservationPanel();
 	ReserveInfo checkC=new ReserveInfo();
 	MyPagePanel myPageC=new MyPagePanel();
@@ -112,7 +120,26 @@ public class MainUI {
 		log_regBP.setBounds(1600,0,250,60);
 		logoP.add(log_regBP);
 		
+		/* 로그인 후 환영문구 및 성함 출력 라벨(환영합니다 ~님) & 로그아웃 버튼*/
+		welcomeL.setText("환영합니다. ~ 님");
+		welcomeL.setForeground(Color.WHITE);
+		welcomeL.setFont(new Font("맑은 고딕",Font.BOLD,15));
+		after_loginLP.add(welcomeL);
 		
+		logoutB.setBackground(Color.WHITE);					//버튼색
+		logoutB.setFont(new Font("맑은 고딕",Font.BOLD,11));	//버튼폰트
+		logoutB.setPreferredSize(new Dimension(80,25));		//버튼사이즈
+		logoutB.setBorder(new LineBorder(Color.BLACK));		//버튼테두리색
+		logoutB.setFocusPainted(false);						//버튼선텍 테두리 삭제
+		after_loginLP.add(logoutB);
+		
+		after_loginLP.setOpaque(false);
+		after_loginLP.setLayout(new FlowLayout(FlowLayout.RIGHT,10,2));
+		after_loginLP.setBounds(1550,10,280,60);
+		after_loginLP.setVisible(false);
+		logoP.add(after_loginLP);
+		
+
 		/* -------------------- 메뉴탭 -------------------- */
 		menuTap.setLayout(new GridLayout(0,1));
 		menuTap.setBorder(BorderFactory.createEmptyBorder(20,200,450,40));
@@ -188,5 +215,6 @@ public class MainUI {
 		myPageB.addActionListener(listener);
 		loginB.addActionListener(listener);
 		registB.addActionListener(listener);
+		logoutB.addActionListener(listener);
 	}
 }//MainUI
