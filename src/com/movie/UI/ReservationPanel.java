@@ -25,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -329,6 +331,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// --- 인원선택 버튼 컴포넌트 메서드
 	public Component setPeopleButton() {
+		UIManager.put("ToggleButton.select", Color.RED); // 토글버튼 선택모델 색상 변경
 		Font ageLabelFont=new Font("맑은 고딕",Font.BOLD,13);
 		JPanel adultP=new JPanel(new BorderLayout(0,5));
 		JPanel adultButtonP=new JPanel();
@@ -338,7 +341,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		peopleGroup.setPreferredSize(new Dimension(200,150));
 		peopleGroup.setOpaque(false);
 		peopleGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		adultL.setFont(ageLabelFont); childL.setFont(ageLabelFont);		
+		adultL.setFont(ageLabelFont); childL.setFont(ageLabelFont);
 		adultP.add(adultL,"North");
 		adultP.add(adultButtonP,"Center");
 		for(int i=0;i<adultB.length;i++) {
@@ -350,6 +353,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			adultB[i].setForeground(Color.WHITE);
 			adultB[i].addActionListener(this);
 			adultButtonP.add(adultB[i]);
+			SwingUtilities.updateComponentTreeUI(adultB[i]); // 토글버튼 선택모델 적용
 		}//for
 		childP.add(childL,"North");
 		childP.add(childButtonP,"Center");

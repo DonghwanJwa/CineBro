@@ -180,7 +180,7 @@ public class MainUI {
 		mainC.setOpaque(false);
 		homeC.setOpaque(false);
 		movieC.setBackground(Color.GRAY);
-		reservC.setBackground(Color.BLUE);
+		reservC.setOpaque(false);
 		checkC.setOpaque(false);
 		myPageC.setBackground(Color.GREEN);
 		
