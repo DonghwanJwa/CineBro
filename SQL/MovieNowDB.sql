@@ -145,5 +145,5 @@ INSERT INTO MovieData VALUES(
 '12video1.jpg','12video2.jpg','12video3.jpg','12video4.jpg');
 
 DELETE FROM MovieData WHERE movie_code=12;
-
+select * from MovieData;
 --DROP TABLE MovieData;
