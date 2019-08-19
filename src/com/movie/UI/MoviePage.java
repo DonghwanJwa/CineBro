@@ -28,8 +28,8 @@ public class MoviePage extends JPanel implements ActionListener{
 	MovieNowDAO ndao = AppManager.getInstance().getDAOManager().getMovieNowDAO();
 	List<MovieNowVO> nlist = ndao.movieNowList();
 
-	private	JPanel movieList;	// 가장 상단에 올라가는 패널 
-	private JPanel contents;	//	영화정보를 담은 패널들을 전부 출력할 패널
+	private JPanel contents;	//	가장 상단에 올라가는 패널 
+	private	JPanel movieList;	// 포스터,영화정보를 담는 패널
 	private JPanel movieP	;	//영화 포스터와 버튼이 들어갈 패널
 	private JPanel movieLine;	//영화정보를 담을 라벨이 들어간 패널
 	private	JButton[] posterB=new JButton[nlist.size()];	//영화의 포스터를넣을 버튼
@@ -50,7 +50,8 @@ public class MoviePage extends JPanel implements ActionListener{
 
 	//	 패널 생성	 //
 	public MoviePage() {
-
+		setName("현재 상영작");
+		
 		setOpaque(false);
 		posterB =new JButton[nlist.size()]; 
 		contents =new JPanel();// 메인 패널 
@@ -59,7 +60,7 @@ public class MoviePage extends JPanel implements ActionListener{
 		setBorder(BorderFactory.createEmptyBorder(60,70,60,80));//	패널 공간 여백 만듦
 		setPreferredSize(new Dimension(1550,860));//	크기지정
 		contents.setBackground(Color.DARK_GRAY);// 패널 색 지정
-//		setOpaque(false);	//패널을 투명하게
+		//		setOpaque(false);	//패널을 투명하게
 
 		//	스크롤바 사용을 위해 증가하는 방식으로 패널 크기지정	//
 		contents.setPreferredSize(new Dimension(1400,270*(nlist.size()/2+1/2)));
@@ -68,20 +69,20 @@ public class MoviePage extends JPanel implements ActionListener{
 		contents.setLayout(new FlowLayout(FlowLayout.LEFT));
 		/**내부 패널에 작은 패널들 추가**/
 		for(int i=0; i<nlist.size(); i++) {
+			add(contents,BorderLayout.CENTER);
 			add(MP(i));
 		}
-		add(contents,BorderLayout.CENTER);
+			/**------------------------------DB이후------------------------------------**/
+			//	스크롤 만들기		//
+		if(nlist.size()>=7) {
+				scroll=new JScrollPane(contents,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+						JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				//	내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김
+				scroll.getVerticalScrollBar().setUnitIncrement(16);
 
-		/**------------------------------DB이후------------------------------------**/
-		//	스크롤 만들기		//
-		scroll=new JScrollPane(contents,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		//	내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-
-		//		내부패널에 스크롤 적용	//
-		add(scroll,BorderLayout.EAST);
-
+				//		내부패널에 스크롤 적용	//
+				add(scroll,BorderLayout.EAST);
+		}
 	}//생성자
 
 	//	패널 정리할 메서드	생성//
@@ -151,7 +152,7 @@ public class MoviePage extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj =e.getSource();
 		for(int i=0; i<nlist.size(); i++) {
-			if(obj==posterB[i]) {
+			if(obj==posterB[i] && new MovieInfoPlus(i+1).equals(posterB[i])) {
 				new MovieInfoPlus(i+1);
 			}//if
 		}//for
