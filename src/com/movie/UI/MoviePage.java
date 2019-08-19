@@ -103,7 +103,7 @@ public class MoviePage extends JPanel implements ActionListener{
 		//		버튼에 넣을 이미지 생성		//
 		ImageIcon preImg = new ImageIcon("pic/"+nlist.get(index).getImg());//포스터 넣을 이미지 객체 생성(배열 값)
 		Image originImg = preImg.getImage();//ImageIcon을 Image로 전환
-		Image changeImg = originImg.getScaledInstance(155,250,java.awt.Image.SCALE_SMOOTH);
+		Image changeImg = originImg.getScaledInstance(155,240,java.awt.Image.SCALE_SMOOTH);
 		//이미지 사이즈 가로130,세로180,이미지를 스무스하게
 		ImageIcon poster = new ImageIcon(changeImg);//Image로 ImageIcon 지정
 		//			버튼 객체 생성			//
