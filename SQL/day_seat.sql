@@ -5,4 +5,4 @@ seat_status NUMBER(5) NOT NULL								--예매유무(0,1)
 ,time_code VARCHAR2(40) REFERENCES movietime(time_code)		--시간코드
 );
 
---drop table day_seat;
+drop table day_seat;
