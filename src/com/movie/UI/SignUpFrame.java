@@ -8,10 +8,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.TextEvent;
-import java.awt.event.TextListener;
+import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -29,7 +26,7 @@ import javax.swing.event.DocumentListener;
 
 import com.movie.main.AppManager;
 
-public class SignUpFrame extends JFrame implements KeyListener{
+public class SignUpFrame extends JFrame {
 	private JPanel mainP = new JPanel();         	//메인패널(바탕)
 
 	private JLabel emptyL1 = new JLabel();			 //아이디 텍스트 필드와 버튼 사이 공백
@@ -69,7 +66,8 @@ public class SignUpFrame extends JFrame implements KeyListener{
 	protected JPasswordField passrePF = new JPasswordField();//비밀번호 재입력 패스워드 필드
 
 	protected JButton check_idB = new JButton("중복확인");		 //아이디 중복확인 버튼
-	protected JButton check_emailB = new JButton("인증번호");//이메일 인증번호 버튼
+	protected JButton check_emailB = new JButton("인증번호 발송");//이메일 인증번호 발송 버튼
+	protected JButton confirm_emailB = new JButton("인증번호 확인");//이메일 인증번호 확인 버튼
 	protected JButton confirmB = new JButton("가입하기"); 		 //가입하기 버튼 
 
 	protected JOptionPane dialog = new JOptionPane();         //회원가입 완료 옵션패널
@@ -80,6 +78,8 @@ public class SignUpFrame extends JFrame implements KeyListener{
 	String[] emaillist= {"직접입력","naver.com","hanmail.net","gmail.com","nate.com"};
 	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
 	
+	protected String security;				//이메일 인증번호 저장할 String
+	protected int secu_count=0;				//이메일 인증번호 실패 카운트 변수
 	
 	Font font = new Font("맑은 고딕",Font.BOLD,15);
 	Font warnF = new Font("맑은 고딕",Font.BOLD,9);
@@ -149,6 +149,7 @@ public class SignUpFrame extends JFrame implements KeyListener{
 
 		check_idB.setPreferredSize(new Dimension(90,35));//버튼
 		check_emailB.setPreferredSize(new Dimension(100,35));
+		confirm_emailB.setPreferredSize(new Dimension(100,35));
 		confirmB.setPreferredSize(new Dimension(340,35));
 
 		sexC.setPreferredSize(new Dimension(340,35));//콤보박스
@@ -200,27 +201,37 @@ public class SignUpFrame extends JFrame implements KeyListener{
 		sexC.setBorder(new LineBorder(Color.BLACK));             //콤보박스 테두리 색 지정
 
 		check_idB.setFont(new Font("맑은 고딕",Font.BOLD,15)); 
-		check_emailB.setFont(new Font("맑은 고딕",Font.BOLD,15));
+		check_emailB.setFont(new Font("맑은 고딕",Font.BOLD,12));
+		confirm_emailB.setFont(new Font("맑은 고딕",Font.BOLD,12));
 		confirmB.setFont(new Font("맑은 고딕",Font.BOLD,18));
 
 		check_idB.setForeground(Color.WHITE);                    //버튼 글씨색
 		check_emailB.setForeground(Color.WHITE);
+		confirm_emailB.setForeground(Color.BLACK);
 		confirmB.setForeground(Color.WHITE);
 
 		check_idB.setBackground(Color.BLACK);					 //버튼 배경색
 		check_emailB.setBackground(Color.BLACK);
+		confirm_emailB.setBackground(Color.RED);
 		confirmB.setBackground(Color.BLACK);
 		
 		check_idB.setMargin(new Insets(0,0,0,0));				 //버튼 내부 공백설정(없에버림)
 		check_emailB.setMargin(new Insets(0,0,0,0));
+		confirm_emailB.setMargin(new Insets(0,0,0,0));
 
 		check_idB.setFocusPainted(false);						 //버튼 클릭시 테두리 색 설정해제
 		check_emailB.setFocusPainted(false);
+		confirm_emailB.setFocusPainted(false);
 		confirmB.setFocusPainted(false);
 
 		check_idB.setBorderPainted(false); 						 //버튼 테두리 색 설정 해제
 		check_emailB.setBorderPainted(false);
+		confirm_emailB.setBorderPainted(false);
 		confirmB.setBorderPainted(false);
+		
+		secu_codeTF.setEnabled(false);							//인증번호 텍스트필드 비활성화
+		confirm_emailB.setEnabled(false); 						//인증번호 확인 버튼 비활성화
+		confirm_emailB.setVisible(false);						//인증번호 확인 버튼 숨기기
 	
 		mainP.add(logoL);		mainP.add(idL); 		
 		mainP.add(idTF);		mainP.add(emptyL1);
@@ -238,34 +249,25 @@ public class SignUpFrame extends JFrame implements KeyListener{
 		mainP.add(emptyL2);		mainP.add(emailDoTF);
 		mainP.add(emptyL3); 	mainP.add(emailC);
 		mainP.add(error_emailL);mainP.add(secu_codeTF);
-		mainP.add(emptyL5);		mainP.add(check_emailB);
+		mainP.add(emptyL5);		mainP.add(check_emailB); 
+		mainP.add(confirm_emailB);
 		mainP.add(emptyL4);		mainP.add(confirmB);
 
-	
+
 		return mainP;
 	}//mainP()
-
 	
-	/** 동환 20190819 수정 **/
-	/* 키입력시 중복확인 enable true로
-	 * 
-	 * 
-	 */
-	@Override
-	public void keyPressed(KeyEvent arg0) {
+	public void addSignupFocusListener(FocusListener listener) {
+		idTF.addFocusListener(listener);
+		emailTF.addFocusListener(listener);
+		emailDoTF.addFocusListener(listener);
+		emailC.addFocusListener(listener);
 	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-	}
-
+	
 	public void addSignupListener(ActionListener listener) {
 		check_idB.addActionListener(listener);
 		check_emailB.addActionListener(listener);
+		confirm_emailB.addActionListener(listener);
 		confirmB.addActionListener(listener);
 		emailC.addActionListener(listener);
 	}

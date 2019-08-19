@@ -3,6 +3,8 @@ package com.movie.UI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -63,7 +65,7 @@ public class MyActionListener {
 		AppManager.getInstance().setMyListener(this);
 	}//cons MyActionListener()
 
-	class SignupActionL implements ActionListener {
+	class SignupActionL implements ActionListener,FocusListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == signUp.check_idB) {
@@ -80,14 +82,66 @@ public class MyActionListener {
 						signUp.dialog.showMessageDialog(signUp, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
 						signUp.error_idL.setText("");
 						signUp.check_idB.setEnabled(false); // 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
+						signUp.passPF.requestFocus();
 					} // 아이디 비교함 // true이면 기능이 동작하고 false면 기능이 동작하지 않는다
 					return;
 				}
 			} // 아이디 중복체크 버튼 선택시
 
 			if (e.getSource() == signUp.check_emailB) {
-				return;
-			} // 이메일 인증번호 버튼 선택시
+				if (!(Pattern.matches("^[a-z0-9]*$", signUp.emailTF.getText()))) {
+					signUp.emailTF.getText().trim().equals("");
+					signUp.error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
+					signUp.emailTF.equals("");			//이메일 텍스트필드 비움
+					signUp.emailDoTF.equals("");		//이메일 도메인 텍스트필드 비움
+					signUp.emailC.setSelectedIndex(0);	//이메일 도메인 콤보박스 초기화
+					signUp.emailTF.requestFocus();
+					return;
+				} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
+				signUp.security = memberdao.randomAuthNum();
+				String email = signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText();
+				memberdao.Auth_Email(email, signUp.security);
+				signUp.dialog.showMessageDialog(signUp, "인증번호가 해당 이메일로 발송되었습니다.");
+				signUp.error_emailL.setText("");			//오류 메세지 제거
+				signUp.secu_codeTF.setEnabled(true);		//인증번호 텍스트 필드 활성화
+				signUp.check_emailB.setVisible(false);		//이메일 인증번호 받기 버튼 숨기기
+				signUp.confirm_emailB.setEnabled(true);		//이메일 인증번호 확인 버튼 활성화
+				signUp.confirm_emailB.setVisible(true);		//이메일 인증번호 확인 버튼 보이기
+				signUp.secu_codeTF.requestFocus();			//인증번호 텍스트 필드로 포커스 이동
+			}//이메일 인증번호 받기 버튼 클릭시
+
+			if(e.getSource() == signUp.confirm_emailB) {
+				if(signUp.security.equals(signUp.secu_codeTF.getText())) {
+					signUp.dialog.showMessageDialog(signUp, "인증번호가 확인되었습니다.");
+					signUp.error_emailL.setText("");				//오류 메세지 제거
+					signUp.security=null;							//인증번호 비우기(초기화)
+					signUp.secu_count=0;							//인증 실패 카운트 초기화
+					signUp.secu_codeTF.setText("");					//인증번호 텍스트 필드 초기화
+					signUp.secu_codeTF.setEnabled(false);			//인증번호 텍스트 필드 비활성화
+					signUp.check_emailB.setEnabled(false);			//이메일 인증번호 받기 버튼 비활성화
+					signUp.check_emailB.setVisible(true);			//이메일 인증번호 받기 버튼 보이기
+					signUp.confirm_emailB.setEnabled(false);		//이메일 인증번호 확인 버튼 비활성화
+					signUp.confirm_emailB.setVisible(false);		//이메일 인증번호 확인 버튼 숨기기
+					signUp.confirmB.requestFocus();					//가입하기 버튼으로 포커스 이동
+				}else {
+					signUp.error_emailL.setText("인증번호를 잘못 입력하셨습니다!!");
+					signUp.secu_codeTF.setText("");
+					signUp.secu_codeTF.requestFocus();
+					signUp.secu_count+=1;
+					if(signUp.secu_count==3) {
+						signUp.dialog.showMessageDialog(signUp, "인증번호 입력이 3회 틀리셨습니다. 다시 인증번호를 받아주세요!");
+						signUp.error_emailL.setText("");				//오류 메세지 제거
+						signUp.security=null;							//인증번호 비우기(초기화)
+						signUp.secu_count=0;							//인증 실패 카운트 초기화
+						signUp.secu_codeTF.setEnabled(false);			//인증번호 텍스트 필드 비활성화
+						signUp.check_emailB.setEnabled(true);			//이메일 인증번호 받기 버튼 활성화
+						signUp.check_emailB.setVisible(true);			//이메일 인증번호 받기 버튼 보이기
+						signUp.confirm_emailB.setEnabled(false);		//이메일 인증번호 확인 버튼 비활성화
+						signUp.confirm_emailB.setVisible(false);		//이메일 인증번호 확인 버튼 숨기기
+						signUp.check_emailB.requestFocus();				//이메일 인증번호 받기 버튼으로 포커스 이동
+					}//if : 3회이상 틀릴시
+				}//if
+			}//이메일 인증번호 확인 버튼 클릭시
 
 			if (e.getSource() == signUp.confirmB) {
 				signUp.error_idL.setText(""); // 회원가입 버튼 선택시 경고문 초기화
@@ -96,20 +150,13 @@ public class MyActionListener {
 				signUp.error_birthL.setText("");
 				signUp.error_emailL.setText("");
 
-				if (signUp.idTF.getText().length() < 5 || !(Pattern.matches("^[a-z0-9]*$", signUp.passPF.getText()))) {
-					signUp.error_idL.setText("아이디는 5자 이상, 영문소문자와 숫자만 사용 가능합니다");
+				if (signUp.check_idB.isEnabled() == true) { // 중복검색 안했을때(버튼 활성화되어있을때)
+					signUp.error_idL.setText("중복확인을 해주세요");
 					signUp.idTF.setText("");
 					signUp.idTF.requestFocus();
+					return;
+				} // 아이디 제약조건 : 중복검색 안했을때
 
-					if (signUp.check_idB.isEnabled() == true) { // 중복검색 안했을때(버튼 활성화되어있을때)
-
-						signUp.error_idL.setText("중복확인을 해주세요");
-						signUp.idTF.setText("");
-						signUp.idTF.requestFocus();
-
-						return;
-					} // 아이디 제약조건 : 중복검색 안했을때, 아이디가 5자 이상이어야 하고 영문소문자와 숫자만 사용 가능
-				}
 				if (signUp.passPF.getText().length() < 8 || signUp.passPF.getText().length() > 19
 						|| !(Pattern.matches("^[a-z0-9]*$", signUp.passPF.getText()))) {
 					signUp.error_passL.setText("비밀번호는 8자 이상, 영문소문자와 숫자로만 입력하세요!");
@@ -133,11 +180,13 @@ public class MyActionListener {
 					signUp.nameTF.setText("");
 					signUp.nameTF.requestFocus();
 					return;
-				} // 이름 제약조건 : 이름은 5글자만 가능하고 한글만 가능한 제약 조건
-				//2자리 이하
+				} // 이름 제약조건 : 이름은 5글자이하만 가능하고 한글만 가능한 제약 조건
+				
 				if (signUp.yearTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
-						|| signUp.monthTF.getText().trim().length() > 2 // 생년월일 중 월이 1~2자리가 아닐때
-						|| signUp.dateTF.getText().trim().length() > 2 // 생년월일 중 일이 1~2자리가 아닐때
+						|| Integer.parseInt(signUp.monthTF.getText().trim()) > 12 // 생년월일 중 월이 12 이상일 때
+						|| Integer.parseInt(signUp.monthTF.getText().trim()) < 1  // 생년월일 중 월이 1 이하일 때						
+						|| Integer.parseInt(signUp.dateTF.getText().trim()) > 31  // 생년월일 중 일이 31 이상일 때						
+						|| Integer.parseInt(signUp.dateTF.getText().trim()) < 1  // 생년월일 중 일이 1 이하일 때						
 						|| (!(Pattern.matches("^[0-9]*$", signUp.yearTF.getText())))
 						|| (!(Pattern.matches("^[0-9]*$", signUp.monthTF.getText())))
 						|| (!(Pattern.matches("^[0-9]*$", signUp.dateTF.getText())))) {
@@ -149,16 +198,13 @@ public class MyActionListener {
 					signUp.yearTF.requestFocus();
 					return;
 				} // 생년월일 제약조건 : 매 텍스트필드마다 년은 4자리 이면서 숫자만 ,월은 2자리 숫자만, 일은 2자리 숫자만 제약을 줌
-
-				if (!(Pattern.matches("^[a-z0-9]*$", signUp.emailTF.getText()))) {
-					signUp.emailTF.getText().trim().equals("");
-					signUp.error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
-					signUp.emailTF.equals("");
-					signUp.emailDoTF.equals("");
-					signUp.emailTF.requestFocus();
-					// 잘못 적었을 때 이메일 택스트필드로 돌아가서 써진 것 지우고 커서를 이메일 텍스트로 위치시킴
+				
+				if(signUp.check_emailB.isEnabled()==true) {
+					signUp.error_emailL.setText("이메일 인증을 받아주세요!");
+					signUp.check_emailB.requestFocus();
 					return;
-				} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
+				} // 이메일 제약조건 : 이메일 인증을 받지 않았을 때
+				
 				signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
 				signUp.dispose();// 회원가입이 안되었을 때 잘못되었다는 메시지 창을 만들어줘야 한다
 
@@ -183,14 +229,31 @@ public class MyActionListener {
 					signUp.emailDoTF.setText("");
 					signUp.emailDoTF.setEditable(true);
 					signUp.emailDoTF.requestFocus();
-					return;
-				} else if (str.equals("선택")) {
-					signUp.emailDoTF.setText("");
-					signUp.emailDoTF.setEditable(false);
-					return;
 				}
 			} // 이메일 콤보박스 선택시
 		}// aP()
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			Object obj = e.getSource();
+			if(obj==signUp.idTF) {
+				signUp.check_idB.setEnabled(true);
+			}
+			if(obj==signUp.emailTF) {
+				signUp.check_emailB.setEnabled(true);
+			}
+			if(obj==signUp.emailDoTF) {
+				signUp.check_emailB.setEnabled(true);
+			}
+			if(obj==signUp.emailC) {
+				signUp.check_emailB.setEnabled(true);
+			}		
+		}//fG() : 포커스를 얻었을 때
+
+		@Override
+		public void focusLost(FocusEvent e) {
+		}//fL() : 포커스를 잃었을 떄
+
 	}// SignupActionL inner class
 
 	class FindActionL implements ActionListener{
@@ -304,7 +367,7 @@ public class MyActionListener {
 							mainUi.after_loginLP.setVisible(true);
 							/* (3) */
 							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
-							
+
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
@@ -384,9 +447,9 @@ public class MyActionListener {
 				int logoutresult = mainUi.dialog.showConfirmDialog(null,"로그아웃 하시겠습니까?",
 						"로그아웃",mainUi.dialog.YES_NO_OPTION,mainUi.dialog.PLAIN_MESSAGE);
 				if(logoutresult == mainUi.dialog.CLOSED_OPTION) {
-					
+
 				}else if(logoutresult == mainUi.dialog.NO_OPTION) {
-					
+
 				}else if(logoutresult == mainUi.dialog.YES_OPTION) {
 					mainUi.dialog.showMessageDialog(null, "감사합니다. 다음에 또 뵙겠습니다^^");
 					/* 로그아웃 시
@@ -399,7 +462,7 @@ public class MyActionListener {
 					mainUi.after_loginLP.setVisible(false);
 					mainUi.welcomeL.setText("");
 					mainUi.log_regBP.setVisible(true);
-					
+
 					/* (3) */
 					mainUi.myPageC.clearInfoLabel();	//회원정보 라벨 비움
 					membervo.resetMemberVO();			//membervo 정보 비움
@@ -410,14 +473,15 @@ public class MyActionListener {
 					mainUi.checkB.setBackground(Color.GRAY.brighter());
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
 					mainUi.card.show(mainUi.mainC,"homeB"); // "homeB"키가 적용된 카드레이아웃 보여줌
-					
+
 				}
 			}
 		}//ap()
 	}// MainActionL class
 
-	public void loginListenerSet() 	 {		loginP.addLoginListener(logL);		}
-	public void mainListenerSet() 	 {		mainUi.addMainListener(mainL);		}
-	public void signupListenerSet()  {		signUp.addSignupListener(signupL);	}
-	public void findListenerSet()	 {		findF.addFindListener(findL); 		}
+	public void loginListenerSet() 	 {		  loginP.addLoginListener(logL);		 }
+	public void mainListenerSet() 	 {		  mainUi.addMainListener(mainL);	 	 }
+	public void signupListenerSet()  {		  signUp.addSignupListener(signupL);
+	signUp.addSignupFocusListener(signupL);}
+	public void findListenerSet()	 {		  findF.addFindListener(findL); 		 }
 }//MyActionListener class
