@@ -4,4 +4,4 @@ booking_code NUMBER(38) REFERENCES Booking(booking_code)	--예매코드
 ,seat_Num VARCHAR2(10) REFERENCES seat(seat_Num)			--좌석코드
 );
 
---drop table booked_seat;
+drop table booked_seat;

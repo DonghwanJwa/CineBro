@@ -30,3 +30,4 @@ end LOOP;
 end; 
 
 select * from day_seat where time_code='1관08231';
+

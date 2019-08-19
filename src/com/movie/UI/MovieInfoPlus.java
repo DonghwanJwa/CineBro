@@ -1,6 +1,7 @@
 package com.movie.UI;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -70,7 +71,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	
 	
 	MovieDAO dao = AppManager.getInstance().getDAOManager().getMovieDAO();	//싱글톤입력
-
+	MainUI main = AppManager.getInstance().getMainUi();
+	
 
 	public MovieInfoPlus(int i) {
 
@@ -187,12 +189,25 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		reserveB.setFocusPainted(false); 			//클릭테두리색
 		reserveB.setBorderPainted(false);			//그냥테두리색
 		reserveB.setOpaque(true);					//투명도 true면 불투명 false면 투명
-		reserveB.addActionListener(this);			//클릭이벤트 넣기
 
 		posterpanel.add(reserveB);					//포스터패널에 reserveB 버튼 넣음
-
+		
+		
+		reserveB.addActionListener(new ActionListener(){			//예매하기 버튼에 이벤트 등록			
+			@Override
+			public void actionPerformed(ActionEvent e) {			//ActionPerformed메서드 호출
+				dispose();											//예매하기 눌렀을때 상세정보페이지 꺼짐
+				main.homeB.setBackground(Color.gray.brighter());	//꺼진뒤 HOME버튼 회색
+				main.movieB.setBackground(Color.GRAY.brighter());	//현제상영작 회색
+				main.reservB.setBackground(Color.RED);				//예매페이지 빨간색으로 하여 눌르든한 색넣음
+				main.checkB.setBackground(Color.GRAY.brighter());	//예매조회 회색
+				main.myPageB.setBackground(Color.GRAY.brighter());	//My Page 회색
+				main.card.show(main.mainC,"reservB"); 				//예매페이지를 보여주게 만듬!
+			}
+		});
 	}//PosterPanel 생성자
 
+	
 	/** 영화정보를 넣을 InfoPanel **/
 
 
@@ -269,7 +284,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		audiencescore.setLayout(new FlowLayout(FlowLayout.LEFT));			//관람객 평점라벨 위치 왼쪽 정렬
 		audiencescore.add(audiencescoreL);									//관람객 평점패널에 관람객라벨올림
 
-
+		/** reporterscore 평론가 평점 패널 **/
+		
 		reporterscore.setPreferredSize(new Dimension(520,40));				//평론가 패널에 사이즈 지정
 		reporterscore.setBackground(Color.BLACK);							//평론가 패널에 색 지정
 		infopanel.add(reporterscore);										//인포패널에 전문가패널 올림
@@ -282,7 +298,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		reporterscore.setLayout(new FlowLayout(FlowLayout.LEFT));			//평론가 라벨 왼쪽 정렬
 		reporterscore.add(reporterscoreL);									//평론가 패널에 평론가 라벨 올림
 
-
+		
+		//** genre 장르 패널 생성 **/
+		
 		genrepanel.setPreferredSize(new Dimension(520,45));					//장르패널 사이즈 지정
 		genrepanel.setBackground(Color.BLACK);								//장르패널 배경색 지정
 		infopanel.add(genrepanel);											//인포패널에 장르패널 올림
@@ -297,7 +315,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		genreL.setFont(new Font("맑은 고딕",Font.BOLD,15));					//장르라벨 폰트 지정
 		genreL.setForeground(Color.PINK);									//장르라벨 글자색 지정
 		genrepanel.add(genreL);												//장르패널에 장르라벨 추가
-
+		
+		/** 감독 패널 생성 **/
 
 		directorpanel.setPreferredSize(new Dimension(520,45));				//감독패널 사이즈 지정
 		directorpanel.setBackground(Color.BLACK);							//감독패널 배경색 지정
@@ -314,7 +333,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		directorL.setForeground(Color.PINK);								//감독이름 라벨 글자색 지정
 		directorpanel.add(directorL);										//감독패널에 감독라벨 추가
 
-
+		/** 출연 패널 생성 **/
+		
 		appearancepanel.setPreferredSize(new Dimension(520,45));			//출연 패널 사이즈 지정
 		appearancepanel.setBackground(Color.BLACK);							//출연 패널 배경색 지정
 		infopanel.add(appearancepanel);										//인포패널에 출연패널 추가
@@ -330,7 +350,8 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		appearancepanelL.setForeground(Color.PINK);							//출연자 목록 라벨 글자색 지정
 		appearancepanel.add(appearancepanelL);								//출연 패널에 출연자 목록 라벨 추가
 
-
+		/** 영화 나이 등급 패널 생성 **/
+		
 		agepanel.setPreferredSize(new Dimension(520,45));					//영화 등급 패널 사이즈 지정
 		agepanel.setBackground(Color.BLACK);								//영화 등급 패널 배경색 지정
 		infopanel.add(agepanel);											//인포패널에 영화 등급 패널 올림 
@@ -350,7 +371,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		viewcountpanel.setPreferredSize(new Dimension(520,45));				//누적관객 패널 사이즈 지정
 		viewcountpanel.setBackground(Color.BLACK);							//누적관객 패널 배경색 지정
 		infopanel.add(viewcountpanel);										//인포패널에 누적관객 패널 추가
-
+		
+		/** view 누적관객 패널 생성 **/
+		
 		viewtitleL=new JLabel(" 흥행  ");										//'흥행'라벨 생성
 		viewtitleL.setFont(new Font("맑은 고딕",Font.BOLD,25));				//'흥행'라벨 폰트 지정
 		viewtitleL.setForeground(Color.WHITE); 								//'흥행'라벨 글자색 지정

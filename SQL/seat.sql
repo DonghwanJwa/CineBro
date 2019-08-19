@@ -1,11 +1,11 @@
 CREATE TABLE seat(								--좌석 테이블
 seat_Num VARCHAR2(10) PRIMARY KEY				--좌석코드(상영관+좌석번호)
 ,screen VARCHAR2(30) REFERENCES cinema(screen)	--상영관
-,seatlow VARCHAR2(20) NOT NULL					--좌석행
+,seatrow VARCHAR2(20) NOT NULL					--좌석행
 ,seatcol VARCHAR2(20) NOT NULL					--좌석열
 );
 
---DROP table seat;
+DROP table seat;
 
 --1관~12관, A~L행, 1~20열의 좌석 코드를 넣는 for(loop)문.
 --주의!!! 실행시 declare~end;까지 블럭처리 후 alt+c 단축키로 실행 !! (강제적인 한문장 실행처리) 
@@ -14,14 +14,14 @@ seat_Num VARCHAR2(10) PRIMARY KEY				--좌석코드(상영관+좌석번호)
 
 declare
 	scr NUMBER(20);
-	low NUMBER(20);
+	row NUMBER(20);
 	col NUMBER(20);
 begin
 	for scr in 1..12 LOOP
-		for low in 65..76 LOOP
+		for row in 65..76 LOOP
 			for col in 1..20 LOOP
-				insert into seat (seat_Num,screen,seatlow,seatcol)
-				values (scr||'관'||CHR(low)||col,scr||'관',CHR(low)||'',col||'');
+				insert into seat (seat_Num,screen,seatrow,seatcol)
+				values (scr||'관'||CHR(row)||col,scr||'관',CHR(row)||'',col||'');
 			END LOOP;
 		END LOOP;
 	END LOOP;

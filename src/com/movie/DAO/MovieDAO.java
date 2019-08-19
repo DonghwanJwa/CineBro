@@ -25,7 +25,7 @@ public class MovieDAO {
 		// 모든 DB를 뒤져 Movies에 저장
 		try {
 			daoManager.connectDB();
-			String sql = "SELECT * FROM MovieData where movie_code=?";
+			String sql = "SELECT * FROM MovieData where movie_code=? order by movie_code asc";
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setInt(1, i);
 			rs = daoManager.pt.executeQuery();

@@ -6,7 +6,7 @@ public class MovieVO {
 
 	// ---------기본 영화 정보--------- //
 	
-	private int movie_code;		//영화를 식별할 영화코드
+	private int movie_code;			//영화를 식별할 영화코드
 	private String movie_nameK;		//한국영화이름 
 	private String movie_nameE; 	//영어영화이름
 	private String movie_img;		//영화포스터
@@ -58,7 +58,7 @@ public class MovieVO {
 
 	// ------------------------------ get ----------------------------- //
 
-	public int getMovie_code() 		{return movie_code;}
+	public int getMovie_code() 			{return movie_code;}
 	public String getMovie_nameK() 		{return movie_nameK;}
 	public String getMovie_nameE() 		{return movie_nameE;}
 	public String getMovie_img() 		{return movie_img;}

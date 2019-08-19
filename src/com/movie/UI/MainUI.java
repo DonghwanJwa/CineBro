@@ -215,6 +215,7 @@ public class MainUI {
 		myPageB.addActionListener(listener);
 		loginB.addActionListener(listener);
 		registB.addActionListener(listener);
+		
 		logoutB.addActionListener(listener);
 	}
 }//MainUI
