@@ -8,15 +8,18 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,14 +36,19 @@ import javax.swing.event.ListSelectionListener;
 import com.movie.DAO.BookingDAO;
 import com.movie.VO.CinemaVO;
 import com.movie.VO.MovieVO;
+import com.movie.VO.MovietimeVO;
 import com.movie.main.AppManager;
 
 public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
-	String[] time= {"08:30","11:00","15:20","17:00","19:50","21:40","23:50","25:10"};
 	BookingDAO bdao=AppManager.getInstance().getDAOManager().getBookingDAO();
 	// 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
+	
+	// ------------------------------------- 시간 버튼 설정용 리스트, 멤버변수
+	
+	List<String> time=new ArrayList<>();
+	String screenNum; // 상영관별 시간, 날짜 가져올 멤버변수
 
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
@@ -75,7 +83,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JLabel peopleChoiceLabel=new JLabel("인원");
 	protected JLabel adultL=new JLabel("성인");
 	protected JLabel childL=new JLabel("청소년");
-	protected JToggleButton[] timeB=new JToggleButton[time.length+1];
+	List<JToggleButton> timeBList=new ArrayList<>();
 	protected JToggleButton[] adultB=new JToggleButton[8];
 	protected JToggleButton[] childB=new JToggleButton[8];
 	protected ButtonGroup adultBG=new ButtonGroup();
@@ -113,6 +121,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JPanel calendarPanel=new JPanel(new BorderLayout());
 
 	// - 서브라벨
+	
 	private JLabel movieChoiceLabel=new JLabel("    영화");
 	private JLabel cinemaChoiceLabel=new JLabel("    상영관");
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
@@ -143,12 +152,12 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	/* 결제 패널 */
 
 	// ----------------------------------- 리스트
-
-	int movie_code;
-	Vector<Integer> codeVector=new Vector<>();
+	
+	int movie_code; // 무비 코드 저장용 멤버변수
+	Vector<Integer> codeVector=new Vector<>(); // 각 영화 이름에 대한 코드를 저장할 벡터, 무비코드로 영화클릭시 해당하는 상영관 항목 생성
 	Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
 	Vector<String> cinemaVector=new Vector<>();
-	protected JList movieList=new JList(movieVector);
+	protected JList movieList=new JList(movieVector); // J리스트 생성
 	protected JList cinemaList=new JList();
 
 	// ---------------------------------- 정보라벨
@@ -169,7 +178,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 
 	// ---------------------------------- 정보패널 버튼
-
+	
+	
+	Vector<String> movieImg=new Vector<>(); // 포스터 삽입용 벡터생성
 	protected JButton moviePosterB=new JButton("포스터 삽입");
 	protected JButton infoNextB=new JButton("다음단계");
 	protected JButton seatNextB=new JButton("다음단계");
@@ -187,7 +198,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		info.setBorder(BorderFactory.createEmptyBorder(20,0,20,0)); // 정보패널 패딩
 		info.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		moviePosterB.setPreferredSize(new Dimension(250,300));
-
+		moviePosterB.setContentAreaFilled(false);
+		moviePosterB.setBorderPainted(false);
+		
 		infoTop.add(moviePosterB); // 정보패널 상단 
 
 		infoCenter.setBorder(BorderFactory.createEmptyBorder(0,0,80,0));
@@ -253,11 +266,13 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			for(int i=0;i<mV.size();i++) {
 				MovieVO mvo=mV.get(i);
 				movieVector.add(mvo.getMovie_nameK());
+				movieImg.add(mvo.getMovie_img());
 				codeVector.add(mvo.getMovie_code());
 			}// for
 		}// if
-
+		
 		// --- 리스트 스크롤생성
+		
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); // 스크롤, 수직바 항상, 수평바 필요할때
 		movieListSp.setPreferredSize(new Dimension(240,400)); // 스크롤판 사이즈 설정
@@ -266,7 +281,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		cinemaListSp.setPreferredSize(new Dimension(240,400));
 
 		Font choiceLabelFont=new Font("맑은 고딕",Font.BOLD,20);
-
+		
+		// --- 각 리스트 선택이벤트 등록
+		
 		movieList.addListSelectionListener(this);
 		cinemaList.addListSelectionListener(this);
 
@@ -318,14 +335,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		timeGroup.setPreferredSize(new Dimension(600,123));
 		timeGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		timeGroup.setOpaque(false);
-		for(int i=0;i<time.length;i++) {
-			timeB[i]=new JToggleButton(time[i]);
-			timeB[i].setBackground(Color.BLACK);
-			timeB[i].setForeground(Color.WHITE);
-			timeB[i].addActionListener(this);
-			timeBG.add(timeB[i]);
-			timeGroup.add(timeB[i]);
-		}//for
 		return timeGroup;
 	}//setTimeButton()
 
@@ -519,11 +528,13 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		int i=0; // 반복문 매개변수
 		Object obj=e.getSource();
 		// --- 성인, 청소년 버튼 이벤트
+		for(i=0;i<timeBList.size();i++) {
+			if(obj==timeBList.get(i)) {
+				setTimesL.setText(" "+timeBList.get(i).getText());
+			}// if
+		}// for
 		for(i=0;i<adultB.length;i++) {
-			if(obj==timeB[i]) {
-				setTimesL.setText(" "+timeB[i].getText());
-				break;
-			}else if(obj==adultB[i]){
+			if(obj==adultB[i]){
 				setAdultL.setText(adultL.getText()+adultB[i].getText()+"명");
 				break;
 			}// if else
@@ -580,7 +591,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 							}else {
 								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
 							}// if else
-							index++;	
+							index++;
 						}else {
 							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
 						}// if else
@@ -696,13 +707,22 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	public void valueChanged(ListSelectionEvent e) {
 		Object obj=e.getSource();
 		if(!e.getValueIsAdjusting()) {
+			// 영화 리스트 선택 했을 시
 			if(obj==movieList) {
-				movieNameL.setText((String)movieList.getSelectedValue());
+				movieNameL.setText((String)movieList.getSelectedValue()); // 영화이름제목 라벨 작성
 				for(int i=0;i<movieVector.size();i++) {
 					if(movieNameL.getText().equals(movieVector.get(i))){
 						movie_code=codeVector.get(i);
+						// --- 버튼 패널에 들어갈 이미지 생성
+						ImageIcon mainposter = new ImageIcon("pic/"+movieImg.get(i));		
+						Image originImg = mainposter.getImage();
+						Image changeImg = originImg.getScaledInstance(250,300,Image.SCALE_SMOOTH);		
+						ImageIcon poster = new ImageIcon(changeImg);
+						
+						moviePosterB.setIcon(poster);
 					}// if
 				}// for
+				// 상영관 리스트 출력
 				Vector<CinemaVO> cV=bdao.cinemaList(movie_code);
 				if((cV != null) && cV.size()>0) {
 					for(int i=0;i<cV.size();i++) {
@@ -711,11 +731,30 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						cinemaVector.add(cvo.getScreen());
 					}// for
 					cinemaList.setListData(cinemaVector);
-				}// if				
-			}else if(obj==cinemaList) {						
-				setCinemaL.setText(cinemaList.getSelectedValue()+"");				
+				}// if
+				// 상영관리스트 선택했을 시
+			}else if(obj==cinemaList) {				
+				setCinemaL.setText((String)cinemaList.getSelectedValue());
+				screenNum=(String)cinemaList.getSelectedValue();
+				List<MovietimeVO> mL=bdao.DayTimeList(screenNum);
+				if((mL != null) && mL.size()>0) {
+					for(int i=0;i<mL.size();i++) {
+						MovietimeVO mtvo=mL.get(i);
+						time.add(mtvo.getScreentime());
+						System.out.println(time.get(i));
+					}// for
+				}// if
+				for(int i=0;i<time.size();i++) {
+					timeBList.add(new JToggleButton());
+					timeBList.get(i).setBackground(Color.BLACK);
+					timeBList.get(i).setForeground(Color.WHITE);
+					timeBList.get(i).addActionListener(this);
+					timeBList.get(i).setText(time.get(i));
+					timeBG.add(timeBList.get(i));
+					timeGroup.add(timeBList.get(i));
+				}// for
 			}//if else
-		}
+		}// 리스트 항목에서 버튼을 뗐을 때
 	}//vC()
 
 	public void nextCard() {
