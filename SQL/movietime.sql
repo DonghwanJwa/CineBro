@@ -190,6 +190,6 @@ INSERT INTO movietime values('12관08253','15:00',TO_DATE(20190825,'yyyy-mm-dd')
 INSERT INTO movietime values('12관08254','17:30',TO_DATE(20190825,'yyyy-mm-dd'),12,'12관');
 INSERT INTO movietime values('12관08255','20:00',TO_DATE(20190825,'yyyy-mm-dd'),12,'12관');
 
-SELECT * FROM movietime
+SELECT * FROM movietime WHERE screen='1관' AND screendate=TO_DATE(20190823,'yyyy-mm--dd')
 
-DELETE FROM movietime WHERE time_code='1관08221';
+-- DELETE FROM movietime WHERE time_code='1관08221';

@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,18 +38,21 @@ import com.movie.DAO.BookingDAO;
 import com.movie.VO.CinemaVO;
 import com.movie.VO.MovieVO;
 import com.movie.VO.MovietimeVO;
+import com.movie.VO.SeatVO;
 import com.movie.main.AppManager;
 
 public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
 	BookingDAO bdao=AppManager.getInstance().getDAOManager().getBookingDAO();
-	// 카드레이아웃 설정
+
+	// --- 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
-	
+
 	// ------------------------------------- 시간 버튼 설정용 리스트, 멤버변수
-	
+
 	List<String> time=new ArrayList<>();
 	String screenNum; // 상영관별 시간, 날짜 가져올 멤버변수
+	Date screendate;
 
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
@@ -64,7 +68,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JButton nextMonth=new JButton("▶");
 	protected JButton preMonth=new JButton("◀");
 	protected JLabel calMonth=new JLabel("");
-	protected JLabel calYear=new JLabel("2019년");
+	protected JLabel calYear=new JLabel("2019");
 
 	private int startDay; // 각 월 시작 일
 	private int lastDay; // 각 월 마지막 일
@@ -77,15 +81,17 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// ------------------------------------- 버튼그룹 메서드
 
+	List<JToggleButton> timeBList=new ArrayList<>();
+	private int adultCount;
+	private int childCount;
 	private JPanel timeGroup=new JPanel();
 	private JPanel peopleGroup=new JPanel(new FlowLayout(FlowLayout.LEFT));
 	private JLabel timeChoiceLabel=new JLabel("시간");
 	private JLabel peopleChoiceLabel=new JLabel("인원");
 	protected JLabel adultL=new JLabel("성인");
 	protected JLabel childL=new JLabel("청소년");
-	List<JToggleButton> timeBList=new ArrayList<>();
-	protected JToggleButton[] adultB=new JToggleButton[8];
-	protected JToggleButton[] childB=new JToggleButton[8];
+	protected JToggleButton[] adultB=new JToggleButton[9];
+	protected JToggleButton[] childB=new JToggleButton[9];
 	protected ButtonGroup adultBG=new ButtonGroup();
 	protected ButtonGroup childBG=new ButtonGroup();
 	protected ButtonGroup timeBG=new ButtonGroup();
@@ -120,8 +126,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	protected JPanel calendarPanel=new JPanel(new BorderLayout());
 
-	// - 서브라벨
-	
+	// --- 서브라벨
+
 	private JLabel movieChoiceLabel=new JLabel("    영화");
 	private JLabel cinemaChoiceLabel=new JLabel("    상영관");
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
@@ -138,21 +144,22 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	private JPanel lineSeatP=new JPanel(new BorderLayout(20,30));
 
+	protected List<JButton> seatButton=new ArrayList<>();
 	protected JButton[][] leftSeat=new JButton[12][5];
 	protected JButton[][] centerSeat=new JButton[12][10];
 	protected JButton[][] rightSeat=new JButton[12][5];
 	protected JButton seatReset=new JButton("좌석초기화");
 
 	int index=0; // 좌석라벨 인덱스
+	ArrayList<JLabel> seatList=new ArrayList<>(); // 좌석 리스트
 	protected JLabel[] seatChoiceL=new JLabel[8];
-	ArrayList<JLabel> seatList=new ArrayList<>();
 	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
 	private JLabel screen=new JLabel("SCREEN");
 
 	/* 결제 패널 */
 
 	// ----------------------------------- 리스트
-	
+
 	int movie_code; // 무비 코드 저장용 멤버변수
 	Vector<Integer> codeVector=new Vector<>(); // 각 영화 이름에 대한 코드를 저장할 벡터, 무비코드로 영화클릭시 해당하는 상영관 항목 생성
 	Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
@@ -176,10 +183,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JLabel priceL=new JLabel("가격");
 	protected JLabel setPriceL=new JLabel("5");
 
-
 	// ---------------------------------- 정보패널 버튼
-	
-	
+
 	Vector<String> movieImg=new Vector<>(); // 포스터 삽입용 벡터생성
 	protected JButton moviePosterB=new JButton("포스터 삽입");
 	protected JButton infoNextB=new JButton("다음단계");
@@ -187,7 +192,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JButton seatBackB=new JButton("이전단계");
 
 	public ReservationPanel() {
-		//		AppManager.getInstance().setBookingP(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(50,150,200,200));			
 
@@ -200,7 +204,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		moviePosterB.setPreferredSize(new Dimension(250,300));
 		moviePosterB.setContentAreaFilled(false);
 		moviePosterB.setBorderPainted(false);
-		
+
 		infoTop.add(moviePosterB); // 정보패널 상단 
 
 		infoCenter.setBorder(BorderFactory.createEmptyBorder(0,0,80,0));
@@ -270,9 +274,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				codeVector.add(mvo.getMovie_code());
 			}// for
 		}// if
-		
+
 		// --- 리스트 스크롤생성
-		
+
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); // 스크롤, 수직바 항상, 수평바 필요할때
 		movieListSp.setPreferredSize(new Dimension(240,400)); // 스크롤판 사이즈 설정
@@ -281,9 +285,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		cinemaListSp.setPreferredSize(new Dimension(240,400));
 
 		Font choiceLabelFont=new Font("맑은 고딕",Font.BOLD,20);
-		
+
 		// --- 각 리스트 선택이벤트 등록
-		
+
 		movieList.addListSelectionListener(this);
 		cinemaList.addListSelectionListener(this);
 
@@ -303,10 +307,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		bottomPanel.setPreferredSize(new Dimension(1000,150));
 		timeChoice.setBackground(Color.WHITE);
-		timeChoice.setPreferredSize(new Dimension(600,150));
+		timeChoice.setPreferredSize(new Dimension(550,150));
 		timeChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		peopleChoice.setBackground(Color.WHITE);
-		peopleChoice.setPreferredSize(new Dimension(200,150));
+		peopleChoice.setPreferredSize(new Dimension(230,150));
 		peopleChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		timeChoiceLabel.setFont(bottomLabelFont); peopleChoiceLabel.setFont(bottomLabelFont);
@@ -347,14 +351,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		JPanel childP=new JPanel(new BorderLayout(0,5));
 		JPanel childButtonP=new JPanel();
 
-		peopleGroup.setPreferredSize(new Dimension(200,150));
+		peopleGroup.setPreferredSize(new Dimension(230,150));
 		peopleGroup.setOpaque(false);
 		peopleGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		adultL.setFont(ageLabelFont); childL.setFont(ageLabelFont);
 		adultP.add(adultL,"North");
 		adultP.add(adultButtonP,"Center");
 		for(int i=0;i<adultB.length;i++) {
-			adultB[i]=new JToggleButton((i+1)+"");
+			adultB[i]=new JToggleButton(i+"");
 			adultBG.add(adultB[i]);
 			adultB[i].setFont(new Font("맑은 고딕",Font.BOLD,10));
 			adultB[i].setMargin(new Insets(0,3,0,3));
@@ -367,7 +371,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		childP.add(childL,"North");
 		childP.add(childButtonP,"Center");
 		for(int i=0;i<childB.length;i++) {
-			childB[i]=new JToggleButton((i+1)+"");
+			childB[i]=new JToggleButton(i+"");
 			childBG.add(childB[i]);
 			childB[i].setFont(new Font("맑은 고딕",Font.BOLD,10));
 			childB[i].setMargin(new Insets(0,3,0,3));
@@ -383,9 +387,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// --- 날짜선택 캘린더 컴포넌트 메서드
 	public void setCalendar() {
-		calMonth.setText("8");
+		calMonth.setText("08");
 		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
 		calMonth.setHorizontalAlignment(JLabel.CENTER);
+
+
 		// --- 년 / 월 설정 버튼
 
 		monthButtonP.add(preMonth);
@@ -418,7 +424,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				sday=""+i;
 			}
 			calDate[i]=new JToggleButton(sday);
-			calDateBG.add(calDate[i]);
+			calDateBG.add(calDate[i]);			
 		}//for
 		for(int i=0;i<calWeek.length;i++) {
 			calWeekL[i]=new JLabel(calWeek[i]);
@@ -456,63 +462,63 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			seatLine[i]=new JLabel(lineName+"");
 			lineName++;
 			areaLine.add(seatLine[i]);
-		}//for
-		// 왼쪽구역 좌석 배치
-		for(int i=0;i<12;i++) {
-			for(int j=0;j<5;j++) {
-				leftSeat[i][j]=new JButton();
-				leftSeat[i][j].setText(index+"");
-				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
-				leftSeat[i][j].setBackground(Color.BLACK);
-				leftSeat[i][j].setForeground(Color.WHITE);
-				leftSeat[i][j].addActionListener(this);
-				if(index==5) {
-					index=0;
-				}// if
-				index++;		
-				leftArea.add(leftSeat[i][j]);
-			}// inner for
-		}// outer for
-		// --- 중앙구역 좌석
-		index=6;
-		for(int i=0;i<12;i++) {
-			for(int j=0;j<10;j++) {
-				centerSeat[i][j]=new JButton();
-				centerSeat[i][j].setText(index+"");
-				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
-				centerSeat[i][j].setBackground(Color.BLACK);
-				centerSeat[i][j].setForeground(Color.WHITE);
-				centerSeat[i][j].addActionListener(this);
-				if(index==15) {
-					index=5;
-				}// if
-				index++;
-				centerArea.add(centerSeat[i][j]);
-			}// inner for
-		}// outer for
-		// --- 오른쪽 구역 좌석
-		index=16;
-		for(int i=0;i<12;i++) {
-			for(int j=0;j<5;j++) {
-				rightSeat[i][j]=new JButton();
-				rightSeat[i][j].setText(index+"");
-				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
-				rightSeat[i][j].setBackground(Color.BLACK);
-				rightSeat[i][j].setForeground(Color.WHITE);	
-				rightSeat[i][j].addActionListener(this);
-				if(index==20) {
-					index=15;
-				}//if
-				index++;
-				rightArea.add(rightSeat[i][j]);
-			}// inner for
-		}// outer for
+		}//for		
+		//		// 왼쪽구역 좌석 배치
+		//		for(int i=0;i<12;i++) {
+		//			for(int j=0;j<5;j++) {
+		//				leftSeat[i][j]=new JButton();
+		//				leftSeat[i][j].setText(index+"");
+		//				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
+		//				leftSeat[i][j].setBackground(Color.BLACK);
+		//				leftSeat[i][j].setForeground(Color.WHITE);
+		//				leftSeat[i][j].addActionListener(this);
+		//				if(index==5) {
+		//					index=0;
+		//				}// if
+		//				index++;		
+		//				leftArea.add(leftSeat[i][j]);
+		//			}// inner for
+		//		}// outer for
+		//		// --- 중앙구역 좌석
+		//		index=6;
+		//		for(int i=0;i<12;i++) {
+		//			for(int j=0;j<10;j++) {
+		//				centerSeat[i][j]=new JButton();
+		//				centerSeat[i][j].setText(index+"");
+		//				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
+		//				centerSeat[i][j].setBackground(Color.BLACK);
+		//				centerSeat[i][j].setForeground(Color.WHITE);
+		//				centerSeat[i][j].addActionListener(this);
+		//				if(index==15) {
+		//					index=5;
+		//				}// if
+		//				index++;
+		//				centerArea.add(centerSeat[i][j]);
+		//			}// inner for
+		//		}// outer for
+		//		// --- 오른쪽 구역 좌석
+		//		index=16;
+		//		for(int i=0;i<12;i++) {
+		//			for(int j=0;j<5;j++) {
+		//				rightSeat[i][j]=new JButton();
+		//				rightSeat[i][j].setText(index+"");
+		//				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
+		//				rightSeat[i][j].setBackground(Color.BLACK);
+		//				rightSeat[i][j].setForeground(Color.WHITE);	
+		//				rightSeat[i][j].addActionListener(this);
+		//				if(index==20) {
+		//					index=15;
+		//				}//if
+		//				index++;
+		//				rightArea.add(rightSeat[i][j]);
+		//			}// inner for
+		//		}// outer for
 		seatReset.addActionListener(this);
 		seatChoice.add(seatChoiceP,"Center"); seatChoice.add(seatReset,"South"); 
 
 		seatChoice.setPreferredSize(new Dimension(120,0));
 		seatChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		seatPanel.add(leftArea); seatPanel.add(centerArea); seatPanel.add(rightArea); // 좌석 구역 배치
+		//		seatPanel.add(leftArea); seatPanel.add(centerArea); seatPanel.add(rightArea); // 좌석 구역 배치
 		screen.setPreferredSize(new Dimension(0,30));
 		screen.setHorizontalAlignment(JLabel.CENTER);
 		screen.setOpaque(true);
@@ -527,23 +533,217 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	public void actionPerformed(ActionEvent e) {
 		int i=0; // 반복문 매개변수
 		Object obj=e.getSource();
-		// --- 성인, 청소년 버튼 이벤트
+		// --- 시간 버튼
 		for(i=0;i<timeBList.size();i++) {
 			if(obj==timeBList.get(i)) {
 				setTimesL.setText(" "+timeBList.get(i).getText());
-			}// if
+			}// if		
 		}// for
+		// --- 성인, 청소년 버튼 이벤트
 		for(i=0;i<adultB.length;i++) {
+			int j=7;
 			if(obj==adultB[i]){
 				setAdultL.setText(adultL.getText()+adultB[i].getText()+"명");
-				break;
+				adultCount=Integer.parseInt(adultB[i].getText());
 			}// if else
+			// 0선택 => 초기화
+			if(obj==adultB[0]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(true);
+				childB[5].setEnabled(true);
+				childB[6].setEnabled(true);
+				childB[7].setEnabled(true);
+				childB[8].setEnabled(true);
+			}// if
+			// 성인 1명 버튼 눌렀을 때			
+			if(obj==adultB[1]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(true);
+				childB[5].setEnabled(true);
+				childB[6].setEnabled(true);
+				childB[7].setEnabled(true);
+				childB[8].setEnabled(false);
+			}// if
+			// 성인 2명 버튼 눌렀을 때
+			if(obj==adultB[2]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(true);
+				childB[5].setEnabled(true);
+				childB[6].setEnabled(true);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			};// if
+			// 성인 3명 버튼 눌렀을 때
+			if(obj==adultB[3]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(true);
+				childB[5].setEnabled(true);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if			
+			// 성인 4명 버튼 눌렀을 때
+			if(obj==adultB[4]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(true);
+				childB[5].setEnabled(false);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if
+			// 성인 5
+			if(obj==adultB[5]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(true);
+				childB[4].setEnabled(false);
+				childB[5].setEnabled(false);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if
+			// 성인 6
+			if(obj==adultB[6]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(true);
+				childB[3].setEnabled(false);
+				childB[4].setEnabled(false);
+				childB[5].setEnabled(false);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if
+			// 성인 7
+			if(obj==adultB[7]) {
+				childB[1].setEnabled(true);
+				childB[2].setEnabled(false);
+				childB[3].setEnabled(false);
+				childB[4].setEnabled(false);
+				childB[5].setEnabled(false);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if
+			// 성인 8
+			if(obj==adultB[8]) {
+				childB[1].setEnabled(false);
+				childB[2].setEnabled(false);
+				childB[3].setEnabled(false);
+				childB[4].setEnabled(false);
+				childB[5].setEnabled(false);
+				childB[6].setEnabled(false);
+				childB[7].setEnabled(false);
+				childB[8].setEnabled(false);
+			}// if
 		}// for
+		// 청소년 버튼
 		for(int j=0;j<childB.length;j++) {
 			if(obj==childB[j]){
 				setChildL.setText(","+childL.getText()+childB[j].getText()+"명");
-				break;
-			}
+				childCount=Integer.parseInt(childB[j].getText());
+			}// if
+			// 0 선택 => 초기화
+			if(obj==childB[0]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(true);
+				adultB[5].setEnabled(true);
+				adultB[6].setEnabled(true);
+				adultB[7].setEnabled(true);
+				adultB[8].setEnabled(true);
+			}// if
+			if(obj==childB[1]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(true);
+				adultB[5].setEnabled(true);
+				adultB[6].setEnabled(true);
+				adultB[7].setEnabled(true);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[2]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(true);
+				adultB[5].setEnabled(true);
+				adultB[6].setEnabled(true);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[3]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(true);
+				adultB[5].setEnabled(true);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[4]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(true);
+				adultB[5].setEnabled(false);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[5]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(true);
+				adultB[4].setEnabled(false);
+				adultB[5].setEnabled(false);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[6]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(true);
+				adultB[3].setEnabled(false);
+				adultB[4].setEnabled(false);
+				adultB[5].setEnabled(false);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			if(obj==childB[7]) {
+				adultB[1].setEnabled(true);
+				adultB[2].setEnabled(false);
+				adultB[3].setEnabled(false);
+				adultB[4].setEnabled(false);
+				adultB[5].setEnabled(false);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
+			// 청소년 8
+			if(obj==childB[8]) {
+				adultB[1].setEnabled(false);
+				adultB[2].setEnabled(false);
+				adultB[3].setEnabled(false);
+				adultB[4].setEnabled(false);
+				adultB[5].setEnabled(false);
+				adultB[6].setEnabled(false);
+				adultB[7].setEnabled(false);
+				adultB[8].setEnabled(false);
+			}// if
 		}// for
 		// --- 캘린더 버튼 이벤트
 		if(obj==nextMonth) {
@@ -556,11 +756,37 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			calendar.repaint();
 		}// if
 		for(i=0;i<calDate.length;i++) {
+			// --- 캘린더 버튼 클릭시
 			if(obj==calDate[i]) {
-				setDaysL.setText(calYear.getText()+" "+calMonth.getText()+"월 "+calDate[i].getText()+"일");
+				setDaysL.setText(calYear.getText()+"년"+calMonth.getText()+"월 "+calDate[i].getText()+"일");
+				// 날짜 시간 리스트 생성
+				screendate=Date.valueOf(calYear.getText()+"-"+calMonth.getText()+"-"+calDate[i].getText());
+				screenNum=(String)cinemaList.getSelectedValue();
+				List<MovietimeVO> mL=bdao.DayTimeList(screendate,screenNum);
+				if((mL != null) && mL.size()>0) {
+					for(int j=0;j<mL.size();j++) {
+						MovietimeVO mtvo=mL.get(j);
+						time.add(mtvo.getScreentime());
+					}// for
+				}// if
+				for(int j=0;j<time.size();j++) {
+					if(timeGroup.getComponentCount()<=5) {
+						timeBList.add(new JToggleButton());
+					}// if
+					timeBList.get(j).setBackground(Color.BLACK);
+					timeBList.get(j).setForeground(Color.WHITE);
+					timeBList.get(j).setText(time.get(j));
+					timeBList.get(j).addActionListener(this);
+					timeBG.add(timeBList.get(j));
+					timeGroup.add(timeBList.get(j));
+					if(j==4) {
+						time.clear();
+					}
+				}// for
 				break;
 			}// if
 		}// for
+
 		// --- 다음, 이전단계 버튼 이벤트
 		if(obj==infoNextB) {
 			nextCard();
@@ -574,31 +800,136 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		if(obj==seatNextB) {
 			nextCard();
 		}// if
-
-		// --- 좌석 선택 버튼		
-		for(i=0;i<12;i++) {
-			for(int j=0;j<5;j++) {
-				if(obj==leftSeat[i][j]) {
-					if(leftSeat[i][j].getBackground()==Color.BLACK) {
-						if(0<=index && index<8) {
-							leftSeat[i][j].setBackground(Color.RED);
-							seatList.add(new JLabel());
-							seatChoiceP.add(seatList.get(index),"Center");
-							seatList.get(index).setText(seatLine[i].getText()+leftSeat[i][j].getText());
+		// --- 좌석 선택 버튼
+		//		for(i=0;i<12;i++) {
+		//			for(int j=0;j<5;j++) {
+		//				if(obj==leftSeat[i][j]) {
+		//					if(leftSeat[i][j].getBackground()==Color.BLACK) {
+		//						if(0<=index && index<(adultCount+childCount)) {
+		//							leftSeat[i][j].setBackground(Color.RED);
+		//							seatList.add(new JLabel());
+		//							seatChoiceP.add(seatList.get(index),"Center");
+		//							seatList.get(index).setText(seatLine[i].getText()+leftSeat[i][j].getText());
+		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
+		//							if(index==0) {
+		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
+		//							}else {
+		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
+		//							}// if else
+		//							index++;
+		//						}else {
+		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
+		//						}// if else
+		//					}else if(leftSeat[i][j].getBackground()==Color.RED) {
+		//						leftSeat[i][j].setBackground(Color.BLACK);
+		//						for(int k=0;k<seatList.size();k++) {
+		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+leftSeat[i][j].getText())) {
+		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
+		//										.replace(seatList.get(k).getText(),""));
+		//								seatChoiceP.remove(seatList.get(k));
+		//								seatList.remove(k);
+		//								seatChoiceP.revalidate();
+		//								seatChoiceP.repaint();
+		//								index--;
+		//							}// if
+		//						}// for
+		//					}// if else if
+		//				}// leftSeat 버튼 클릭시
+		//				if(obj==rightSeat[i][j]) {
+		//					if(rightSeat[i][j].getBackground()==Color.BLACK) {
+		//						if(0<=index && index<(adultCount+childCount)) {
+		//							rightSeat[i][j].setBackground(Color.RED);
+		//							seatList.add(new JLabel());
+		//							seatChoiceP.add(seatList.get(index),"Center");
+		//							seatList.get(index).setText(seatLine[i].getText()+rightSeat[i][j].getText());
+		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
+		//							if(index==0) {
+		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
+		//							}else {
+		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
+		//							}// if else
+		//							index++;	
+		//						}else {
+		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
+		//						}// if else
+		//					}else if(rightSeat[i][j].getBackground()==Color.RED) {
+		//						rightSeat[i][j].setBackground(Color.BLACK);
+		//						for(int k=0;k<seatList.size();k++) {
+		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+rightSeat[i][j].getText())) {
+		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
+		//										.replace(seatList.get(k).getText(),""));
+		//								seatChoiceP.remove(seatList.get(k));
+		//								seatList.remove(k);
+		//								seatChoiceP.revalidate();
+		//								seatChoiceP.repaint();
+		//								index--;
+		//							}// if
+		//						}// for
+		//					}// if else if
+		//				}// leftSeat 버튼 클릭시
+		//			}// inner for
+		//		}// outer for
+		//		for(i=0;i<12;i++) {
+		//			for(int j=0;j<10;j++) {
+		//				if(obj==centerSeat[i][j]) {
+		//					if(centerSeat[i][j].getBackground()==Color.BLACK) {
+		//						if(0<=index && index<(adultCount+childCount)) {
+		//							centerSeat[i][j].setBackground(Color.RED);
+		//							seatList.add(new JLabel());
+		//							seatChoiceP.add(seatList.get(index),"Center");
+		//							seatList.get(index).setText(seatLine[i].getText()+centerSeat[i][j].getText());
+		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
+		//							if(index==0) {
+		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
+		//							}else {
+		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
+		//							}// if else
+		//							index++;	
+		//						}else {
+		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
+		//						}// if else
+		//					}else if(centerSeat[i][j].getBackground()==Color.RED) {
+		//						centerSeat[i][j].setBackground(Color.BLACK);
+		//						for(int k=0;k<seatList.size();k++) {
+		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+centerSeat[i][j].getText())) {
+		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
+		//										.replace(seatList.get(k).getText(),""));
+		//								seatChoiceP.remove(seatList.get(k));
+		//								seatList.remove(k);
+		//								seatChoiceP.revalidate();
+		//								seatChoiceP.repaint();
+		//								index--;
+		//							}// if
+		//						}// for
+		//					}// if else if
+		//				}// leftSeat 버튼 클릭시
+		//			}// inner for
+		//		}// outer for
+		for(i=0;i<seatButton.size();i++) {
+			if(obj==seatButton.get(i)) {
+				if(seatButton.get(i).getBackground()==Color.BLACK) {
+					if(0<=index && index<(adultCount+childCount)) {
+						seatButton.get(i).setBackground(Color.RED);
+						seatList.add(new JLabel());
+						seatChoiceP.add(seatList.get(index),"Center");
+						for(int j=0;j<12;j++) {
+							seatList.get(index).setText(seatLine[j].getText()+seatButton.get(i).getText());
 							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-							if(index==0) {
-								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-							}else {
-								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-							}// if else
-							index++;
+						}// fo
+						if(index==0) {
+							setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
 						}else {
-							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
+							setSeatL.setText(" "+setSeatL.getText().concat(seatList.get(index).getText()));
 						}// if else
-					}else if(leftSeat[i][j].getBackground()==Color.RED) {
-						leftSeat[i][j].setBackground(Color.BLACK);
-						for(int k=0;k<seatList.size();k++) {
-							if(seatList.get(k).getText().equals(seatLine[i].getText()+leftSeat[i][j].getText())) {
+						index++;
+					}else {
+						JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
+					}// 인원수 초과 시
+				}else if(seatButton.get(i).getBackground()==Color.RED) {
+					seatButton.get(i).setBackground(Color.BLACK);
+					for(int k=0;k<seatList.size();k++) {
+						for(int j=0;j<12;j++) {
+							if(seatList.get(k).getText().equals(seatLine[j].getText()+seatButton.get(i).getText())){
 								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
 										.replace(seatList.get(k).getText(),""));
 								seatChoiceP.remove(seatList.get(k));
@@ -607,78 +938,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 								seatChoiceP.repaint();
 								index--;
 							}// if
-						}// for
-					}// if else if
-				}// leftSeat 버튼 클릭시
-				if(obj==rightSeat[i][j]) {
-					if(rightSeat[i][j].getBackground()==Color.BLACK) {
-						if(0<=index && index<8) {
-							rightSeat[i][j].setBackground(Color.RED);
-							seatList.add(new JLabel());
-							seatChoiceP.add(seatList.get(index),"Center");
-							seatList.get(index).setText(seatLine[i].getText()+rightSeat[i][j].getText());
-							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-							if(index==0) {
-								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-							}else {
-								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-							}// if else
-							index++;	
-						}else {
-							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-						}// if else
-					}else if(rightSeat[i][j].getBackground()==Color.RED) {
-						rightSeat[i][j].setBackground(Color.BLACK);
-						for(int k=0;k<seatList.size();k++) {
-							if(seatList.get(k).getText().equals(seatLine[i].getText()+rightSeat[i][j].getText())) {
-								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
-										.replace(seatList.get(k).getText(),""));
-								seatChoiceP.remove(seatList.get(k));
-								seatList.remove(k);
-								seatChoiceP.revalidate();
-								seatChoiceP.repaint();
-								index--;
-							}// if
-						}// for
-					}// if else if
-				}// leftSeat 버튼 클릭시
-			}// inner for
-		}// outer for
-		for(i=0;i<12;i++) {
-			for(int j=0;j<10;j++) {
-				if(obj==centerSeat[i][j]) {
-					if(centerSeat[i][j].getBackground()==Color.BLACK) {
-						if(0<=index && index<8) {
-							centerSeat[i][j].setBackground(Color.RED);
-							seatList.add(new JLabel());
-							seatChoiceP.add(seatList.get(index),"Center");
-							seatList.get(index).setText(seatLine[i].getText()+centerSeat[i][j].getText());
-							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-							if(index==0) {
-								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-							}else {
-								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-							}// if else
-							index++;	
-						}else {
-							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-						}// if else
-					}else if(centerSeat[i][j].getBackground()==Color.RED) {
-						centerSeat[i][j].setBackground(Color.BLACK);
-						for(int k=0;k<seatList.size();k++) {
-							if(seatList.get(k).getText().equals(seatLine[i].getText()+centerSeat[i][j].getText())) {
-								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
-										.replace(seatList.get(k).getText(),""));
-								seatChoiceP.remove(seatList.get(k));
-								seatList.remove(k);
-								seatChoiceP.revalidate();
-								seatChoiceP.repaint();
-								index--;
-							}// if
-						}// for
-					}// if else if
-				}// leftSeat 버튼 클릭시
-			}// inner for
+						}// inner for
+					}// outer for
+				}// if else
+			}// 좌석버튼 클릭 시
 		}// outer for
 		if(obj==seatReset) {
 			for(i=0;i<12;i++) {
@@ -713,12 +976,12 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				for(int i=0;i<movieVector.size();i++) {
 					if(movieNameL.getText().equals(movieVector.get(i))){
 						movie_code=codeVector.get(i);
-						// --- 버튼 패널에 들어갈 이미지 생성
+						// --- 포스터 버튼에 해당하는 이미지 삽입
 						ImageIcon mainposter = new ImageIcon("pic/"+movieImg.get(i));		
 						Image originImg = mainposter.getImage();
 						Image changeImg = originImg.getScaledInstance(250,300,Image.SCALE_SMOOTH);		
 						ImageIcon poster = new ImageIcon(changeImg);
-						
+
 						moviePosterB.setIcon(poster);
 					}// if
 				}// for
@@ -733,26 +996,40 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					cinemaList.setListData(cinemaVector);
 				}// if
 				// 상영관리스트 선택했을 시
-			}else if(obj==cinemaList) {				
+			}else if(obj==cinemaList) {			
 				setCinemaL.setText((String)cinemaList.getSelectedValue());
-				screenNum=(String)cinemaList.getSelectedValue();
-				List<MovietimeVO> mL=bdao.DayTimeList(screenNum);
-				if((mL != null) && mL.size()>0) {
-					for(int i=0;i<mL.size();i++) {
-						MovietimeVO mtvo=mL.get(i);
-						time.add(mtvo.getScreentime());
-						System.out.println(time.get(i));
-					}// for
+				// 좌석 배치
+				screenNum=cinemaList.getSelectedValue()+"";
+				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
+				if((sV != null) && sV.size()>0) {
+					for(int i=0;i<sV.size();i++) {
+						SeatVO svo=sV.get(i);
+						seatButton.add(new JButton());
+						seatButton.get(i).setText(svo.getSeatcol());
+						seatButton.get(i).setMargin(new Insets(2,0,2,0));
+						seatButton.get(i).setBackground(Color.BLACK);
+						seatButton.get(i).setForeground(Color.WHITE);
+						seatButton.get(i).addActionListener(this);
+
+						int seatPlace=Integer.parseInt(seatButton.get(i).getText());
+						if(seatPlace<=5) {
+							seatButton.get(i).setMargin(new Insets(2,3,2,3));
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							leftArea.add(seatButton.get(i));
+							seatPanel.add(leftArea);							
+						}else if(5<seatPlace && seatPlace<=15) {
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							centerArea.add(seatButton.get(i));
+							seatPanel.add(centerArea);
+						}else if(seatPlace<=20) {
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							rightArea.add(seatButton.get(i));
+							seatPanel.add(rightArea);
+						}// 제발
+
+
+					} // for
 				}// if
-				for(int i=0;i<time.size();i++) {
-					timeBList.add(new JToggleButton());
-					timeBList.get(i).setBackground(Color.BLACK);
-					timeBList.get(i).setForeground(Color.WHITE);
-					timeBList.get(i).addActionListener(this);
-					timeBList.get(i).setText(time.get(i));
-					timeBG.add(timeBList.get(i));
-					timeGroup.add(timeBList.get(i));
-				}// for
 			}//if else
 		}// 리스트 항목에서 버튼을 뗐을 때
 	}//vC()
