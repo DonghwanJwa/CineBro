@@ -24,7 +24,7 @@ public class BookingDAO {
 		daoManager.connectDB();
 
 		Vector<MovieVO> nameList=new Vector<MovieVO>();
-		String sql="SELECT movie_code,movie_nameK,movie_nameE FROM MovieData";
+		String sql="SELECT movie_code,movie_nameK,movie_img FROM MovieData";
 
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
@@ -33,7 +33,7 @@ public class BookingDAO {
 				MovieVO m=new MovieVO();
 				m.setMovie_code(rs.getInt("movie_code"));
 				m.setMovie_nameK(rs.getString("movie_nameK"));
-				m.setMovie_nameE(rs.getString("movie_nameE"));
+				m.setMovie_img(rs.getString("movie_img"));
 				nameList.add(m);
 			} // while
 			if(rs != null) rs.close();
@@ -64,19 +64,19 @@ public class BookingDAO {
 		return cinemaList;
 	}// cinemaList()
 	// 영화 날짜, 영화 시간 리스트
-	public List<MovietimeVO> DayTimeList(String screen){
+	public List<MovietimeVO> DayTimeList(String screenNum){
 		daoManager.connectDB();
 
 		List<MovietimeVO> dayTimeList=new ArrayList<>();
 		String sql="SELECT * FROM movietime WHERE screen=?";
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
-			daoManager.pt.setString(1,screen);
+			daoManager.pt.setString(1,screenNum);
 			rs=daoManager.pt.executeQuery();
 			while(rs.next()) {
 				MovietimeVO mt=new MovietimeVO();
-				mt.setScreendate("screendate");
-				mt.setScreentime("screentime");
+				mt.setScreendate(rs.getString("screendate"));
+				mt.setScreentime(rs.getString("screentime"));
 				dayTimeList.add(mt);
 			}// while
 			if(rs != null) rs.close();
