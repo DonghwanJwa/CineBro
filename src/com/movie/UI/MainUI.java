@@ -45,7 +45,7 @@ public class MainUI {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}//try~catch()
-		}//paintComponent();	
+		}//paintComponent();
 	};//패널에 이미지 넣기(배경)
 	
 	/* 메뉴탭 */

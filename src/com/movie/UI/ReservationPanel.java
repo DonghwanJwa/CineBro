@@ -134,7 +134,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// --------------------------------- 좌석 패널
 
-	private JPanel seatPanel=new JPanel(new FlowLayout(FlowLayout.CENTER,10,0)); // 좌석 구역 패널
+	private JPanel seatPanel=new JPanel(new BorderLayout(10,0)); // 좌석 구역 패널
 	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
 	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1)); // 중앙 구역 좌석
 	private JPanel rightArea=new JPanel(new GridLayout(12,5,1,1)); // 오른쪽 구역 좌석
@@ -463,56 +463,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			lineName++;
 			areaLine.add(seatLine[i]);
 		}//for		
-		//		// 왼쪽구역 좌석 배치
-		//		for(int i=0;i<12;i++) {
-		//			for(int j=0;j<5;j++) {
-		//				leftSeat[i][j]=new JButton();
-		//				leftSeat[i][j].setText(index+"");
-		//				leftSeat[i][j].setMargin(new Insets(0,3,0,3));
-		//				leftSeat[i][j].setBackground(Color.BLACK);
-		//				leftSeat[i][j].setForeground(Color.WHITE);
-		//				leftSeat[i][j].addActionListener(this);
-		//				if(index==5) {
-		//					index=0;
-		//				}// if
-		//				index++;		
-		//				leftArea.add(leftSeat[i][j]);
-		//			}// inner for
-		//		}// outer for
-		//		// --- 중앙구역 좌석
-		//		index=6;
-		//		for(int i=0;i<12;i++) {
-		//			for(int j=0;j<10;j++) {
-		//				centerSeat[i][j]=new JButton();
-		//				centerSeat[i][j].setText(index+"");
-		//				centerSeat[i][j].setMargin(new Insets(0,0,0,0));
-		//				centerSeat[i][j].setBackground(Color.BLACK);
-		//				centerSeat[i][j].setForeground(Color.WHITE);
-		//				centerSeat[i][j].addActionListener(this);
-		//				if(index==15) {
-		//					index=5;
-		//				}// if
-		//				index++;
-		//				centerArea.add(centerSeat[i][j]);
-		//			}// inner for
-		//		}// outer for
-		//		// --- 오른쪽 구역 좌석
-		//		index=16;
-		//		for(int i=0;i<12;i++) {
-		//			for(int j=0;j<5;j++) {
-		//				rightSeat[i][j]=new JButton();
-		//				rightSeat[i][j].setText(index+"");
-		//				rightSeat[i][j].setMargin(new Insets(0,0,0,0));
-		//				rightSeat[i][j].setBackground(Color.BLACK);
-		//				rightSeat[i][j].setForeground(Color.WHITE);	
-		//				rightSeat[i][j].addActionListener(this);
-		//				if(index==20) {
-		//					index=15;
-		//				}//if
-		//				index++;
-		//				rightArea.add(rightSeat[i][j]);
-		//			}// inner for
-		//		}// outer for
 		seatReset.addActionListener(this);
 		seatChoice.add(seatChoiceP,"Center"); seatChoice.add(seatReset,"South"); 
 
@@ -801,110 +751,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			nextCard();
 		}// if
 		// --- 좌석 선택 버튼
-		//		for(i=0;i<12;i++) {
-		//			for(int j=0;j<5;j++) {
-		//				if(obj==leftSeat[i][j]) {
-		//					if(leftSeat[i][j].getBackground()==Color.BLACK) {
-		//						if(0<=index && index<(adultCount+childCount)) {
-		//							leftSeat[i][j].setBackground(Color.RED);
-		//							seatList.add(new JLabel());
-		//							seatChoiceP.add(seatList.get(index),"Center");
-		//							seatList.get(index).setText(seatLine[i].getText()+leftSeat[i][j].getText());
-		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-		//							if(index==0) {
-		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-		//							}else {
-		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-		//							}// if else
-		//							index++;
-		//						}else {
-		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-		//						}// if else
-		//					}else if(leftSeat[i][j].getBackground()==Color.RED) {
-		//						leftSeat[i][j].setBackground(Color.BLACK);
-		//						for(int k=0;k<seatList.size();k++) {
-		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+leftSeat[i][j].getText())) {
-		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
-		//										.replace(seatList.get(k).getText(),""));
-		//								seatChoiceP.remove(seatList.get(k));
-		//								seatList.remove(k);
-		//								seatChoiceP.revalidate();
-		//								seatChoiceP.repaint();
-		//								index--;
-		//							}// if
-		//						}// for
-		//					}// if else if
-		//				}// leftSeat 버튼 클릭시
-		//				if(obj==rightSeat[i][j]) {
-		//					if(rightSeat[i][j].getBackground()==Color.BLACK) {
-		//						if(0<=index && index<(adultCount+childCount)) {
-		//							rightSeat[i][j].setBackground(Color.RED);
-		//							seatList.add(new JLabel());
-		//							seatChoiceP.add(seatList.get(index),"Center");
-		//							seatList.get(index).setText(seatLine[i].getText()+rightSeat[i][j].getText());
-		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-		//							if(index==0) {
-		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-		//							}else {
-		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-		//							}// if else
-		//							index++;	
-		//						}else {
-		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-		//						}// if else
-		//					}else if(rightSeat[i][j].getBackground()==Color.RED) {
-		//						rightSeat[i][j].setBackground(Color.BLACK);
-		//						for(int k=0;k<seatList.size();k++) {
-		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+rightSeat[i][j].getText())) {
-		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
-		//										.replace(seatList.get(k).getText(),""));
-		//								seatChoiceP.remove(seatList.get(k));
-		//								seatList.remove(k);
-		//								seatChoiceP.revalidate();
-		//								seatChoiceP.repaint();
-		//								index--;
-		//							}// if
-		//						}// for
-		//					}// if else if
-		//				}// leftSeat 버튼 클릭시
-		//			}// inner for
-		//		}// outer for
-		//		for(i=0;i<12;i++) {
-		//			for(int j=0;j<10;j++) {
-		//				if(obj==centerSeat[i][j]) {
-		//					if(centerSeat[i][j].getBackground()==Color.BLACK) {
-		//						if(0<=index && index<(adultCount+childCount)) {
-		//							centerSeat[i][j].setBackground(Color.RED);
-		//							seatList.add(new JLabel());
-		//							seatChoiceP.add(seatList.get(index),"Center");
-		//							seatList.get(index).setText(seatLine[i].getText()+centerSeat[i][j].getText());
-		//							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-		//							if(index==0) {
-		//								setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-		//							}else {
-		//								setSeatL.setText(setSeatL.getText().concat(" "+seatList.get(index).getText()));
-		//							}// if else
-		//							index++;	
-		//						}else {
-		//							JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-		//						}// if else
-		//					}else if(centerSeat[i][j].getBackground()==Color.RED) {
-		//						centerSeat[i][j].setBackground(Color.BLACK);
-		//						for(int k=0;k<seatList.size();k++) {
-		//							if(seatList.get(k).getText().equals(seatLine[i].getText()+centerSeat[i][j].getText())) {
-		//								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
-		//										.replace(seatList.get(k).getText(),""));
-		//								seatChoiceP.remove(seatList.get(k));
-		//								seatList.remove(k);
-		//								seatChoiceP.revalidate();
-		//								seatChoiceP.repaint();
-		//								index--;
-		//							}// if
-		//						}// for
-		//					}// if else if
-		//				}// leftSeat 버튼 클릭시
-		//			}// inner for
-		//		}// outer for
 		for(i=0;i<seatButton.size();i++) {
 			if(obj==seatButton.get(i)) {
 				if(seatButton.get(i).getBackground()==Color.BLACK) {
@@ -912,24 +758,17 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						seatButton.get(i).setBackground(Color.RED);
 						seatList.add(new JLabel());
 						seatChoiceP.add(seatList.get(index),"Center");
-						for(int j=0;j<12;j++) {
-							seatList.get(index).setText(seatLine[j].getText()+seatButton.get(i).getText());
-							seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
-						}// fo
-						if(index==0) {
-							setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()));
-						}else {
-							setSeatL.setText(" "+setSeatL.getText().concat(seatList.get(index).getText()));
-						}// if else
+						seatList.get(index).setText(seatButton.get(i).getText());
+						seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
+						setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()+" "));
 						index++;
 					}else {
 						JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
 					}// 인원수 초과 시
 				}else if(seatButton.get(i).getBackground()==Color.RED) {
 					seatButton.get(i).setBackground(Color.BLACK);
-					for(int k=0;k<seatList.size();k++) {
-						for(int j=0;j<12;j++) {
-							if(seatList.get(k).getText().equals(seatLine[j].getText()+seatButton.get(i).getText())){
+					for(int k=0;k<seatList.size();k++) {						
+							if(seatList.get(k).getText().equals(seatButton.get(i).getText())){
 								setSeatL.setText(setSeatL.getText().replace(" "+seatList.get(k).getText(),"")
 										.replace(seatList.get(k).getText(),""));
 								seatChoiceP.remove(seatList.get(k));
@@ -937,23 +776,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 								seatChoiceP.revalidate();
 								seatChoiceP.repaint();
 								index--;
-							}// if
-						}// inner for
+							}// if						
 					}// outer for
 				}// if else
 			}// 좌석버튼 클릭 시
 		}// outer for
 		if(obj==seatReset) {
-			for(i=0;i<12;i++) {
-				for(int j=0;j<5;j++) {
-					leftSeat[i][j].setBackground(Color.BLACK);
-					rightSeat[i][j].setBackground(Color.BLACK);
-				}// inner for
-			}// outer for
-			for(i=0;i<12;i++) {
-				for(int j=0;j<10;j++) {
-					centerSeat[i][j].setBackground(Color.BLACK);
-				}// inner for
+			for(i=0;i<seatButton.size();i++) {
+				seatButton.get(i).setBackground(Color.BLACK);
 			}// outer for
 			for(int k=0;k<seatList.size();k++) {
 				seatChoiceP.removeAll();
@@ -1008,7 +838,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						seatButton.get(i).setText(svo.getSeatcol());
 						seatButton.get(i).setMargin(new Insets(2,0,2,0));
 						seatButton.get(i).setBackground(Color.BLACK);
-						seatButton.get(i).setForeground(Color.WHITE);
+						seatButton.get(i).setForeground(Color.WHITE);	
 						seatButton.get(i).addActionListener(this);
 
 						int seatPlace=Integer.parseInt(seatButton.get(i).getText());
@@ -1016,21 +846,19 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 							seatButton.get(i).setMargin(new Insets(2,3,2,3));
 							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
 							leftArea.add(seatButton.get(i));
-							seatPanel.add(leftArea);							
+							seatPanel.add(leftArea,"West");							
 						}else if(5<seatPlace && seatPlace<=15) {
 							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
 							centerArea.add(seatButton.get(i));
-							seatPanel.add(centerArea);
+							seatPanel.add(centerArea,"Center");
 						}else if(seatPlace<=20) {
 							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
 							rightArea.add(seatButton.get(i));
-							seatPanel.add(rightArea);
-						}// 제발
-
-
+							seatPanel.add(rightArea,"East");
+						}// if else if
 					} // for
 				}// if
-			}//if else
+			}// if else
 		}// 리스트 항목에서 버튼을 뗐을 때
 	}//vC()
 
