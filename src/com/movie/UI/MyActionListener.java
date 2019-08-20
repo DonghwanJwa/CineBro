@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -93,7 +95,7 @@ public class MyActionListener {
 					signUp.emailTF.requestFocus();
 					return;
 				} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
-				
+
 				if(memberdao.selectEmailcheck(signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText())==1){
 					signUp.error_emailL.setText("사용중인 이메일 입니다!");
 					signUp.emailTF.setText("");			//이메일 텍스트필드 비움
@@ -102,7 +104,7 @@ public class MyActionListener {
 					signUp.emailTF.requestFocus();
 					return;
 				} // 이메일 제약조건 : 이메일 중복 확인 
-				
+
 				signUp.security = memberdao.randomAuthNum();
 				String email = signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText();
 				memberdao.Auth_Email(email, signUp.security);
@@ -186,7 +188,7 @@ public class MyActionListener {
 					signUp.nameTF.requestFocus();
 					return;
 				} // 이름 제약조건 : 이름은 5글자이하만 가능하고 한글만 가능한 제약 조건
-				
+
 				if (signUp.yearTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
 						||signUp.monthTF.getText().trim().length() < 1 // 생년월일 중 월이 1자리 이하일 때
 						||signUp.monthTF.getText().trim().length() > 2 // 생년월일 중 월이 2자리 초과일 때
@@ -209,20 +211,20 @@ public class MyActionListener {
 					signUp.yearTF.requestFocus();
 					return;
 				} // 생년월일 제약조건 : 매 텍스트필드마다 년은 4자리 이면서 숫자만 ,월은 2자리 숫자만, 일은 2자리 숫자만 제약을 줌
-				
+
 				if(signUp.check_emailB.isEnabled()==true) {
 					signUp.error_emailL.setText("이메일 인증을 받아주세요!");
 					signUp.check_emailB.requestFocus();
 					return;
 				} // 이메일 제약조건 : 이메일 인증을 받지 않았을 때
-				
+
 				membervo.setId(signUp.idTF.getText());
 				membervo.setPwd(signUp.passPF.getText());
 				membervo.setName(signUp.nameTF.getText());
 				membervo.setBirth(signUp.yearTF.getText() + "-" + signUp.monthTF.getText() + "-" + signUp.dateTF.getText());
 				membervo.setSex((String) signUp.sexC.getSelectedItem());
 				membervo.setEmail(signUp.emailTF.getText() + "@" + signUp.emailDoTF.getText());
-				
+
 				if(memberdao.insertMember(membervo)==1) {
 					signUp.dialog.showMessageDialog(null, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
 					membervo.resetMemberVO();	//회원가입 후 VO 데이터 초기화
@@ -289,7 +291,7 @@ public class MyActionListener {
 			if(e.getSource()==findF.confirm_idB) {				
 				String id = memberdao.FindID(findF.email_idTF.getText(), findF.name_idTF.getText());
 				//이메일과 아이디를 기입함 ->id값을 호출 : 정보가 일치하면 id값 가져옴, 정보가 일치하지 않으면  null;
-				
+
 				if (findF.name_idTF.getText().length() < 1 || findF.name_idTF.getText().length() > 6
 						|| !(Pattern.matches("^[가-힣]*$", findF.name_idTF.getText()))) {
 					findF.error_idL.setText("올바른 입력 값이 아닙니다");
@@ -305,7 +307,7 @@ public class MyActionListener {
 					findF.email_idTF.requestFocus();
 					return;
 				}// 아이디 제약 조건 : 입력값 없음
-						
+
 				if (id != null) {// 이메일 검증 아이디가 맞고 이메일이 틀렸을때 유효성 검증해주는 기능 눌값을 대체한다
 					findF.error_idL.setText(""); 				// 경고문 지우기
 					findF.show_nameL.setText("고객님의 아이디는");   // 결과 창 내용 기입
@@ -359,8 +361,8 @@ public class MyActionListener {
 					findF.email_passTF.setText("");
 					findF.pass_updateD.showMessageDialog(null, "고객님께서 입력하신 정보와 일치하는 정보가 없습니다.", "안내", findF.pass_updateD.CLOSED_OPTION);
 				}
-				
-				
+
+
 				if((findF.id_passTF.getText().trim().equals("")) ||        //텍스트 필드가 비어있을 때
 						(findF.name_passTF.getText().trim().equals("")) ||
 						(findF.email_passTF.getText().trim().equals(""))) {
@@ -384,29 +386,27 @@ public class MyActionListener {
 					findF.passre_PF.setText("");
 					findF.requestFocus();
 				}
-				
+
 				if(memberdao.FindPW(findF.pass_PF.getText(),
 						findF.id_passTF.getText(),findF.name_passTF.getText(),findF.email_passTF.getText())==1) {
-						findF.pass_PF.getText();
-						findF.wrong_passL.setText(""); // 경고문 지우기
-						findF.pass_updateD.showMessageDialog(null, "비밀번호가 변경 되었습니다.", "안내",findF.pass_updateD.CLOSED_OPTION);
-						// 비밀번호가 제대로 변경되었다는 알림문 다이어로그 출력
-						findF.dispose(); // 닫기
-					}else {
-						findF.pass_PF.setText("");
-						findF.pass_PF.requestFocus();
-						findF.passre_PF.setText("");
-						findF.wrong_passL.setText("실행이 되지 않았습니다");						
-					}
+					findF.pass_PF.getText();
+					findF.wrong_passL.setText(""); // 경고문 지우기
+					findF.pass_updateD.showMessageDialog(null, "비밀번호가 변경 되었습니다.", "안내",findF.pass_updateD.CLOSED_OPTION);
+					// 비밀번호가 제대로 변경되었다는 알림문 다이어로그 출력
+					findF.dispose(); // 닫기
+				}else {
+					findF.pass_PF.setText("");
+					findF.pass_PF.requestFocus();
+					findF.passre_PF.setText("");
+					findF.wrong_passL.setText("실행이 되지 않았습니다");						
+				}
 			}//비밀번호 재입력 패널에서 확인 버튼 클릭 시
 		}//aP()
 	}//FindActionL inner class
 
-	class LoginActionL implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Object obj=e.getSource();
-			if(obj==loginP.login) {
+	class LoginActionL implements ActionListener,KeyListener{
+		
+		public void loginFunction() {
 				if(loginP.idField.getText().equals("")) {
 					loginP.error.setText("아이디를 입력해주세요!");
 					loginP.idField.requestFocus();
@@ -443,6 +443,7 @@ public class MyActionListener {
 							mainUi.after_loginLP.setVisible(true);
 							/* (3) */
 							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
+							/* (4) */
 							mainUi.loginFlag=true;
 
 						}else { // 정확하지 않은 id가 적혔을때
@@ -454,7 +455,13 @@ public class MyActionListener {
 					}// 비밀번호 미입력시
 					return;
 				}// 아이디 미입력시
-
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Object obj=e.getSource();
+			if(obj==loginP.login) {
+				loginFunction();
 			}// 로그인버튼 클릭시
 			if(obj==loginP.addMem) {
 				signUp = new SignUpFrame();
@@ -465,6 +472,23 @@ public class MyActionListener {
 				findListenerSet();
 			}
 		}//aP()
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+				loginFunction();
+			}//enter
+		}//kP()
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+		}//kR()
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}//kT()
+
+
 	}// LoginActionL inner class
 	class MainActionL implements ActionListener{
 		@Override
@@ -489,12 +513,12 @@ public class MyActionListener {
 			}//if
 			if(obj==mainUi.reservB) {
 				if(mainUi.loginFlag==true) {
-				mainUi.homeB.setBackground(Color.GRAY.brighter());
-				mainUi.movieB.setBackground(Color.GRAY.brighter());
-				mainUi.reservB.setBackground(Color.RED);
-				mainUi.checkB.setBackground(Color.GRAY.brighter());
-				mainUi.myPageB.setBackground(Color.GRAY.brighter());
-				mainUi.card.show(mainUi.mainC,"reservB");
+					mainUi.homeB.setBackground(Color.GRAY.brighter());
+					mainUi.movieB.setBackground(Color.GRAY.brighter());
+					mainUi.reservB.setBackground(Color.RED);
+					mainUi.checkB.setBackground(Color.GRAY.brighter());
+					mainUi.myPageB.setBackground(Color.GRAY.brighter());
+					mainUi.card.show(mainUi.mainC,"reservB");
 				}else {
 					loginP = new LoginPage();
 					loginListenerSet();
@@ -502,12 +526,12 @@ public class MyActionListener {
 			}//if
 			if(obj==mainUi.checkB) {
 				if(mainUi.loginFlag==true) {
-				mainUi.homeB.setBackground(Color.GRAY.brighter());
-				mainUi.movieB.setBackground(Color.GRAY.brighter());
-				mainUi.reservB.setBackground(Color.GRAY.brighter());
-				mainUi.checkB.setBackground(Color.RED);
-				mainUi.myPageB.setBackground(Color.GRAY.brighter());
-				mainUi.card.show(mainUi.mainC,"checkB");
+					mainUi.homeB.setBackground(Color.GRAY.brighter());
+					mainUi.movieB.setBackground(Color.GRAY.brighter());
+					mainUi.reservB.setBackground(Color.GRAY.brighter());
+					mainUi.checkB.setBackground(Color.RED);
+					mainUi.myPageB.setBackground(Color.GRAY.brighter());
+					mainUi.card.show(mainUi.mainC,"checkB");
 				}else {
 					loginP = new LoginPage();
 					loginListenerSet();
@@ -515,16 +539,16 @@ public class MyActionListener {
 			}//if
 			if(obj==mainUi.myPageB) {
 				if(mainUi.loginFlag==true) {
-				mainUi.homeB.setBackground(Color.GRAY.brighter());
-				mainUi.movieB.setBackground(Color.GRAY.brighter());
-				mainUi.reservB.setBackground(Color.GRAY.brighter());
-				mainUi.checkB.setBackground(Color.GRAY.brighter());
-				mainUi.myPageB.setBackground(Color.RED);
-				mainUi.card.show(mainUi.mainC,"myPageB");
-				mainUi.myPageC.error_passL.setText("");
-				mainUi.myPageC.error_birthL.setText("");
-				mainUi.myPageC.error_emailL.setText("");
-				mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
+					mainUi.homeB.setBackground(Color.GRAY.brighter());
+					mainUi.movieB.setBackground(Color.GRAY.brighter());
+					mainUi.reservB.setBackground(Color.GRAY.brighter());
+					mainUi.checkB.setBackground(Color.GRAY.brighter());
+					mainUi.myPageB.setBackground(Color.RED);
+					mainUi.card.show(mainUi.mainC,"myPageB");
+					mainUi.myPageC.error_passL.setText("");
+					mainUi.myPageC.error_birthL.setText("");
+					mainUi.myPageC.error_emailL.setText("");
+					mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
 				}else {
 					loginP = new LoginPage();
 					loginListenerSet();
@@ -569,15 +593,17 @@ public class MyActionListener {
 					mainUi.checkB.setBackground(Color.GRAY.brighter());
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
 					mainUi.card.show(mainUi.mainC,"homeB"); // "homeB"키가 적용된 카드레이아웃 보여줌
+					/* (5) */
 					mainUi.loginFlag=false;
 				}
 			}
 		}//ap()
 	}// MainActionL class
 
-	public void loginListenerSet() 	 {		  loginP.addLoginListener(logL);		 }
+	public void loginListenerSet() 	 {		  loginP.addLoginListener(logL);		 
+	loginP.addLoginKeyListener(logL);		 }
 	public void mainListenerSet() 	 {		  mainUi.addMainListener(mainL);	 	 }
 	public void signupListenerSet()  {		  signUp.addSignupListener(signupL);
-											  signUp.addSignupFocusListener(signupL);}
+	signUp.addSignupFocusListener(signupL);}
 	public void findListenerSet()	 {		  findF.addFindListener(findL); 		 }
 }//MyActionListener class
