@@ -8,8 +8,6 @@ import java.awt.event.FocusListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import com.movie.DAO.BookingDAO;
 import com.movie.DAO.DAOManager;
@@ -437,6 +435,7 @@ public class MyActionListener {
 							 *    아이디 출력되는 Label에 setText(); "어서오세요, ~회원님"
 							 * 2. 예매 정보를 reservation panel에 부름(where id,order by booking_code)
 							 * 3. 개인 정보를 mypage panel에 부름(where id)
+							 * 4. loginFlag => true로 
 							 */
 							/* (1) */
 							mainUi.log_regBP.setVisible(false);
@@ -444,6 +443,7 @@ public class MyActionListener {
 							mainUi.after_loginLP.setVisible(true);
 							/* (3) */
 							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
+							mainUi.loginFlag=true;
 
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
@@ -488,22 +488,33 @@ public class MyActionListener {
 				mainUi.card.show(mainUi.mainC,"movieB");
 			}//if
 			if(obj==mainUi.reservB) {
+				if(mainUi.loginFlag==true) {
 				mainUi.homeB.setBackground(Color.GRAY.brighter());
 				mainUi.movieB.setBackground(Color.GRAY.brighter());
 				mainUi.reservB.setBackground(Color.RED);
 				mainUi.checkB.setBackground(Color.GRAY.brighter());
 				mainUi.myPageB.setBackground(Color.GRAY.brighter());
 				mainUi.card.show(mainUi.mainC,"reservB");
+				}else {
+					loginP = new LoginPage();
+					loginListenerSet();
+				}
 			}//if
 			if(obj==mainUi.checkB) {
+				if(mainUi.loginFlag==true) {
 				mainUi.homeB.setBackground(Color.GRAY.brighter());
 				mainUi.movieB.setBackground(Color.GRAY.brighter());
 				mainUi.reservB.setBackground(Color.GRAY.brighter());
 				mainUi.checkB.setBackground(Color.RED);
 				mainUi.myPageB.setBackground(Color.GRAY.brighter());
 				mainUi.card.show(mainUi.mainC,"checkB");
+				}else {
+					loginP = new LoginPage();
+					loginListenerSet();
+				}
 			}//if
 			if(obj==mainUi.myPageB) {
+				if(mainUi.loginFlag==true) {
 				mainUi.homeB.setBackground(Color.GRAY.brighter());
 				mainUi.movieB.setBackground(Color.GRAY.brighter());
 				mainUi.reservB.setBackground(Color.GRAY.brighter());
@@ -514,6 +525,10 @@ public class MyActionListener {
 				mainUi.myPageC.error_birthL.setText("");
 				mainUi.myPageC.error_emailL.setText("");
 				mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
+				}else {
+					loginP = new LoginPage();
+					loginListenerSet();
+				}
 			}
 			if(obj==mainUi.loginB) {
 				loginP = new LoginPage();

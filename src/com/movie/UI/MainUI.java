@@ -56,6 +56,8 @@ public class MainUI {
 	protected JButton checkB=new JButton("예매조회");
 	protected JButton myPageB=new JButton("MY PAGE");
 	
+	protected boolean loginFlag = false;
+	
 	/* 로고 이미지 */
 	ImageIcon preImg=new ImageIcon("pic/logo.png"); // 포스터
 	Image originImg=preImg.getImage(); // ImageIcon을 Image로 전환
