@@ -187,6 +187,7 @@ public class MemberDAO {
 	public int FindPWNAMEEMAILcheck(String id, String name, String email) {
 		int re = -1;
 		try {
+			daoManager.connectDB();
 			sql = "select * from member where member_id = ? and member_name = ? and member_email = ?";
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setString(1, id);
