@@ -28,7 +28,7 @@ begin
 end;
 
 --관수를 변경하면서 빠진 데이터가 없는지 간단히 확인해주세요.
-select * from seat where screen='1관';
+select * from seat where screen='6관' ORDER BY seatrow;
 
 
 
