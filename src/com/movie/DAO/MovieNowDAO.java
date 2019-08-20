@@ -20,7 +20,7 @@ public class MovieNowDAO {
 	}//생성자
 	public List<MovieNowVO> movieNowList() {
 		//---------sql 문 작성---------//
-		String sql="SELECT  movie_code, movie_nameK, movie_nameE, movie_img, age, gerne, director, actors FROM moviedata ";
+		String sql="SELECT  movie_code, movie_nameK, movie_nameE, movie_img, age, gerne, director, actors FROM moviedata order by movie_code";
 		//---------데이터를 넣어줄 list 생성---------//
 		List<MovieNowVO> nlist = new ArrayList<MovieNowVO>();
 		try {
@@ -56,6 +56,4 @@ public class MovieNowDAO {
 		}//finally
 		return nlist;
 	}//movieNowList()
-
-
 }
