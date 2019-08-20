@@ -74,9 +74,9 @@ public class MyActionListener {
 					return;
 				} else { // 아이디 경고문 출력
 					if (memberdao.selectIdcheck(signUp.idTF.getText()) == 1) {
-						signUp.dialog.showMessageDialog(signUp, "중복된 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
+						signUp.dialog.showMessageDialog(null, "중복된 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
 					} else if (memberdao.selectIdcheck(signUp.idTF.getText()) == 0) {
-						signUp.dialog.showMessageDialog(signUp, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
+						signUp.dialog.showMessageDialog(null, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
 						signUp.error_idL.setText("");		// setEnabeld true이면 기능이 동작하고 false면 기능이 동작하지 않는다
 						signUp.check_idB.setEnabled(false); // 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
 						signUp.passPF.requestFocus();
@@ -108,7 +108,7 @@ public class MyActionListener {
 				signUp.security = memberdao.randomAuthNum();
 				String email = signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText();
 				memberdao.Auth_Email(email, signUp.security);
-				signUp.dialog.showMessageDialog(signUp, "인증번호가 해당 이메일로 발송되었습니다.");
+				signUp.dialog.showMessageDialog(null, "인증번호가 해당 이메일로 발송되었습니다.");
 				signUp.error_emailL.setText("");			//오류 메세지 제거
 				signUp.secu_codeTF.setEnabled(true);		//인증번호 텍스트 필드 활성화
 				signUp.check_emailB.setVisible(false);		//이메일 인증번호 받기 버튼 숨기기
@@ -119,7 +119,7 @@ public class MyActionListener {
 
 			if(e.getSource() == signUp.confirm_emailB) {
 				if(signUp.security.equals(signUp.secu_codeTF.getText())) {
-					signUp.dialog.showMessageDialog(signUp, "인증번호가 확인되었습니다.");
+					signUp.dialog.showMessageDialog(null, "인증번호가 확인되었습니다.");
 					signUp.error_emailL.setText("");				//오류 메세지 제거
 					signUp.security=null;							//인증번호 비우기(초기화)
 					signUp.secu_count=0;							//인증 실패 카운트 초기화
@@ -136,7 +136,7 @@ public class MyActionListener {
 					signUp.secu_codeTF.requestFocus();
 					signUp.secu_count+=1;
 					if(signUp.secu_count==3) {
-						signUp.dialog.showMessageDialog(signUp, "인증번호 입력이 3회 틀리셨습니다. 다시 인증번호를 받아주세요!");
+						signUp.dialog.showMessageDialog(null, "인증번호 입력이 3회 틀리셨습니다. 다시 인증번호를 받아주세요!");
 						signUp.error_emailL.setText("");				//오류 메세지 제거
 						signUp.security=null;							//인증번호 비우기(초기화)
 						signUp.secu_count=0;							//인증 실패 카운트 초기화
@@ -226,11 +226,11 @@ public class MyActionListener {
 				membervo.setEmail(signUp.emailTF.getText() + "@" + signUp.emailDoTF.getText());
 				
 				if(memberdao.insertMember(membervo)==1) {
-					signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
+					signUp.dialog.showMessageDialog(null, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
 					membervo.resetMemberVO();	//회원가입 후 VO 데이터 초기화
 					signUp.dispose();// 회원가입이 안되었을 때 잘못되었다는 메시지 창을 만들어줘야 한다
 				}else {
-					signUp.dialog.showMessageDialog(signUp, "오류가 발생했습니다. 다시한번 시도하시기 바랍니다.", "안내", signUp.dialog.CLOSED_OPTION);
+					signUp.dialog.showMessageDialog(null, "오류가 발생했습니다. 다시한번 시도하시기 바랍니다.", "안내", signUp.dialog.CLOSED_OPTION);
 					membervo.resetMemberVO();
 				}				
 			} // 가입하기 버튼 눌렀을 때
@@ -359,7 +359,7 @@ public class MyActionListener {
 					findF.id_passTF.requestFocus();
 					findF.name_passTF.setText("");
 					findF.email_passTF.setText("");
-					findF.pass_updateD.showMessageDialog(findF, "고객님께서 입력하신 정보와 일치하는 정보가 없습니다.", "안내", findF.pass_updateD.CLOSED_OPTION);
+					findF.pass_updateD.showMessageDialog(null, "고객님께서 입력하신 정보와 일치하는 정보가 없습니다.", "안내", findF.pass_updateD.CLOSED_OPTION);
 				}
 				
 				
@@ -391,7 +391,7 @@ public class MyActionListener {
 						findF.id_passTF.getText(),findF.name_passTF.getText(),findF.email_passTF.getText())==1) {
 						findF.pass_PF.getText();
 						findF.wrong_passL.setText(""); // 경고문 지우기
-						findF.pass_updateD.showMessageDialog(findF, "비밀번호가 변경 되었습니다.", "안내",findF.pass_updateD.CLOSED_OPTION);
+						findF.pass_updateD.showMessageDialog(null, "비밀번호가 변경 되었습니다.", "안내",findF.pass_updateD.CLOSED_OPTION);
 						// 비밀번호가 제대로 변경되었다는 알림문 다이어로그 출력
 						findF.dispose(); // 닫기
 					}else {
@@ -510,6 +510,9 @@ public class MyActionListener {
 				mainUi.checkB.setBackground(Color.GRAY.brighter());
 				mainUi.myPageB.setBackground(Color.RED);
 				mainUi.card.show(mainUi.mainC,"myPageB");
+				mainUi.myPageC.error_passL.setText("");
+				mainUi.myPageC.error_birthL.setText("");
+				mainUi.myPageC.error_emailL.setText("");
 				mainUi.myPageC.changeVisible(0);				//회원정보수정 초기화 및 정보조회페이지로 전환
 			}
 			if(obj==mainUi.loginB) {

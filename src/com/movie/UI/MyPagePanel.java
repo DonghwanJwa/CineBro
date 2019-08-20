@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
@@ -28,7 +30,7 @@ import com.movie.DAO.MemberDAO;
 import com.movie.VO.MemberVO;
 import com.movie.main.AppManager;
 
-public class MyPagePanel extends JPanel implements ActionListener{
+public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 	private JLabel menuL = new JLabel("기본정보",SwingConstants.CENTER);	//메뉴 라벨(기본정보)			//각항목의 제목용 라벨(title label)
 	private JLabel idTL = new JLabel("아이디");		//아이디 타이틀 라벨
 	private JLabel passTL = new JLabel("비밀번호");	//비밀번호 타이틀 라벨
@@ -88,6 +90,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	protected JLabel error_emailL = new JLabel();		//이메일 입력 오류 라벨
 
 	private JPanel update_ConfirmP = new JPanel();		//수정 완료 버튼 올라갈 패널
+	private JPanel emailAuthP = new JPanel();			//이메일 인증 패널
 
 	protected JPasswordField passF_UpdatePF = new JPasswordField(); //비밀번호 입력용 패스워드필드(password number_update password field)
 	protected JPasswordField passS_UpdatePF = new JPasswordField();
@@ -96,14 +99,15 @@ public class MyPagePanel extends JPanel implements ActionListener{
 	protected JTextField date_UpdateTF = new JTextField();
 	protected JTextField email_UpdateTF = new JTextField();	 		//이메일 입력용 텍스트필드(email_update text field)
 	protected JTextField email_UpdateDoTF = new JTextField();		//이메일 도메인용 텍스트 필드
+	protected JTextField secu_codeTF = new JTextField();			//이메일 인증번호 텍스트 필드
 
 	String[] emaillist= {"직접입력","naver.com","hanmail.net","gmail.com","nate.com"};//성별 콤보박스 내용물
 	String[] sex = {"남자","여자"};                          			
 	protected JComboBox<String> sex_UpdateCB;				 		//성별 입력용 콤보박스(update_combo box)
 	protected JComboBox<String> emailC = new JComboBox<>(emaillist);
+	protected JButton check_emailB = new JButton("인증번호 발송");			//이메일 인증번호 발송 버튼
+	protected JButton confirm_emailB = new JButton("인증번호 확인");		//이메일 인증번호 확인 버튼
 	protected JButton update_ConfirmB = new JButton("수정"); 		 	//수정하기 버튼
-
-
 
 	protected JOptionPane dialog = new JOptionPane();
 
@@ -119,6 +123,9 @@ public class MyPagePanel extends JPanel implements ActionListener{
 
 	MemberDAO mdao = AppManager.getInstance().getDAOManager().getMemberDAO();
 	MemberVO mvo = AppManager.getInstance().getDataManager().getMemberVO();
+
+	protected String security = null;								//인증번호 저장 String
+	protected int secu_count=0;										//이메일 인증번호 실패 카운트 변수
 
 	/*폰트 만들기*/
 	Font menuF = new Font("맑은 고딕",Font.BOLD,30);
@@ -164,6 +171,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		contentP.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		titleContentP.setLayout(new BorderLayout());              //titleContentP만 보더레이아웃
 		update_ConfirmP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+		emailAuthP.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 
 		add(menuP); add(titleContentP);                           //뼈대가될 패널들을 올림
 		titleContentP.add(titleP,BorderLayout.WEST);
@@ -177,18 +185,19 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		passF_UpdateTP.setPreferredSize(new Dimension(240,80));
 		passS_UpdateTP.setPreferredSize(new Dimension(240,80));
 		nameTP.setPreferredSize(new Dimension(240,70));
-		sexTP.setPreferredSize(new Dimension(240,100));
-		birthTP.setPreferredSize(new Dimension(240,120));
-		emailTP.setPreferredSize(new Dimension(240,120));
+		sexTP.setPreferredSize(new Dimension(240,80));
+		birthTP.setPreferredSize(new Dimension(240,100));
+		emailTP.setPreferredSize(new Dimension(240,160));
 
 		idCP.setPreferredSize(new Dimension(680,70));
 		passCP.setPreferredSize(new Dimension(680,160));
 		passF_UpdateCP.setPreferredSize(new Dimension(680,80));
 		passS_UpdateCP.setPreferredSize(new Dimension(680,80));
 		nameCP.setPreferredSize(new Dimension(680,70));
-		sexCP.setPreferredSize(new Dimension(680,100));
-		birthCP.setPreferredSize(new Dimension(680,120));
-		emailCP.setPreferredSize(new Dimension(680,120));
+		sexCP.setPreferredSize(new Dimension(680,80));
+		birthCP.setPreferredSize(new Dimension(680,100));
+		emailCP.setPreferredSize(new Dimension(680,160));
+		emailAuthP.setPreferredSize(new Dimension(650,30));
 		birth_mentCP.setPreferredSize(new Dimension(650,25));//birth,email 패널 내에 들어갈 것
 		email_mentCP.setPreferredSize(new Dimension(650,25));//크기가 패딩된것보다 작아야한다.(좌측패딩 30)
 
@@ -208,6 +217,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		sexCP.setBackground(Color.WHITE);
 		birthCP.setBackground(Color.WHITE);
 		emailCP.setBackground(Color.WHITE);
+		emailAuthP.setBackground(Color.WHITE);
 		birth_mentCP.setBackground(Color.WHITE);
 		email_mentCP.setBackground(Color.WHITE);
 
@@ -244,16 +254,16 @@ public class MyPagePanel extends JPanel implements ActionListener{
 				BorderFactory.createEmptyBorder(15,30,0,0)));
 		nameTP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		sexTP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		birthTP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		emailTP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 
 		idCP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
@@ -266,16 +276,16 @@ public class MyPagePanel extends JPanel implements ActionListener{
 				BorderFactory.createEmptyBorder(15,30,0,0)));
 		nameCP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		sexCP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		birthCP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 		emailCP.setBorder(new CompoundBorder(
 				BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY),
-				BorderFactory.createEmptyBorder(20,30,0,0)));
+				BorderFactory.createEmptyBorder(15,30,0,0)));
 
 
 		titleP.add(idTP);    titleP.add(passTP);                //뼈대 패널에 내용 패널 추가
@@ -395,23 +405,53 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		date_UpdateTF.setPreferredSize(new Dimension(80,30));
 		email_UpdateTF.setPreferredSize(new Dimension(105,30));
 		email_UpdateDoTF.setPreferredSize(new Dimension(105,30));
+		secu_codeTF.setPreferredSize(new Dimension(235,30));
 
 		year_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY)); //테두리색 지정
 		month_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		date_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		email_UpdateTF.setBorder(new LineBorder(Color.LIGHT_GRAY));		
 		email_UpdateDoTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		secu_codeTF.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
+		email_UpdateTF.addFocusListener(this);
+		email_UpdateDoTF.addFocusListener(this);
+		emailC.addFocusListener(this);
+		
 		/*콤보박스*/
 		emailC.setFont(comboF);
 		emailC.setPreferredSize(new Dimension(110,30));
 		emailC.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
+		emailAuthP.add(secu_codeTF);
+		emailAuthP.add(check_emailB);
+		emailAuthP.add(confirm_emailB);
+
 		emailCP.add(email_UpdateTF);                  			   //이메일 패널에 텍스트필드 추가
 		emailCP.add(email_AtL);
 		emailCP.add(email_UpdateDoTF);
 		emailCP.add(emailC);
+		emailCP.add(emailAuthP);
+
+		check_emailB.addActionListener(this);
+		confirm_emailB.addActionListener(this);
 		emailC.addActionListener(this);
+
+		/*이메일 인증번호 버튼*/
+		check_emailB.setPreferredSize(new Dimension(110,30));
+		confirm_emailB.setPreferredSize(new Dimension(110,30));		
+		check_emailB.setFont(new Font("맑은 고딕",Font.BOLD,12));
+		confirm_emailB.setFont(new Font("맑은 고딕",Font.BOLD,12));		
+		check_emailB.setForeground(Color.WHITE);
+		confirm_emailB.setForeground(Color.BLACK);		
+		check_emailB.setBackground(Color.BLACK);
+		confirm_emailB.setBackground(Color.RED);		
+		check_emailB.setMargin(new Insets(0,0,0,0));
+		confirm_emailB.setMargin(new Insets(0,0,0,0));
+		check_emailB.setFocusPainted(false);
+		confirm_emailB.setFocusPainted(false);
+		check_emailB.setBorderPainted(false);
+		confirm_emailB.setBorderPainted(false);
 
 		/*생년월일 패널에 컴포넌트 추가*/
 		birthCP.add(year_UpdateTF);
@@ -475,12 +515,16 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		email_UpdateDoTF.setVisible(false);
 		email_AtL.setVisible(false);
 		emailC.setVisible(false);
+		confirm_emailB.setVisible(false);
+		emailAuthP.setVisible(false);
 		sex_UpdateCB.setVisible(false);
 		update_ConfirmB.setVisible(false);
 		delete_ConfirmB.setVisible(false);
 		error_passL.setVisible(false);
 		error_birthL.setVisible(false);
 		error_emailL.setVisible(false);
+
+		check_emailB.setEnabled(false);
 
 		update_ConfirmB.addActionListener(this);       //버튼 이벤트 추가
 		delete_ConfirmB.addActionListener(this);
@@ -493,7 +537,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		birthCL.setText("");
 		emailCL.setText("");
 	}
-	
+
 	public void setInfoLabel() {
 		idCL.setText(mvo.getId());
 		nameCL.setText(mvo.getName());
@@ -502,6 +546,18 @@ public class MyPagePanel extends JPanel implements ActionListener{
 		emailCL.setText(mvo.getEmail());
 	}//setInfoLabel : 현재 로그인되어있는 정보로 회원정보 보여주는 메서드
 
+	public void setUpdateTF() {
+		String[] birthS = mvo.getBirth().split("-");
+		String[] emailS = mvo.getEmail().split("@");
+	
+		sex_UpdateCB.setSelectedItem(mvo.getSex());
+		year_UpdateTF.setText(birthS[0]);
+		month_UpdateTF.setText(birthS[1]);
+		date_UpdateTF.setText(birthS[2]);
+		email_UpdateTF.setText(emailS[0]);
+		email_UpdateDoTF.setText(emailS[1]);
+	}//setUpdateTF : 현재 로그인되어있는 정보를 회원정보 수정페이지에 자동입력 해주는 메서드
+	
 	public Component setDialog() {
 		delete_mentP.setLayout(new BorderLayout());
 
@@ -541,8 +597,13 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			date_UpdateL.setVisible(false);
 			email_UpdateTF.setVisible(false);
 			email_UpdateDoTF.setVisible(false);
+			secu_codeTF.setVisible(false);
+			secu_codeTF.setEnabled(false);
 			email_AtL.setVisible(false);
 			emailC.setVisible(false);
+			emailAuthP.setVisible(false);
+			check_emailB.setEnabled(false);
+			confirm_emailB.setVisible(false);
 			sex_UpdateCB.setVisible(false);
 			update_ConfirmB.setVisible(false);
 			error_passL.setVisible(false);
@@ -581,6 +642,10 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			email_UpdateDoTF.setVisible(true);
 			email_AtL.setVisible(true);
 			emailC.setVisible(true);
+			secu_codeTF.setVisible(true);
+			emailAuthP.setVisible(true);
+			check_emailB.setEnabled(false);
+			confirm_emailB.setVisible(false);
 			sex_UpdateCB.setVisible(true);
 			update_ConfirmB.setVisible(true);
 			error_passL.setVisible(true);
@@ -611,6 +676,9 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			email_UpdateDoTF.setVisible(false);
 			email_AtL.setVisible(false);
 			emailC.setVisible(false);
+			emailAuthP.setVisible(false);
+			check_emailB.setEnabled(false);
+			confirm_emailB.setVisible(false);
 			sex_UpdateCB.setVisible(false);
 			update_ConfirmB.setVisible(false);
 			error_passL.setVisible(true);
@@ -642,11 +710,79 @@ public class MyPagePanel extends JPanel implements ActionListener{
 
 		if(e.getSource()==updateB) {
 			changeVisible(1); //정보입력용 컴포넌트 보여줌, 출력용 라벨 숨김 
+			setUpdateTF();
 		}//수정하기 버튼 클릭 시
 
 		if(e.getSource()==deleteB) {
 			changeVisible(2);
 		}//탈퇴하기 버튼 클릭 시 
+
+		if(e.getSource()==check_emailB) {
+			if (!(Pattern.matches("^[a-zA-Z0-9]*$", email_UpdateTF.getText())) ||
+					email_UpdateTF.getText().trim().equals("")) {
+				error_emailL.setText("이메일은 영문 소문자,대문자, 숫자로만 입력해주세요!");
+				emailC.setSelectedIndex(0);
+				email_UpdateTF.setText("");
+				email_UpdateDoTF.setText("");
+				email_UpdateTF.requestFocus();
+				return;
+			} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
+			
+			if(emailCL.getText().equals(email_UpdateTF.getText()+"@"+email_UpdateDoTF.getText())) {
+				if(mdao.selectEmailcheck(email_UpdateTF.getText()+"@"+email_UpdateDoTF.getText())==1){
+					error_emailL.setText("사용중인 이메일 입니다!");
+					email_UpdateTF.setText("");			//이메일 텍스트필드 비움
+					email_UpdateDoTF.setText("");		//이메일 도메인 텍스트필드 비움
+					emailC.setSelectedIndex(0);			//이메일 도메인 콤보박스 초기화
+					email_UpdateTF.requestFocus();
+					return;
+				}
+			} // 이메일 제약조건 : 이메일 중복 확인 
+
+			security = mdao.randomAuthNum();
+			String email = email_UpdateTF.getText()+"@"+email_UpdateDoTF.getText();
+			mdao.Auth_Email(email, security);
+			dialog.showMessageDialog(null, "인증번호가 해당 이메일로 발송되었습니다.");
+			error_emailL.setText("");				//오류 메세지 제거
+			secu_codeTF.setEnabled(true);			//인증번호 텍스트 필드 활성화
+			check_emailB.setVisible(false);			//이메일 인증번호 받기 버튼 숨기기
+			confirm_emailB.setEnabled(true);		//이메일 인증번호 확인 버튼 활성화
+			confirm_emailB.setVisible(true);		//이메일 인증번호 확인 버튼 보이기
+			secu_codeTF.requestFocus();				//인증번호 텍스트 필드로 포커스 이동	
+		}//이메일 인증번호 발송 버튼 클릭 시
+
+		if(e.getSource() == confirm_emailB) {
+			if(security.equals(secu_codeTF.getText())) {
+				dialog.showMessageDialog(null, "인증번호가 확인되었습니다.");
+				error_emailL.setText("");				//오류 메세지 제거
+				security=null;							//인증번호 비우기(초기화)
+				secu_count=0;							//인증 실패 카운트 초기화
+				secu_codeTF.setText("");				//인증번호 텍스트 필드 초기화
+				secu_codeTF.setEnabled(false);			//인증번호 텍스트 필드 비활성화
+				check_emailB.setEnabled(false);			//이메일 인증번호 받기 버튼 비활성화
+				check_emailB.setVisible(true);			//이메일 인증번호 받기 버튼 보이기
+				confirm_emailB.setEnabled(false);		//이메일 인증번호 확인 버튼 비활성화
+				confirm_emailB.setVisible(false);		//이메일 인증번호 확인 버튼 숨기기
+				update_ConfirmB.requestFocus();					//가입하기 버튼으로 포커스 이동
+			}else {
+				error_emailL.setText("인증번호를 잘못 입력하셨습니다!!");
+				secu_codeTF.setText("");
+				secu_codeTF.requestFocus();
+				secu_count+=1;
+				if(secu_count==3) {
+					dialog.showMessageDialog(null, "인증번호 입력이 3회 틀리셨습니다. 다시 인증번호를 받아주세요!");
+					error_emailL.setText("");				//오류 메세지 제거
+					security=null;							//인증번호 비우기(초기화)
+					secu_count=0;							//인증 실패 카운트 초기화
+					secu_codeTF.setEnabled(false);			//인증번호 텍스트 필드 비활성화
+					check_emailB.setEnabled(true);			//이메일 인증번호 받기 버튼 활성화
+					check_emailB.setVisible(true);			//이메일 인증번호 받기 버튼 보이기
+					confirm_emailB.setEnabled(false);		//이메일 인증번호 확인 버튼 비활성화
+					confirm_emailB.setVisible(false);		//이메일 인증번호 확인 버튼 숨기기
+					check_emailB.requestFocus();			//이메일 인증번호 받기 버튼으로 포커스 이동
+				}//if : 3회이상 틀릴시
+			}//if
+		}//이메일 인증번호 확인 버튼 클릭시
 
 		if(e.getSource()==update_ConfirmB) {
 			error_passL.setText("");	//경고문들 초기화(비움)
@@ -671,10 +807,16 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			}// 비밀번호 확인 제약조건 : 첫번쨰 비밀번호와 비교해서 같은 값인지 확인하는 조건
 
 			if (year_UpdateTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
-					|| month_UpdateTF.getText().trim().length() > 2 // 생년월일 중 월이 1~2자리가 아닐때
-					|| month_UpdateTF.getText().trim().length() == 0 // 생년월일 중 월이 입력되지 않았을 때
-					|| date_UpdateTF.getText().trim().length() > 2 // 생년월일 중 일이 1~2자리가 아닐때
-					|| date_UpdateTF.getText().trim().length() == 0 // 생년월일 중 일이 입력되지 않았을 때
+					||month_UpdateTF.getText().trim().length() < 1 // 생년월일 중 월이 1자리 이하일 때
+					||month_UpdateTF.getText().trim().length() > 2 // 생년월일 중 월이 2자리 초과일 때
+					||date_UpdateTF.getText().trim().length() < 1 // 생년월일 중 일이 1자리 이하일 때
+					||date_UpdateTF.getText().trim().length() > 2 // 생년월일 중 일이 2자리 초과일 때
+					|| Integer.parseInt(year_UpdateTF.getText().trim()) > 2019 // 생년월일 중 년이 2019 이상일 때
+					|| Integer.parseInt(year_UpdateTF.getText().trim()) < 1900 // 생년월일 중 년이 1900 이하일 때
+					|| Integer.parseInt(month_UpdateTF.getText().trim()) > 12 // 생년월일 중 월이 12 이상일 때
+					|| Integer.parseInt(month_UpdateTF.getText().trim()) < 1  // 생년월일 중 월이 1 이하일 때						
+					|| Integer.parseInt(date_UpdateTF.getText().trim()) > 31  // 생년월일 중 일이 31 이상일 때						
+					|| Integer.parseInt(date_UpdateTF.getText().trim()) < 1  // 생년월일 중 일이 1 이하일 때						
 					|| (!(Pattern.matches("^[0-9]*$", year_UpdateTF.getText())))
 					|| (!(Pattern.matches("^[0-9]*$", month_UpdateTF.getText())))
 					|| (!(Pattern.matches("^[0-9]*$", date_UpdateTF.getText())))) {
@@ -687,15 +829,12 @@ public class MyPagePanel extends JPanel implements ActionListener{
 				return;
 			} // 생년월일 제약조건 : 매 텍스트필드마다 년은 4자리 이면서 숫자만 ,월은 2자리 숫자만, 일은 2자리 숫자만 제약을 줌
 
-			if (!(Pattern.matches("^[a-z0-9]*$", email_UpdateTF.getText())) ||
-					email_UpdateTF.getText().trim().equals("")) {
-				error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
-				emailC.setSelectedIndex(1);
-				email_UpdateTF.requestFocus();
-				// 잘못 적었을 때 이메일 택스트필드로 돌아가서 써진 것 지우고 커서를 이메일 텍스트로 위치시킴
+			if(check_emailB.isEnabled()==true) {
+				error_emailL.setText("이메일 인증을 받아주세요!");
+				check_emailB.requestFocus();
 				return;
-			} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
-
+			}
+			
 			/** 입력된 정보를 VO저장 -> DAO를 통해서 Update**/
 			mvo.setId(idCL.getText());
 			mvo.setPwd(passF_UpdatePF.getText());
@@ -721,7 +860,7 @@ public class MyPagePanel extends JPanel implements ActionListener{
 				delete_passPF.requestFocus();
 				return;
 			}// 비밀번호 제약조건 : 8자 이상이면서 19자 이하와 영문소문자와 숫자로만 입력하는 조건
-			
+
 			if(mdao.getPass(idCL.getText()).equals(delete_passPF.getText())) { //DB의 pass와 입력된 pass가 같다면
 				int deleteResult = dialog.showConfirmDialog(null,setDialog(),"회원탈퇴",dialog.YES_NO_OPTION,dialog.PLAIN_MESSAGE);
 				if(deleteResult==dialog.CLOSED_OPTION) {				//닫기버튼 눌렀을 때
@@ -738,19 +877,16 @@ public class MyPagePanel extends JPanel implements ActionListener{
 					mainui.after_loginLP.setVisible(false);				//로그아웃 기능
 					mainui.welcomeL.setText("");
 					mainui.log_regBP.setVisible(true);
-					
+
 					clearInfoLabel();									//회원정보라벨 비움
-					
+
 					mainui.homeB.setBackground(Color.RED); 				// 메인페이지 home페널로 돌아감
 					mainui.movieB.setBackground(Color.GRAY.brighter());
 					mainui.reservB.setBackground(Color.GRAY.brighter());
 					mainui.checkB.setBackground(Color.GRAY.brighter());
 					mainui.myPageB.setBackground(Color.GRAY.brighter());
 					mainui.card.show(mainui.mainC,"homeB");
-									
-					/**로그아웃 기능 실행**/
-					/**DB delete 구문 실행**/
-					/**텍스트필드 비우기**/
+
 				}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
 					return;
 				}
@@ -762,5 +898,24 @@ public class MyPagePanel extends JPanel implements ActionListener{
 			}//if else : DB 비밀번호와 입력된 비밀번호 비교 조건
 		}//탈퇴 버튼 클릭 시
 	}//aP()
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if(e.getSource()==email_UpdateTF) {
+			check_emailB.setEnabled(true);
+		}
+		if(e.getSource()==email_UpdateDoTF) {
+			check_emailB.setEnabled(true);
+		}
+		if(e.getSource()==emailC) {
+			check_emailB.setEnabled(true);
+		}
+	}//fG()
+
+	@Override
+	public void focusLost(FocusEvent e) {
+	}//fL()
+	
+	
 
 }//MaPagePanel class
