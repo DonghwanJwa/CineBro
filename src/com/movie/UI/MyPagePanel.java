@@ -46,7 +46,7 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 	protected JLabel emailCL = new JLabel();	//이메일 출력 라벨
 
 	private JLabel birth_mentCL = new JLabel("설정하신 생일 기준으로 15일전 생일쿠폰을 보내드립니다.");//생일 안내정보 라벨             //항목 안내정보 입력용 라벨(announcement content label)
-	private JLabel email_mentCL = new JLabel("아이디 및 비밀번호 찾기시 메세가 전송되며, 쿠폰 & 이벤트 정보 등을 제공 받으실 수 있습니다.");//이메일 안내정보 라벨
+	private JLabel email_mentCL = new JLabel("아이디 및 비밀번호 찾기 시 메세지가 전송되며, 쿠폰 & 이벤트 정보 등을 제공 받으실 수 있습니다.");//이메일 안내정보 라벨
 
 	private JPanel menuP = new JPanel();		 //메뉴 라벨(기본정보) 패널
 	private JPanel buttonP = new JPanel();		 //수정,탈퇴 버튼 패널
@@ -879,6 +879,7 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 					mainui.log_regBP.setVisible(true);
 
 					clearInfoLabel();									//회원정보라벨 비움
+					mvo.resetMemberVO();
 
 					mainui.homeB.setBackground(Color.RED); 				// 메인페이지 home페널로 돌아감
 					mainui.movieB.setBackground(Color.GRAY.brighter());
@@ -886,7 +887,8 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 					mainui.checkB.setBackground(Color.GRAY.brighter());
 					mainui.myPageB.setBackground(Color.GRAY.brighter());
 					mainui.card.show(mainui.mainC,"homeB");
-
+					mainui.loginFlag=false;
+					
 				}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
 					return;
 				}
