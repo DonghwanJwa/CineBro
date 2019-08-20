@@ -22,6 +22,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -57,7 +58,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
 	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
-	private int dateIndex=0;
 	private List<String> dateList=new ArrayList<>();
 	private JPanel calP=new JPanel(new GridLayout(7,7));
 	private JPanel monthCalP=new JPanel(new BorderLayout());
@@ -116,9 +116,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel infoTop=new JPanel();
 	private JPanel infoName=new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private JPanel infoLabel=new JPanel(new BorderLayout(20,0));
-	private JPanel infoWestLP=new JPanel(new GridLayout(0,1));
-	private JPanel infoCenterLP=new JPanel(new GridLayout(0,1));
-	private JPanel infoCenter=new JPanel(new BorderLayout(0,40));
+	private JPanel infoWestLP=new JPanel(new GridLayout(0,1,0,15));
+	private JPanel infoCenterLP=new JPanel(new GridLayout(0,1,0,15));
+	private JPanel infoCenter=new JPanel(new BorderLayout(0,30));
 	private JPanel infoBottom=new JPanel();
 	private JPanel dayGroupLP=new JPanel(new FlowLayout(FlowLayout.LEFT,0,2));
 	private JPanel peopleGroupLP=new JPanel(new FlowLayout(FlowLayout.LEFT,0,2));
@@ -157,6 +157,28 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	/* 결제 패널 */
 
+	private JDialog paymentD=new JDialog();
+	private JPanel paymentMainP=new JPanel(new BorderLayout());
+	private JPanel paymentSouthP=new JPanel();
+	private JPanel paymentCenterP=new JPanel();
+	private JPanel paymentPosName=new JPanel();
+	private JPanel paymentLabel=new JPanel();
+	private JPanel paymentInfoLP=new JPanel(new GridLayout(0,2));
+	
+	protected JButton seatChoicePrev=new JButton("좌석선택");
+	protected JButton paymentB=new JButton("결제하기");
+	
+	private JLabel paymentPoster=new JLabel();
+	private JLabel paymentName=new JLabel("영화 이름");
+	private JLabel paymentDate=new JLabel("일시");
+	private JLabel setPaymentDate=new JLabel();
+	private JLabel paymentCinema=new JLabel("상영관");
+	private JLabel setPaymentCinema=new JLabel("");
+	private JLabel paymentPeople=new JLabel("인원");
+	private JLabel setPaymentPeople=new JLabel("");
+	private JLabel paymentSeat=new JLabel("좌석번호");
+	private JLabel setPaymentSeat=new JLabel("");
+
 	// ----------------------------------- 리스트
 
 	private int movie_code; // 무비 코드 저장용 멤버변수
@@ -185,9 +207,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// ---------------------------------- 정보패널 버튼
 
 	private Vector<String> movieImg=new Vector<>(); // 포스터 삽입용 벡터생성
+	private JLabel secretImgL=new JLabel();
 	protected JButton moviePosterB=new JButton("포스터 삽입");
 	protected JButton infoNextB=new JButton("다음단계");
-	protected JButton seatNextB=new JButton("다음단계");
+	protected JButton seatPaymentB=new JButton("결제단계");
 	protected JButton seatBackB=new JButton("이전단계");
 
 	public ReservationPanel() {
@@ -234,11 +257,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		infoNextB.setEnabled(false);
 		infoNextB.addActionListener(this);
 		infoBottom.add(infoNextB); // 정보패널 하단
-		seatBackB.setVisible(false); seatBackB.setPreferredSize(new Dimension(130,40));
-		seatNextB.setVisible(false); seatNextB.setPreferredSize(new Dimension(130,40));
+		seatBackB.setVisible(false); seatBackB.setPreferredSize(new Dimension(130,40)); 
+		seatPaymentB.setVisible(false); seatPaymentB.setPreferredSize(new Dimension(130,40)); seatPaymentB.setEnabled(false);
 		seatBackB.addActionListener(this);
-		seatNextB.addActionListener(this);
-		infoBottom.add(seatBackB); infoBottom.add(seatNextB);
+		seatPaymentB.addActionListener(this);
+		infoBottom.add(seatBackB); infoBottom.add(seatPaymentB);
 
 		info.add(infoTop,"North");
 		info.add(infoCenter,"Center"); 
@@ -264,7 +287,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		movieList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
 		cinemaList.setFont(new Font("맑은 고딕",Font.PLAIN,20));
 
-		/* 리스트 항목 작성 */
+		/* 리스트 항목 작성 */		
 		Vector<MovieVO> mV=bdao.movieNameList();
 		if((mV != null) && mV.size()>0) {
 			for(int i=0;i<mV.size();i++) {
@@ -326,11 +349,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		// ------------------ 좌석 카드패널
 
-		setCinemaSeat();
-
-		// ------------------ 결제 카드패널
-		
-		
+		setCinemaSeat();		
 
 		/* 메인패널 구축 */
 		add(reservCard,BorderLayout.CENTER); add(info,BorderLayout.EAST);
@@ -460,7 +479,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	public void setCinemaSeat() {
 		char lineName='A'; // 열 이름
-		int index=1; // 좌석배치 인덱스
 		// --- 열 이름
 		for(int i=0;i<12;i++) {
 			seatLine[i]=new JLabel(lineName+"");
@@ -483,6 +501,50 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		lineSeatP.add(screen,"North"); lineSeatP.add(seatChoice,"East");
 		seatCard.add(lineSeatP);
 	}//setCinemaSeat()
+	
+	// --- 결제 다이얼로그 구축
+	public Component setPaymentDialog() {
+		paymentD.setSize(800,800);
+		
+		// --- 포스터 라벨
+		ImageIcon mainposter = new ImageIcon("pic/"+secretImgL.getText());
+		Image originImg = mainposter.getImage();
+		Image changeImg = originImg.getScaledInstance(100,120,Image.SCALE_SMOOTH);		
+		ImageIcon paymentImg = new ImageIcon(changeImg);
+		
+		paymentPoster.setIcon(paymentImg);
+		
+		// --- 하단패널 라벨
+		
+		paymentName.setText(movieNameL.getText());
+		setPaymentDate.setText(setDaysL.getText());
+		setPaymentCinema.setText(setCinemaL.getText());
+		setPaymentPeople.setText(setAdultL.getText()+setChildL.getText());
+		setPaymentSeat.setText(setSeatL.getText());
+		
+		paymentInfoLP.add(paymentCinema);
+		paymentInfoLP.add(setPaymentCinema);
+		paymentInfoLP.add(paymentDate);
+		paymentInfoLP.add(setPaymentDate);
+		paymentInfoLP.add(paymentPeople);
+		paymentInfoLP.add(setPaymentPeople);
+		paymentInfoLP.add(paymentSeat);
+		paymentInfoLP.add(setPaymentSeat);
+		
+		// --- 결제창 하단패널 구성
+		
+		paymentPosName.add(paymentPoster); paymentPosName.add(paymentName);
+		paymentSouthP.add(seatChoicePrev); 	paymentSouthP.add(paymentPosName);
+		paymentSouthP.add(paymentInfoLP); paymentSouthP.add(paymentB);
+		
+		// -- 결제창 전체 패널 구성
+		
+		paymentMainP.add(paymentCenterP,"Center");
+		paymentMainP.add(paymentSouthP,"South");
+		
+		paymentD.add(paymentMainP);
+		return paymentD;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -498,17 +560,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				}// for
 			}// if
 		}// for
-		// --- 성인, 청소년 버튼 이벤트
+		// --- 성인, 청소년 버튼 이벤트		
 		for(i=0;i<adultB.length;i++) {
-			int j=7;
 			if(obj==adultB[i]){
 				setAdultL.setText(adultL.getText()+adultB[i].getText()+"명");
 				adultCount=Integer.parseInt(adultB[i].getText());
 				setPriceL.setText((adultCount*9000)+(childCount*6000)+" ");
-				infoNextB.setEnabled(true);
 			}// if else
 			// 0선택 => 초기화
 			if(obj==adultB[0]) {
+				setAdultL.setText("");
 				childB[1].setEnabled(true);
 				childB[2].setEnabled(true);
 				childB[3].setEnabled(true);
@@ -528,6 +589,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(true);
 				childB[7].setEnabled(true);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 성인 2명 버튼 눌렀을 때
 			if(obj==adultB[2]) {
@@ -539,6 +601,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(true);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			};// if
 			// 성인 3명 버튼 눌렀을 때
 			if(obj==adultB[3]) {
@@ -550,6 +613,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if			
 			// 성인 4명 버튼 눌렀을 때
 			if(obj==adultB[4]) {
@@ -561,6 +625,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 성인 5
 			if(obj==adultB[5]) {
@@ -572,6 +637,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 성인 6
 			if(obj==adultB[6]) {
@@ -583,6 +649,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 성인 7
 			if(obj==adultB[7]) {
@@ -594,6 +661,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 성인 8
 			if(obj==adultB[8]) {
@@ -605,6 +673,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				childB[6].setEnabled(false);
 				childB[7].setEnabled(false);
 				childB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 		}// for
 		// 청소년 버튼
@@ -612,11 +681,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			if(obj==childB[j]){
 				setChildL.setText(" "+childL.getText()+childB[j].getText()+"명");
 				childCount=Integer.parseInt(childB[j].getText());
-				setPriceL.setText((adultCount*9000)+(childCount*6000)+"");
-				infoNextB.setEnabled(true);
+				setPriceL.setText((adultCount*9000)+(childCount*6000)+"");				
 			}// if
 			// 0 선택 => 초기화
 			if(obj==childB[0]) {
+				setChildL.setText("");
 				adultB[1].setEnabled(true);
 				adultB[2].setEnabled(true);
 				adultB[3].setEnabled(true);
@@ -635,6 +704,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(true);
 				adultB[7].setEnabled(true);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[2]) {
 				adultB[1].setEnabled(true);
@@ -645,6 +715,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(true);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[3]) {
 				adultB[1].setEnabled(true);
@@ -655,6 +726,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[4]) {
 				adultB[1].setEnabled(true);
@@ -665,6 +737,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[5]) {
 				adultB[1].setEnabled(true);
@@ -675,6 +748,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[6]) {
 				adultB[1].setEnabled(true);
@@ -685,6 +759,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			if(obj==childB[7]) {
 				adultB[1].setEnabled(true);
@@ -695,6 +770,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 			// 청소년 8
 			if(obj==childB[8]) {
@@ -706,6 +782,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				adultB[6].setEnabled(false);
 				adultB[7].setEnabled(false);
 				adultB[8].setEnabled(false);
+				infoNextB.setEnabled(true);
 			}// if
 		}// for
 		// --- 캘린더 버튼 이벤트
@@ -722,7 +799,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			// --- 캘린더 버튼 클릭시
 			if(obj==calDate[i]) {
 				setDaysL.setText(calYear.getText()+"년"+calMonth.getText()+"월 "+calDate[i].getText()+"일");
-				
+
 				// 날짜 시간 리스트 생성
 				screendate=Date.valueOf(calYear.getText()+"-"+calMonth.getText()+"-"+calDate[i].getText());
 				screenNum=(String)cinemaList.getSelectedValue();
@@ -753,17 +830,23 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		// --- 다음, 이전단계 버튼 이벤트
 		if(obj==infoNextB) {
-			nextCard();
+			if(setAdultL.getText().trim().equals("") && setChildL.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(this,"인원수를 선택해주세요!");
+			}else {
+				infoNextB.setVisible(false);
+				seatBackB.setVisible(true);
+				seatPaymentB.setVisible(true);
+				CARD.next(reservCard);
+			}// if else
 		}// if
 		if(obj==seatBackB) {
 			infoNextB.setVisible(true);
-			seatNextB.setVisible(false);
+			seatPaymentB.setVisible(false);
 			seatBackB.setVisible(false);
 			CARD.previous(reservCard);
 		}// if
-		if(obj==seatNextB) {
-
-			nextCard();
+		if(obj==seatPaymentB) {
+			setPaymentDialog().setVisible(true);
 		}// if
 		// --- 좌석 선택 버튼
 		for(i=0;i<seatButton.size();i++) {
@@ -776,10 +859,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						seatList.get(index).setText(seatButton.get(i).getText());
 						seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
 						setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()+" "));
+						seatPaymentB.setEnabled(false);
 						index++;
+						if(index == adultCount+childCount) {
+							seatPaymentB.setEnabled(true);
+						}// if
 					}else {
-						JOptionPane.showMessageDialog(null,"모두 선택하셨습니다!");
-					}// 인원수 초과 시
+						JOptionPane.showMessageDialog(this,"모두 선택되었습니다!");
+					}// if else if
 				}else if(seatButton.get(i).getBackground()==Color.RED) {
 					seatButton.get(i).setBackground(Color.BLACK);
 					for(int k=0;k<seatList.size();k++) {						
@@ -822,11 +909,12 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					if(movieNameL.getText().equals(movieVector.get(i))){
 						movie_code=codeVector.get(i);
 						// --- 포스터 버튼에 해당하는 이미지 삽입
+						secretImgL.setText(movieImg.get(i));
 						ImageIcon mainposter = new ImageIcon("pic/"+movieImg.get(i));		
 						Image originImg = mainposter.getImage();
 						Image changeImg = originImg.getScaledInstance(263,300,Image.SCALE_SMOOTH);		
 						ImageIcon poster = new ImageIcon(changeImg);
-
+						
 						moviePosterB.setIcon(poster);
 					}// if
 				}// for
@@ -895,11 +983,4 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// if else => 상영관 리스트 선택 시
 		}// 리스트 항목에서 버튼을 뗐을 때
 	}//vC()
-
-	public void nextCard() {
-		infoNextB.setVisible(false);
-		seatBackB.setVisible(true);
-		seatNextB.setVisible(true);
-		CARD.next(reservCard);
-	}//nextCard()
 }//Reservation class
