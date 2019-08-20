@@ -50,15 +50,15 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// ------------------------------------- 시간 버튼 설정용 리스트, 멤버변수
 
-	List<String> time=new ArrayList<>();
-	String screenNum; // 상영관별 시간, 날짜 가져올 멤버변수
-	Date screendate;
+	private List<String> time=new ArrayList<>();
+	private String screenNum; // 상영관별 시간, 날짜 가져올 멤버변수
+	private Date screendate;
 
 	// ------------------------------------- 캘린더 컴포넌트 메서드
 
 	Calendar cal=Calendar.getInstance(); // 캘린더 인스턴스 생성
-	int dateIndex=0;
-	List<String> dateList=new ArrayList<>();
+	private int dateIndex=0;
+	private List<String> dateList=new ArrayList<>();
 	private JPanel calP=new JPanel(new GridLayout(7,7));
 	private JPanel monthCalP=new JPanel(new BorderLayout());
 	private JPanel monthButtonP=new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
@@ -83,7 +83,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// ------------------------------------- 버튼그룹 메서드
 
-	List<JToggleButton> timeBList=new ArrayList<>();
+	private List<JToggleButton> timeBList=new ArrayList<>();
 	private int adultCount;
 	private int childCount;
 	private JPanel timeGroup=new JPanel();
@@ -104,7 +104,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel reservCard=new JPanel(CARD);
 	private JPanel homeCard=new JPanel(new BorderLayout()); // 홈 카드패널
 	private JPanel seatCard=new JPanel(new FlowLayout(FlowLayout.CENTER,0,70)); // 좌석 카드패널
-	private JPanel paymentCard=new JPanel(); // 결제 카드패널
 
 	/* 홈 패널 */
 	private JPanel topPanel=new JPanel(new FlowLayout());
@@ -149,21 +148,21 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected List<JButton> seatButton=new ArrayList<>();	
 	protected JButton seatReset=new JButton("좌석초기화");
 
-	int index=0; // 좌석라벨 인덱스
-	int seatIndex=0; // 좌석버튼 액션 이벤트 등록 위한 인덱스
-	ArrayList<JLabel> seatList=new ArrayList<>(); // 좌석 리스트
+	private int index=0; // 좌석라벨 인덱스
+	private int seatIndex=0; // 좌석버튼 액션 이벤트 등록 위한 인덱스
+	private ArrayList<JLabel> seatList=new ArrayList<>(); // 좌석 리스트
+	private JLabel screen=new JLabel("SCREEN");
 	protected JLabel[] seatChoiceL=new JLabel[8];
 	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
-	private JLabel screen=new JLabel("SCREEN");
 
 	/* 결제 패널 */
 
 	// ----------------------------------- 리스트
 
-	int movie_code; // 무비 코드 저장용 멤버변수
-	Vector<Integer> codeVector=new Vector<>(); // 각 영화 이름에 대한 코드를 저장할 벡터, 무비코드로 영화클릭시 해당하는 상영관 항목 생성
-	Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
-	Vector<String> cinemaVector=new Vector<>();
+	private int movie_code; // 무비 코드 저장용 멤버변수
+	private Vector<Integer> codeVector=new Vector<>(); // 각 영화 이름에 대한 코드를 저장할 벡터, 무비코드로 영화클릭시 해당하는 상영관 항목 생성
+	private Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
+	private Vector<String> cinemaVector=new Vector<>();
 	protected JList movieList=new JList(movieVector); // J리스트 생성
 	protected JList cinemaList=new JList();
 
@@ -185,7 +184,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// ---------------------------------- 정보패널 버튼
 
-	Vector<String> movieImg=new Vector<>(); // 포스터 삽입용 벡터생성
+	private Vector<String> movieImg=new Vector<>(); // 포스터 삽입용 벡터생성
 	protected JButton moviePosterB=new JButton("포스터 삽입");
 	protected JButton infoNextB=new JButton("다음단계");
 	protected JButton seatNextB=new JButton("다음단계");
@@ -232,6 +231,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		priceL.setFont(labelFont);	setPriceL.setFont(priceFont);
 
 		infoNextB.setPreferredSize(new Dimension(280,40)); // 다음버튼 크기설정
+		infoNextB.setEnabled(false);
 		infoNextB.addActionListener(this);
 		infoBottom.add(infoNextB); // 정보패널 하단
 		seatBackB.setVisible(false); seatBackB.setPreferredSize(new Dimension(130,40));
@@ -248,7 +248,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		reservCard.add(homeCard,"home"); // 예매 카드패널
 		reservCard.add(seatCard,"seat"); // 좌석 카드패널 
-		reservCard.add(paymentCard,"payment"); // 결제 카드패널
 		reservCard.setBorder(BorderFactory.createEmptyBorder(20,0,20,0)); // 카드패널 패딩
 
 		// ------------------ 예매 카드패널
@@ -330,6 +329,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		setCinemaSeat();
 
 		// ------------------ 결제 카드패널
+		
+		
 
 		/* 메인패널 구축 */
 		add(reservCard,BorderLayout.CENTER); add(info,BorderLayout.EAST);
@@ -366,6 +367,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			adultB[i].setBackground(Color.BLACK);
 			adultB[i].setForeground(Color.WHITE);
 			adultB[i].addActionListener(this);
+			adultB[i].setEnabled(false);
 			adultButtonP.add(adultB[i]);
 			SwingUtilities.updateComponentTreeUI(adultB[i]); // 토글버튼 선택모델 적용
 		}//for
@@ -379,6 +381,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			childB[i].setBackground(Color.BLACK);
 			childB[i].setForeground(Color.WHITE);
 			childB[i].addActionListener(this);
+			childB[i].setEnabled(false);
 			childButtonP.add(childB[i]);
 		}//for
 		peopleGroup.add(adultP);
@@ -392,7 +395,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		calYear.setHorizontalAlignment(JLabel.CENTER); // 라벨 중앙설정
 		calMonth.setHorizontalAlignment(JLabel.CENTER);
 
-
 		// --- 년 / 월 설정 버튼
 
 		monthButtonP.add(preMonth);
@@ -405,7 +407,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		nextMonth.setBorderPainted(false);
 
 		nextMonth.addActionListener(this);
-
 
 		// --- 캘린더 날짜 구성
 		year=2019; 
@@ -473,7 +474,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		seatChoice.setPreferredSize(new Dimension(120,0));
 		seatChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		//		seatPanel.add(leftArea); seatPanel.add(centerArea); seatPanel.add(rightArea); // 좌석 구역 배치
 		screen.setPreferredSize(new Dimension(0,30));
 		screen.setHorizontalAlignment(JLabel.CENTER);
 		screen.setOpaque(true);
@@ -491,8 +491,12 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// --- 시간 버튼
 		for(i=0;i<timeBList.size();i++) {
 			if(obj==timeBList.get(i)) {
-				setTimesL.setText(" "+timeBList.get(i).getText());
-			}// if		
+				setTimesL.setText(" "+timeBList.get(i).getText());			
+				for(int j=0;j<adultB.length;j++) {
+					adultB[j].setEnabled(true);
+					childB[j].setEnabled(true);					
+				}// for
+			}// if
 		}// for
 		// --- 성인, 청소년 버튼 이벤트
 		for(i=0;i<adultB.length;i++) {
@@ -500,7 +504,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			if(obj==adultB[i]){
 				setAdultL.setText(adultL.getText()+adultB[i].getText()+"명");
 				adultCount=Integer.parseInt(adultB[i].getText());
-				setPriceL.setText((adultCount*9000)+(childCount*6000)+"원");
+				setPriceL.setText((adultCount*9000)+(childCount*6000)+" ");
+				infoNextB.setEnabled(true);
 			}// if else
 			// 0선택 => 초기화
 			if(obj==adultB[0]) {
@@ -608,6 +613,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				setChildL.setText(" "+childL.getText()+childB[j].getText()+"명");
 				childCount=Integer.parseInt(childB[j].getText());
 				setPriceL.setText((adultCount*9000)+(childCount*6000)+"");
+				infoNextB.setEnabled(true);
 			}// if
 			// 0 선택 => 초기화
 			if(obj==childB[0]) {
@@ -716,7 +722,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			// --- 캘린더 버튼 클릭시
 			if(obj==calDate[i]) {
 				setDaysL.setText(calYear.getText()+"년"+calMonth.getText()+"월 "+calDate[i].getText()+"일");
-								
+				
 				// 날짜 시간 리스트 생성
 				screendate=Date.valueOf(calYear.getText()+"-"+calMonth.getText()+"-"+calDate[i].getText());
 				screenNum=(String)cinemaList.getSelectedValue();
@@ -824,6 +830,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						moviePosterB.setIcon(poster);
 					}// if
 				}// for
+				cinemaList.revalidate();
 				// 상영관 리스트 출력
 				Vector<CinemaVO> cV=bdao.cinemaList(movie_code);
 				if((cV != null) && cV.size()>0) {
