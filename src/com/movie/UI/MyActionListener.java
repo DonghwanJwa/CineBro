@@ -16,7 +16,6 @@ import com.movie.DAO.DAOManager;
 import com.movie.DAO.MemberDAO;
 import com.movie.DAO.MovieDAO;
 import com.movie.DAO.MovieNowDAO;
-import com.movie.DAO.SignUpDAO;
 import com.movie.VO.BookedseatVO;
 import com.movie.VO.BookingVO;
 import com.movie.VO.CinemaVO;
@@ -42,7 +41,6 @@ public class MyActionListener {
 	MovieDAO moviedao = new MovieDAO();
 	MovieNowVO movienowvo= new MovieNowVO();
 	MovieNowDAO movienowdao= new MovieNowDAO();
-	SignUpDAO signupdao = new SignUpDAO();
 	MemberVO membervo = new MemberVO();
 	MemberDAO memberdao = new MemberDAO();
 	CinemaVO cinemavo = new CinemaVO();
@@ -75,29 +73,38 @@ public class MyActionListener {
 					signUp.error_idL.setText("아이디는 영문소문자로 시작하는 6~16자리 영문 소문자와 숫자로만 입력하세요!");
 					return;
 				} else { // 아이디 경고문 출력
-					/** DB에서 id search=>비교 if절 추가해야됨 **/
-					if (signupdao.selectIdcheck(signUp.idTF.getText()) == 1) {
+					if (memberdao.selectIdcheck(signUp.idTF.getText()) == 1) {
 						signUp.dialog.showMessageDialog(signUp, "중복된 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
-					} else if (signupdao.selectIdcheck(signUp.idTF.getText()) == 0) {
+					} else if (memberdao.selectIdcheck(signUp.idTF.getText()) == 0) {
 						signUp.dialog.showMessageDialog(signUp, "사용가능한 아이디입니다", "안내", signUp.dialog.CLOSED_OPTION);
-						signUp.error_idL.setText("");
+						signUp.error_idL.setText("");		// setEnabeld true이면 기능이 동작하고 false면 기능이 동작하지 않는다
 						signUp.check_idB.setEnabled(false); // 컴포넌트기능을 가능하게 하는지 여부를 결정해주는 메서드
 						signUp.passPF.requestFocus();
-					} // 아이디 비교함 // true이면 기능이 동작하고 false면 기능이 동작하지 않는다
+					} // 아이디 비교함
 					return;
 				}
 			} // 아이디 중복체크 버튼 선택시
 
 			if (e.getSource() == signUp.check_emailB) {
-				if (!(Pattern.matches("^[a-z0-9]*$", signUp.emailTF.getText()))) {
-					signUp.emailTF.getText().trim().equals("");
-					signUp.error_emailL.setText("이메일은 소문자와 숫자로만 입력해주세요!");
-					signUp.emailTF.equals("");			//이메일 텍스트필드 비움
-					signUp.emailDoTF.equals("");		//이메일 도메인 텍스트필드 비움
+				if (!(Pattern.matches("^[a-zA-Z0-9]*$", signUp.emailTF.getText()))
+						||signUp.emailTF.getText().trim().equals("")) {					
+					signUp.error_emailL.setText("이메일은 영문 소문자,대문자, 숫자로만 입력해주세요!");
+					signUp.emailTF.setText("");			//이메일 텍스트필드 비움
+					signUp.emailDoTF.setText("");		//이메일 도메인 텍스트필드 비움
 					signUp.emailC.setSelectedIndex(0);	//이메일 도메인 콤보박스 초기화
 					signUp.emailTF.requestFocus();
 					return;
 				} // 이메일 제약조건 : 영문소문자와 숫자로만 입력하게 만듬
+				
+				if(memberdao.selectEmailcheck(signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText())==1){
+					signUp.error_emailL.setText("사용중인 이메일 입니다!");
+					signUp.emailTF.setText("");			//이메일 텍스트필드 비움
+					signUp.emailDoTF.setText("");		//이메일 도메인 텍스트필드 비움
+					signUp.emailC.setSelectedIndex(0);	//이메일 도메인 콤보박스 초기화
+					signUp.emailTF.requestFocus();
+					return;
+				} // 이메일 제약조건 : 이메일 중복 확인 
+				
 				signUp.security = memberdao.randomAuthNum();
 				String email = signUp.emailTF.getText()+"@"+signUp.emailDoTF.getText();
 				memberdao.Auth_Email(email, signUp.security);
@@ -183,6 +190,12 @@ public class MyActionListener {
 				} // 이름 제약조건 : 이름은 5글자이하만 가능하고 한글만 가능한 제약 조건
 				
 				if (signUp.yearTF.getText().trim().length() != 4 // 생년월일 중 년이 4자리가 아닐때
+						||signUp.monthTF.getText().trim().length() < 1 // 생년월일 중 월이 1자리 이하일 때
+						||signUp.monthTF.getText().trim().length() > 2 // 생년월일 중 월이 2자리 초과일 때
+						||signUp.dateTF.getText().trim().length() < 1 // 생년월일 중 일이 1자리 이하일 때
+						||signUp.dateTF.getText().trim().length() > 2 // 생년월일 중 일이 2자리 초과일 때
+						|| Integer.parseInt(signUp.yearTF.getText().trim()) > 2019 // 생년월일 중 년이 2019 이상일 때
+						|| Integer.parseInt(signUp.yearTF.getText().trim()) < 1900 // 생년월일 중 년이 1900 이하일 때
 						|| Integer.parseInt(signUp.monthTF.getText().trim()) > 12 // 생년월일 중 월이 12 이상일 때
 						|| Integer.parseInt(signUp.monthTF.getText().trim()) < 1  // 생년월일 중 월이 1 이하일 때						
 						|| Integer.parseInt(signUp.dateTF.getText().trim()) > 31  // 생년월일 중 일이 31 이상일 때						
@@ -205,20 +218,21 @@ public class MyActionListener {
 					return;
 				} // 이메일 제약조건 : 이메일 인증을 받지 않았을 때
 				
-				signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
-				signUp.dispose();// 회원가입이 안되었을 때 잘못되었다는 메시지 창을 만들어줘야 한다
-
 				membervo.setId(signUp.idTF.getText());
 				membervo.setPwd(signUp.passPF.getText());
 				membervo.setName(signUp.nameTF.getText());
-				membervo.setBirth(
-						signUp.yearTF.getText() + "-" + signUp.monthTF.getText() + "-" + signUp.dateTF.getText());
+				membervo.setBirth(signUp.yearTF.getText() + "-" + signUp.monthTF.getText() + "-" + signUp.dateTF.getText());
 				membervo.setSex((String) signUp.sexC.getSelectedItem());
 				membervo.setEmail(signUp.emailTF.getText() + "@" + signUp.emailDoTF.getText());
-
-				// 이메일 텍스트필드랑 콤보박스 값을 한번에?
-				signupdao.insertMember(membervo);
-
+				
+				if(memberdao.insertMember(membervo)==1) {
+					signUp.dialog.showMessageDialog(signUp, "회원가입이 되셨습니다!", "안내", signUp.dialog.CLOSED_OPTION);
+					membervo.resetMemberVO();	//회원가입 후 VO 데이터 초기화
+					signUp.dispose();// 회원가입이 안되었을 때 잘못되었다는 메시지 창을 만들어줘야 한다
+				}else {
+					signUp.dialog.showMessageDialog(signUp, "오류가 발생했습니다. 다시한번 시도하시기 바랍니다.", "안내", signUp.dialog.CLOSED_OPTION);
+					membervo.resetMemberVO();
+				}				
 			} // 가입하기 버튼 눌렀을 때
 
 			if (e.getSource() == signUp.emailC) {
@@ -237,10 +251,10 @@ public class MyActionListener {
 		public void focusGained(FocusEvent e) {
 			Object obj = e.getSource();
 			if(obj==signUp.idTF) {
-				signUp.check_idB.setEnabled(true);
+				signUp.check_idB.setEnabled(true);		//아이디를 수정하려고 할 때
 			}
 			if(obj==signUp.emailTF) {
-				signUp.check_emailB.setEnabled(true);
+				signUp.check_emailB.setEnabled(true);	//이메일을 수정하려고 할 때
 			}
 			if(obj==signUp.emailDoTF) {
 				signUp.check_emailB.setEnabled(true);
@@ -253,7 +267,6 @@ public class MyActionListener {
 		@Override
 		public void focusLost(FocusEvent e) {
 		}//fL() : 포커스를 잃었을 떄
-
 	}// SignupActionL inner class
 
 	class FindActionL implements ActionListener{
@@ -275,18 +288,37 @@ public class MyActionListener {
 			}//좌측상단 비밀번호찾기 버튼 클릭 시
 
 			/*아이디 찾기 패널의 액션*/
-			if(e.getSource()==findF.confirm_idB) {
-				/**아이디 찾기 중 : 입력된 아이디,이메일과 DB의 아이디,이메일 같은지 비교하여, 같으면 페이지 넘어가기 활성**/
-				/**            이후, DB에서 지정된 ID값을 가져와 라벨에 출력**/
-				if((findF.name_idTF.getText().trim().equals("")) ||   //텍스트필드가 비어있을 때
+			if(e.getSource()==findF.confirm_idB) {				
+				String id = memberdao.FindID(findF.email_idTF.getText(), findF.name_idTF.getText());
+				//이메일과 아이디를 기입함 ->id값을 호출 : 정보가 일치하면 id값 가져옴, 정보가 일치하지 않으면  null;
+				
+				if (findF.name_idTF.getText().length() < 1 || findF.name_idTF.getText().length() > 6
+						|| !(Pattern.matches("^[가-힣]*$", findF.name_idTF.getText()))) {
+					findF.error_idL.setText("올바른 입력 값이 아닙니다");
+					findF.name_idTF.setText("");
+					findF.name_idTF.requestFocus();
+					return;
+				}// 아이디 제약 조건 : 입력값 오류
+
+				if ((findF.name_idTF.getText().trim().equals("")) || // 텍스트필드가 비어있을 때
 						(findF.email_idTF.getText().trim().equals(""))) {
-					findF.error_idL.setText("정보가 입력되지 않았습니다.");    //경고문 출력
-				}else {
-					findF.error_idL.setText("");                        //경고문 지우기
-					findF.show_nameL.setText("이름 DB에서 가져온 님 의 아이디는"); //결과 창 내용 기입
-					findF.show_idL.setText("\"아이디 DB에서 가저옴\" 입니다");
-					findF.cardlayout.show(findF.find_idP,"confirm_idB"); //결과 패널로 전환
-				}
+					findF.error_idL.setText("정보가 입력되지 않았습니다.");
+					findF.email_idTF.setText("");
+					findF.email_idTF.requestFocus();
+					return;
+				}// 아이디 제약 조건 : 입력값 없음
+						
+				if (id != null) {// 이메일 검증 아이디가 맞고 이메일이 틀렸을때 유효성 검증해주는 기능 눌값을 대체한다
+					findF.error_idL.setText(""); 				// 경고문 지우기
+					findF.show_nameL.setText("고객님의 아이디는");   // 결과 창 내용 기입
+					findF.show_idL.setText(id + " 입니다");
+					findF.cardlayout.show(findF.find_idP, "confirm_idB"); // 결과 패널로 전환
+				} else if (id == null) {
+					findF.error_idL.setText("일치하는 정보가 없습니다.");
+					findF.name_idTF.setText("");
+					findF.email_idTF.setText("");
+					findF.name_idTF.requestFocus();
+				}			
 			}//아이디 찾기 패널(정보입력란)에서 확인 버튼 클릭 시
 
 			if(e.getSource()==findF.back_closeidB) {
@@ -295,6 +327,42 @@ public class MyActionListener {
 
 			/*비밀번호 찾기 패널의 액션*/
 			if(e.getSource()==findF.confirm_passB) {
+				int re = memberdao.FindPWNAMEEMAILcheck(findF.id_passTF.getText(), findF.name_passTF.getText(),
+						findF.email_passTF.getText());
+
+				if ((findF.id_passTF.getText().length() < 6 || findF.id_passTF.getText().length() > 16)
+						|| !(Pattern.matches("^[a-z]+[a-z0-9]*$", findF.id_passTF.getText()))) {
+					findF.error_passL.setText("올바른 아이디정보가 아닙니다.");
+					return;
+				}// 아이디 유효성 검증
+
+				if (findF.name_passTF.getText().length() < 1 || findF.name_passTF.getText().length() > 6
+						|| !(Pattern.matches("^[가-힣]*$", findF.name_passTF.getText()))) {
+					findF.error_passL.setText("올바른 이름정보가 아닙니다.");
+					findF.name_passTF.setText("");
+					findF.name_passTF.requestFocus();
+					return;
+				}// 이름 유효성 검증
+
+				if ((findF.email_passTF.getText().trim().equals(""))) { // 텍스트필드가 비어있을
+					findF.error_passL.setText("이메일을 입력해 주세요.");
+					findF.email_passTF.setText("");
+					findF.email_passTF.requestFocus();
+					return;
+				}// 이메일 유효성 검증
+
+				if (re == 1) {
+					findF.error_idL.setText(""); // 경고문 지우기
+					findF.cardlayout.show(findF.find_passP, "confirm_passB");// 비밀번호 재입력 패널로 이동
+				} else if (re == 0) {
+					findF.id_passTF.setText("");
+					findF.id_passTF.requestFocus();
+					findF.name_passTF.setText("");
+					findF.email_passTF.setText("");
+					findF.pass_updateD.showMessageDialog(findF, "고객님께서 입력하신 정보와 일치하는 정보가 없습니다.", "안내", findF.pass_updateD.CLOSED_OPTION);
+				}
+				
+				
 				if((findF.id_passTF.getText().trim().equals("")) ||        //텍스트 필드가 비어있을 때
 						(findF.name_passTF.getText().trim().equals("")) ||
 						(findF.email_passTF.getText().trim().equals(""))) {
@@ -317,12 +385,21 @@ public class MyActionListener {
 					findF.pass_PF.setText("");
 					findF.passre_PF.setText("");
 					findF.requestFocus();
-				}else {                                                  //올바르게 정보가 입력되었을 때
-					findF.wrong_passL.setText("");          			 //경고문 지우기
-					findF. pass_updateD.showMessageDialog(findF, "비밀번호가 변경 되었습니다.", "안내", findF.pass_updateD.CLOSED_OPTION);
-					//비밀번호가 제대로 변경되었다는 알림문 다이어로그 출력
-					findF.dispose();    //닫기
 				}
+				
+				if(memberdao.FindPW(findF.pass_PF.getText(),
+						findF.id_passTF.getText(),findF.name_passTF.getText(),findF.email_passTF.getText())==1) {
+						findF.pass_PF.getText();
+						findF.wrong_passL.setText(""); // 경고문 지우기
+						findF.pass_updateD.showMessageDialog(findF, "비밀번호가 변경 되었습니다.", "안내",findF.pass_updateD.CLOSED_OPTION);
+						// 비밀번호가 제대로 변경되었다는 알림문 다이어로그 출력
+						findF.dispose(); // 닫기
+					}else {
+						findF.pass_PF.setText("");
+						findF.pass_PF.requestFocus();
+						findF.passre_PF.setText("");
+						findF.wrong_passL.setText("실행이 되지 않았습니다");						
+					}
 			}//비밀번호 재입력 패널에서 확인 버튼 클릭 시
 		}//aP()
 	}//FindActionL inner class
@@ -482,6 +559,6 @@ public class MyActionListener {
 	public void loginListenerSet() 	 {		  loginP.addLoginListener(logL);		 }
 	public void mainListenerSet() 	 {		  mainUi.addMainListener(mainL);	 	 }
 	public void signupListenerSet()  {		  signUp.addSignupListener(signupL);
-	signUp.addSignupFocusListener(signupL);}
+											  signUp.addSignupFocusListener(signupL);}
 	public void findListenerSet()	 {		  findF.addFindListener(findL); 		 }
 }//MyActionListener class

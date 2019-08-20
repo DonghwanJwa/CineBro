@@ -24,30 +24,10 @@ public class MemberDAO {
 
 	int result;
 	ResultSet rs;
+	String sql = null;
 
 	public MemberDAO() {
 		AppManager.getInstance().getDAOManager().setMemberDAO(this);
-	}
-	//------------------------------회원가입------------------------------//
-	boolean Customer() {
-		daoManager.connectDB();
-		String sql= "INSERT INTO ( memberVOber_id, memberVOber_pw, memberVOber_name, memberVOber_sex, memberVOber_birthday, memberVOber_email) VALUES(?, ?, ?, ?, ?, ?)";
-		try {
-			daoManager.pt = daoManager.con.prepareStatement(sql);
-			daoManager.pt.setString(1, memberVO.getId());
-			daoManager.pt.setString(2, memberVO.getPwd());
-			daoManager.pt.setString(3, memberVO.getName());
-			daoManager.pt.setString(4, memberVO.getSex());
-			daoManager.pt.setString(5, memberVO.getBirth());
-			daoManager.pt.setString(6, memberVO.getEmail());
-
-		}catch(Exception e) {e.printStackTrace();}
-		//		result값이 참일 때
-		if(result > 0) {
-			return true;
-		}else {
-			return false;
-		}//if else
 	}
 
 	//------------------------------로그인 기능------------------------------//
@@ -62,7 +42,7 @@ public class MemberDAO {
 			daoManager.pt.setString(1, memberVO.getId());
 			rs=daoManager.pt.executeQuery();
 
-			//--------------------아이디와 비밀번호가 같다면 회원정보를 불러와 저장-------------------//
+			//--------------------아이디와 비밀번호가 DB와 일치하면 회원정보를 불러와 저장-------------------//
 			if(rs.next()) {
 				if(memberVO.getPwd().equals(rs.getString("member_pwd"))) {
 					memberVO.setId(rs.getString("member_id"));
@@ -86,30 +66,182 @@ public class MemberDAO {
 		}
 		return false;
 	}
-	//------------------------------중복검사------------------------------//
-	boolean idCheck() {
-		daoManager =AppManager.getInstance().getDAOManager(); 
-		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
 
-
-		daoManager.connectDB();
-		String sql="SELECT memberVOber_id FROM memberVOber";
-
+	// ---------------------------회원가입(SignUp)-------------------------- //
+	public int insertMember(MemberVO m) {
+		int re = -1;
 		try {
-			daoManager.pt=daoManager.con.prepareStatement(sql);
-			rs= daoManager.pt.executeQuery();
-			while(rs.next()) {
-				if(memberVO.getId().equals(rs.getString(1)))
-					return false;
-			}
-			rs.close();
-			daoManager.closeDB();
-		}catch(Exception e) {
+			daoManager.connectDB();
+			sql = "insert into member values(?,?,?,?,?,?)";
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, m.getId());
+			daoManager.pt.setString(2, m.getPwd());
+			daoManager.pt.setString(3, m.getName());
+			daoManager.pt.setString(4, m.getSex());
+			daoManager.pt.setString(5, m.getBirth());
+			daoManager.pt.setString(6, m.getEmail());
+			re = daoManager.pt.executeUpdate();
+
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		return true;
+		} finally {
+			try {
+				daoManager.closeDB();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} // finally
+		return re;
 	}
-	//------------------------------정보수정------------------------------//
+
+	// ------------------------아이디 중복체크(SignUp)------------------------ //
+	public int selectIdcheck(String m) {
+		int re = -1;
+		try {
+			daoManager.connectDB();
+			sql = "select * from member where member_id = ? ";
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, m);
+			rs = daoManager.pt.executeQuery();
+
+			if (rs.next()) {// 검색된 코드가 있다면 참
+				re = 1;// 중복 아이디 있음
+			} else {
+				re = 0;// 중복 아이디 없음
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				daoManager.closeDB();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return re;
+	}
+
+	// ------------------------이메일 중복체크------------------------ //
+	public int selectEmailcheck(String m) {
+		int re = -1;
+		try {
+			daoManager.connectDB();
+			sql = "select * from member where member_email = ? ";
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, m);
+			rs = daoManager.pt.executeQuery();
+
+			if (rs.next()) {// 검색된 코드가 있다면 참
+				re = 1;// 중복 아이디 있음
+			} else {
+				re = 0;// 중복 아이디 없음
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				daoManager.closeDB();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return re;
+	}	
+
+	// --------------------------아이디 찾기(findF)--------------------------//
+	public String FindID(String email, String name) {
+
+		String id = null;
+		daoManager = AppManager.getInstance().getDAOManager();
+		daoManager.connectDB();
+
+		String sql = "select member_id from member where member_email=? and member_name=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, email);
+			daoManager.pt.setString(2, name);
+			rs = daoManager.pt.executeQuery();
+
+			while (rs.next()) {
+				id = rs.getString("member_id");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				daoManager.closeDB();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return id;
+	}
+
+	// -----------------------비밀번호 찾기 : 정보확인(findF)------------------------- //
+	public int FindPWNAMEEMAILcheck(String id, String name, String email) {
+		int re = -1;
+		try {
+			sql = "select * from member where member_id = ? and member_name = ? and member_email = ?";
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, id);
+			daoManager.pt.setString(2, name);
+			daoManager.pt.setString(3, email);
+			rs = daoManager.pt.executeQuery();
+
+			if (rs.next()) {
+				re = 1;
+			} else {
+				re = 0;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				daoManager.closeDB();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return re;
+	}
+
+	// -----------------------비밀번호 찾기 : 수정(findF)------------------------- //
+	public int FindPW(String pass,String id,String name,String email) {
+
+		int pwd = -1;
+		daoManager = AppManager.getInstance().getDAOManager();
+		memberVO = AppManager.getInstance().getDataManager().getMemberVO();
+		daoManager.connectDB();
+
+		String sql = "update member set member_pwd=? where member_id=? and member_name=? and member_email=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1, pass);
+			daoManager.pt.setString(2, id);
+			daoManager.pt.setString(3, name);
+			daoManager.pt.setString(4, email);
+			pwd = daoManager.pt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				daoManager.closeDB();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return pwd;
+	}
+
+	//----------------------------회원정보수정----------------------------//
 	public int updateInfo() {
 		int re = -1;
 		daoManager =AppManager.getInstance().getDAOManager(); 
@@ -136,7 +268,8 @@ public class MemberDAO {
 		}//finally	
 		return re;
 	}//updateInfo()
-	//------------------------------탈퇴를 위한 비밀번호 정보가저오기------------------------------//
+
+	//----------------------------탈퇴를 위한 비밀번호 정보가저오기----------------------------//
 	public String getPass(String id) {
 		daoManager = AppManager.getInstance().getDAOManager();
 		String pwd = null;
@@ -162,7 +295,7 @@ public class MemberDAO {
 		}//finally
 		return pwd;
 	}//showInfo()
-	//------------------------------회원탈퇴------------------------------//
+	//----------------------------회원탈퇴----------------------------//
 	public int deleteMember(String id) {
 		int re = -1;
 		daoManager = AppManager.getInstance().getDAOManager();
@@ -184,7 +317,7 @@ public class MemberDAO {
 		}//finally
 		return re;
 	}
-	
+
 	/* 사용전!
 	 * LIB 폴터에 추가되어있는 mail-1.4.7 jar를 연결 시킨 후 구동해야됨
 	 * 프로젝트폴더 우측버튼 클릭 -> properties -> java build path
@@ -207,7 +340,7 @@ public class MemberDAO {
 	public void Auth_Email(String email,String security){	//인증번호 보내기
 		String id = "cine190823@gmail.com";
 		String pw = "swing190823!";
-		
+
 		//STMP 서버 정보를 설정
 		Properties p = System.getProperties();
 		p.put("mail.smtp.host", "smtp.gmail.com"); //"mail.smtp.host" : 이메일 발송을 처리해줄 STMP 서버

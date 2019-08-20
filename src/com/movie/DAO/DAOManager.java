@@ -11,7 +11,6 @@ public class DAOManager {
 	private MovieDAO movieDAO;
 	private MovieNowDAO movieNowDAO;
 	private MemberDAO memberDAO;
-	private SignUpDAO signupDAO;
 	private BookingDAO bookingDAO;
 	
 	// ------- DB 커넥트 변수 ------- //
@@ -48,7 +47,6 @@ public class DAOManager {
 	public void setMovieDAO(MovieDAO movieDAO) 			{ this.movieDAO = movieDAO;       }	
 	public void setMovieNowDAO(MovieNowDAO movieNowDAO) { this.movieNowDAO = movieNowDAO; }	
 	public void setMemberDAO(MemberDAO memberDAO) 		{ this.memberDAO = memberDAO;     }	
-	public void setSignupDAO(SignUpDAO signupDAO) 		{ this.signupDAO = signupDAO;     }
 	public void setBookingDAO(BookingDAO bookingDAO) 	{ this.bookingDAO = bookingDAO;   }
 	
 	// ------------------------------get 메서드----------------------------- //
@@ -57,7 +55,6 @@ public class DAOManager {
 	public MovieDAO getMovieDAO()		{ return movieDAO;    }	
 	public MovieNowDAO getMovieNowDAO() { return movieNowDAO; }	
 	public MemberDAO getMemberDAO() 	{ return memberDAO;	  }	
-	public SignUpDAO getSignupDAO()		{ return signupDAO;   }
 	public BookingDAO getBookingDAO()   { return bookingDAO;  }
 
 
