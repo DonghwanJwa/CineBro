@@ -552,6 +552,7 @@ public class MyActionListener {
 					 * 2. 예약정보 지우기 & reservation vo를 null로 초기화
 					 * 3. 회원정보 페이지 정보 지우기 & member vo를 null로 초기화
 					 * 4. mainframe의 home panel로 이동
+					 * 5. MainUi의 loginflag => false;
 					 */
 					/* (1) */
 					mainUi.after_loginLP.setVisible(false);
@@ -568,7 +569,7 @@ public class MyActionListener {
 					mainUi.checkB.setBackground(Color.GRAY.brighter());
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
 					mainUi.card.show(mainUi.mainC,"homeB"); // "homeB"키가 적용된 카드레이아웃 보여줌
-
+					mainUi.loginFlag=false;
 				}
 			}
 		}//ap()

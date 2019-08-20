@@ -879,6 +879,7 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 					mainui.log_regBP.setVisible(true);
 
 					clearInfoLabel();									//회원정보라벨 비움
+					mvo.resetMemberVO();
 
 					mainui.homeB.setBackground(Color.RED); 				// 메인페이지 home페널로 돌아감
 					mainui.movieB.setBackground(Color.GRAY.brighter());
@@ -886,7 +887,8 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 					mainui.checkB.setBackground(Color.GRAY.brighter());
 					mainui.myPageB.setBackground(Color.GRAY.brighter());
 					mainui.card.show(mainui.mainC,"homeB");
-
+					mainui.loginFlag=false;
+					
 				}else if(deleteResult==dialog.NO_OPTION) {				//아니오 버튼 눌렀을 때
 					return;
 				}
