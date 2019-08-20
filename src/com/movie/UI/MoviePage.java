@@ -27,7 +27,8 @@ public class MoviePage extends JPanel implements ActionListener{
 	MovieNowVO nvo = AppManager.getInstance().getDataManager().getMovieNowVO();
 	MovieNowDAO ndao = AppManager.getInstance().getDAOManager().getMovieNowDAO();
 	List<MovieNowVO> nlist = ndao.movieNowList();
-
+	
+	private JPanel pagePanel;	// 
 	private JPanel contents;	//	가장 상단에 올라가는 패널 
 	private	JPanel movieList;	// 포스터,영화정보를 담는 패널
 	private JPanel movieP	;	//영화 포스터와 버튼이 들어갈 패널
@@ -35,7 +36,7 @@ public class MoviePage extends JPanel implements ActionListener{
 	private	JButton[] posterB=new JButton[nlist.size()];	//영화의 포스터를넣을 버튼
 
 	JScrollPane scroll;			// 영화정보가 많아지면 사용될 스크롤 패널
-
+	protected JLabel pageTitle; //영화상단에 들어갈 라벨
 	protected JLabel movieName;	//영화이름 라벨
 	protected JLabel age;		//관람등급이 들어갈 라벨 
 	protected JLabel genre;		//장르, 나라, 영화상영시간, 개봉일이 들어갈 패널
@@ -50,26 +51,33 @@ public class MoviePage extends JPanel implements ActionListener{
 
 	//	 패널 생성	 //
 	public MoviePage() {
-		setName("현재 상영작");
+		pagePanel = new JPanel();
+		pageTitle = new JLabel("현재 상영작");//페이지 이름
 		
+		pageTitle.setFont(new Font("맑은 고딕",Font.BOLD,30));//폰트지정
+		pageTitle.setForeground(Color.white);//폰트 색 지정
+		//		패널 색 지정		//
+		pagePanel.setOpaque(false);
 		setOpaque(false);
-		posterB =new JButton[nlist.size()]; 
+		
+		posterB =new JButton[nlist.size()]; // 포스터(버튼 크기 지정)
 		contents =new JPanel();// 메인 패널 
 
+		pagePanel.add(pageTitle,BorderLayout.NORTH);
 		//		패널 설정		//
-		setBorder(BorderFactory.createEmptyBorder(60,70,60,80));//	패널 공간 여백 만듦
-		setPreferredSize(new Dimension(1550,860));//	크기지정
+		pagePanel.setBorder(BorderFactory.createEmptyBorder(60,70,60,80));//	패널 공간 여백 만듦
+		pagePanel.setPreferredSize(new Dimension(1550,900));//	크기지정
 		contents.setBackground(Color.DARK_GRAY);// 패널 색 지정
 		//		setOpaque(false);	//패널을 투명하게
 
 		//	스크롤바 사용을 위해 증가하는 방식으로 패널 크기지정	//
 		contents.setPreferredSize(new Dimension(1400,270*(nlist.size()/2+1/2)));
 		//		패널 정렬		//
-		setLayout(new BorderLayout());
-		contents.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pagePanel.setLayout(new BorderLayout());
+		contents.setLayout(new FlowLayout(FlowLayout.CENTER));
 		/**내부 패널에 작은 패널들 추가**/
 		for(int i=0; i<nlist.size(); i++) {
-			add(contents,BorderLayout.CENTER);
+			pagePanel.add(contents,BorderLayout.CENTER);
 			add(MP(i));
 		}
 			/**------------------------------DB이후------------------------------------**/
@@ -81,8 +89,10 @@ public class MoviePage extends JPanel implements ActionListener{
 				scroll.getVerticalScrollBar().setUnitIncrement(16);
 
 				//		내부패널에 스크롤 적용	//
-				add(scroll,BorderLayout.EAST);
+				pagePanel.add(scroll,BorderLayout.EAST);
 		}
+		pagePanel.add(pageTitle,BorderLayout.NORTH);
+		add(pagePanel);
 	}//생성자
 
 	//	패널 정리할 메서드	생성//
@@ -152,7 +162,7 @@ public class MoviePage extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj =e.getSource();
 		for(int i=0; i<nlist.size(); i++) {
-			if(obj==posterB[i] && new MovieInfoPlus(i+1).equals(posterB[i])) {
+			if(obj==posterB[i]) {
 				new MovieInfoPlus(i+1);
 			}//if
 		}//for
