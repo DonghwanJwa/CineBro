@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.movie.VO.BookingVO;
 import com.movie.VO.CinemaVO;
 import com.movie.VO.MovieVO;
 import com.movie.VO.MovietimeVO;
@@ -65,8 +66,9 @@ public class BookingDAO {
 
 		return cinemaList;
 	}// cinemaList()
+	
 	// 영화 날짜, 영화 시간 리스트
-	public List<MovietimeVO> DayTimeList(Date screendate,String screenNum){
+	public List<MovietimeVO> dayTimeList(Date screendate,String screenNum){
 		daoManager.connectDB();
 		
 		List<MovietimeVO> dayTimeList=new ArrayList<>();
@@ -87,13 +89,34 @@ public class BookingDAO {
 		}catch(Exception e) {e.printStackTrace();}
 		
 		return dayTimeList;
-	}// DayTimeList()
+	}// DayTimeList()	
 	
+	// 영화 날짜'만' 구함
+	public Vector<MovietimeVO> dayList(String screenNum){
+		daoManager.connectDB();
+		
+		Vector<MovietimeVO> dayList=new Vector<>();
+		String sql="SELECT screendate FROM movietime WHERE screen=?";
+		try {
+			daoManager.pt=daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,screenNum);
+			rs=daoManager.pt.executeQuery();
+			while(rs.next()) {
+				MovietimeVO mt=new MovietimeVO();
+				mt.setScreendate(rs.getString("screendate"));
+				dayList.add(mt);
+			}// while
+		}catch(Exception e) {e.printStackTrace();}
+		
+		return dayList;
+	}// dayList()
+	
+	// 상영관별 좌석 세팅
 	public List<SeatVO> setScreenSeat(String screenNum){
 		daoManager.connectDB();
 		
 		List<SeatVO> screenSeat=new ArrayList<>();
-		String sql="SELECT * FROM seat WHERE screen=?";
+		String sql="SELECT * FROM seat WHERE screen=? ORDER BY seatrow";
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
 			daoManager.pt.setString(1,screenNum);
@@ -111,4 +134,26 @@ public class BookingDAO {
 		
 		return screenSeat;
 	}// setScreenSeat
+	
+	// 예매 저장
+	public int setBooking(BookingVO b) {
+		daoManager.connectDB();
+		
+		int re=-1;
+		String sql="INSERT INTO Booking VALUES(booked_seq,?,?,?,?,?)";
+		try {
+			daoManager.pt=daoManager.con.prepareStatement(sql);
+			daoManager.pt.setInt(1,b.getPrice());
+			daoManager.pt.setInt(2,b.getSeatcount());
+			daoManager.pt.setInt(3,b.getMovie_code());
+			daoManager.pt.setString(4,b.getMember_id());
+			daoManager.pt.setString(5,b.getTime_code());
+			
+			re=daoManager.pt.executeUpdate();
+			
+			daoManager.closeDB();
+		}catch(Exception e) {e.printStackTrace();}
+		
+		return re;
+	}// setBooking
 }
