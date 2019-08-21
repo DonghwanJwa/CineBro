@@ -861,7 +861,7 @@ public class MyPagePanel extends JPanel implements ActionListener,FocusListener{
 				return;
 			}// 비밀번호 제약조건 : 8자 이상이면서 19자 이하와 영문소문자와 숫자로만 입력하는 조건
 
-			if(mdao.getPass(idCL.getText()).equals(delete_passPF.getText())) { //DB의 pass와 입력된 pass가 같다면
+			if(mdao.getPass(idCL.getText()).equals(mdao.sha256(delete_passPF.getText()))) { //DB의 pass와 입력된 pass가 같다면
 				int deleteResult = dialog.showConfirmDialog(null,setDialog(),"회원탈퇴",dialog.YES_NO_OPTION,dialog.PLAIN_MESSAGE);
 				if(deleteResult==dialog.CLOSED_OPTION) {				//닫기버튼 눌렀을 때
 					return;
