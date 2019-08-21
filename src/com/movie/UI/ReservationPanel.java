@@ -39,8 +39,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.movie.DAO.BookingDAO;
+import com.movie.VO.BookedseatVO;
 import com.movie.VO.BookingVO;
 import com.movie.VO.CinemaVO;
+import com.movie.VO.DayseatVO;
 import com.movie.VO.MovieVO;
 import com.movie.VO.MovietimeVO;
 import com.movie.VO.SeatVO;
@@ -49,7 +51,9 @@ import com.movie.main.AppManager;
 public class ReservationPanel extends JPanel implements ActionListener,ListSelectionListener{
 	BookingDAO bdao=AppManager.getInstance().getDAOManager().getBookingDAO();
 	BookingVO bvo=AppManager.getInstance().getDataManager().getBookingVO();
-	
+	BookedseatVO bsvo=AppManager.getInstance().getDataManager().getBookedseatVO();
+	DayseatVO dvo=AppManager.getInstance().getDataManager().getDayseatVO();
+
 	// --- 카드레이아웃 설정
 
 	protected final CardLayout CARD=new CardLayout();
@@ -86,6 +90,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private int date; // 일
 	private int sunday=1;
 	private int indexDay=1;
+	String time_code;
 
 	// ------------------------------------- 버튼그룹 메서드
 
@@ -141,9 +146,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
 
 	// --------------------------------- 좌석 패널
-	
-//	private String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
-	private String seat_Num;
+
+	private List<String> seat_Num=new ArrayList<>();
 	private int seat_status;
 	private JPanel seatPanel=new JPanel(new BorderLayout(10,0)); // 좌석 구역 패널
 	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
@@ -153,9 +157,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel seatChoice=new JPanel(new BorderLayout());
 	private JPanel seatChoiceP=new JPanel(new GridLayout(4,2,3,2));
 	private JPanel lineSeatP=new JPanel(new BorderLayout(20,30));
-	
+
 	protected List<JButton> seatButton=new ArrayList<>();	
 	protected JButton seatReset=new JButton("좌석초기화");
+
 
 	private int index=0; // 좌석라벨 인덱스
 	private int seatIndex=0; // 좌석버튼 액션 이벤트 등록 위한 인덱스
@@ -166,12 +171,12 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
 
 	/* 결제 패널 */
-	
+
 	private JDialog paymentD=new JDialog(); // 다이얼로그 프레임
 	private JPanel paymentMainP=new JPanel(new BorderLayout());
-	
+
 	// --- 상단 패널
-	
+
 	private JPanel paymentCenterP=new JPanel(new BorderLayout());
 	private JPanel paymentPriceP=new JPanel();
 	private JPanel paymentP=new JPanel(new BorderLayout());
@@ -181,22 +186,22 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel paymentCashP=new JPanel(new GridLayout(0,1));
 	private JPanel paymentCardP=new JPanel();
 	private JPanel paymentOptionP=new JPanel(new GridLayout(1,0));
-	
+
 	private JLabel paymentPriceinfo=new JLabel("결제금액");
 	private JLabel paymentOption=new JLabel();
 	private JLabel paymentOptionPrice=new JLabel();
 	private JTextField paymentPrice=new JTextField();
-	
+
 	private JLabel paymentChoiceInfo=new JLabel("※ 매장 사정상 현장결제만 가능합니다");
 	protected ButtonGroup paymentBG=new ButtonGroup();
 	protected JRadioButton paymentCash=new JRadioButton("현장결제");
 	protected JRadioButton paymentCard=new JRadioButton("온라인결제");
-	
+
 	protected ButtonGroup paymentSiteBG=new ButtonGroup();
 	protected JRadioButton paymentSiteCash=new JRadioButton("현금결제");
 	protected JRadioButton paymentSiteCard=new JRadioButton("카드결제");
 	private JLabel paymentInfoL=new JLabel("※ 현장결제 선택 시 예매 내역을 가지고 오프라인 카운터에서 결제를 진행해주시기 바랍니다.");
-	
+
 	// --- 하단 패널
 	private JPanel paymentSouthP=new JPanel(new BorderLayout());
 	private JPanel paymentSCenterP=new JPanel();
@@ -205,10 +210,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel paymentLP=new JPanel(new GridLayout(0,1,0,5));
 	private JPanel paymentInfoLP=new JPanel(new GridLayout(0,1,0,5));
 	private JPanel paymentInfoBLP=new JPanel();
-	
+
 	protected JButton seatChoicePrev=new JButton("좌석선택");
 	protected JButton paymentB=new JButton("결제하기");
-	
+
 	private JLabel paymentPoster=new JLabel();
 	private JLabel paymentAge=new JLabel();
 	private JLabel paymentName=new JLabel("영화 이름");
@@ -224,6 +229,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// ----------------------------------- 리스트
 
 	private int movie_code; // 무비 코드 저장용 멤버변수
+	private List<Integer> booking_code=new ArrayList<>();
 	private Vector<Integer> codeVector=new Vector<>(); // 각 영화 이름에 대한 코드를 저장할 벡터, 무비코드로 영화클릭시 해당하는 상영관 항목 생성
 	private Vector<String> movieVector=new Vector<>(); // 각 리스트에 들어갈 벡터 생성
 	private Vector<String> cinemaVector=new Vector<>();
@@ -344,6 +350,22 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// for
 		}// if
 
+		// --- seat_Num 저장한 리스트 불러옴
+		List<BookedseatVO> sN=bdao.bookingList();
+		if((sN != null) && sN.size()>0) {
+			for(int i=0;i<sN.size();i++) {
+				BookedseatVO bdvo=sN.get(i);
+				seat_Num.add(bdvo.getSeat_Num());
+			}// for
+		}// if
+		// --- booking_code 저장한 리스트 불러오기
+		List<BookingVO> b_code=bdao.getBookingCode();
+		if((b_code != null) && b_code.size()>0) {
+			for(int i=0;i<b_code.size();i++) {
+				BookingVO bvo=b_code.get(i);
+				booking_code.add(bvo.getBooking_code());
+			}// for
+		}// if
 		// --- 리스트 스크롤생성
 
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -359,9 +381,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		movieList.addListSelectionListener(this);
 		cinemaList.addListSelectionListener(this);
-		
+
 		// --- 다이얼로그 버튼이벤트 등록
-		
+
 		paymentB.addActionListener(this);
 		seatChoicePrev.addActionListener(this);
 		paymentCash.setSelected(true);
@@ -369,7 +391,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentCard.addActionListener(this);
 		paymentSiteCash.addActionListener(this);
 		paymentSiteCard.addActionListener(this);
-		
+
 		/* --- 라벨, 리스트 추가한 패널 구성 */
 		movieListPanel.add(movieChoiceLabel,"North");   movieListPanel.add(movieListSp,"Center");
 		cinemaListPanel.add(cinemaChoiceLabel,"North"); cinemaListPanel.add(cinemaListSp,"Center");
@@ -557,40 +579,40 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		lineSeatP.add(screen,"North"); lineSeatP.add(seatChoice,"East");
 		seatCard.add(lineSeatP);
 	}//setCinemaSeat()
-	
+
 	// --- 결제 다이얼로그 구축
 	public Component setPaymentDialog() {
 		DecimalFormat commas = new DecimalFormat("##,###");
-		
+
 		paymentD.setSize(980,350);
 		paymentD.setLocationRelativeTo(null);
-		
+
 		Font paymentSetLF=new Font("맑은 고딕",Font.BOLD,13);
 		Font paymentLF=new Font("맑은 고딕",Font.PLAIN,13);
 		Font paymentBF=new Font("맑은 고딕",Font.BOLD,20);
-		
+
 		// --- 포스터 라벨
 		ImageIcon mainposter = new ImageIcon("pic/"+secretImgL.getText());
 		Image originImg = mainposter.getImage();
 		Image changeImg = originImg.getScaledInstance(100,120,Image.SCALE_SMOOTH);		
 		ImageIcon paymentImg = new ImageIcon(changeImg);
-		
+
 		paymentPoster.setIcon(paymentImg);
-		
+
 		// --- 하단패널 라벨
-		
+
 		paymentName.setText(movieNameL.getText()); 							paymentName.setFont(paymentSetLF);
 		paymentAge.setText(secretAgeL.getText()); 							paymentAge.setFont(paymentSetLF);
 		setPaymentDate.setText(setDaysL.getText()+setTimesL.getText());		setPaymentDate.setFont(paymentSetLF);
 		setPaymentCinema.setText(setCinemaL.getText());						setPaymentCinema.setFont(paymentSetLF);
 		setPaymentPeople.setText(setAdultL.getText()+setChildL.getText());	setPaymentPeople.setFont(paymentSetLF);
 		setPaymentSeat.setText(setSeatL.getText());							setPaymentSeat.setFont(paymentSetLF);
-		
+
 		paymentCinema.setFont(paymentLF);
 		paymentDate.setFont(paymentLF);
 		paymentPeople.setFont(paymentLF);
 		paymentSeat.setFont(paymentLF);
-		
+
 		paymentPoster.setForeground(Color.WHITE);
 		paymentAge.setForeground(Color.WHITE);
 		paymentName.setForeground(Color.WHITE);
@@ -602,7 +624,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		setPaymentPeople.setForeground(Color.WHITE);
 		paymentSeat.setForeground(Color.WHITE);
 		setPaymentSeat.setForeground(Color.WHITE);
-		
+
 		paymentLP.add(paymentCinema);
 		paymentLP.add(paymentDate);
 		paymentLP.add(paymentPeople);
@@ -611,9 +633,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentInfoLP.add(setPaymentDate);
 		paymentInfoLP.add(setPaymentPeople);
 		paymentInfoLP.add(setPaymentSeat);
-		
+
 		// --- 하단패널 버튼
-		
+
 		seatChoicePrev.setPreferredSize(new Dimension(140,0));
 		seatChoicePrev.setForeground(Color.WHITE);
 		seatChoicePrev.setBackground(Color.GRAY);
@@ -622,16 +644,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentB.setForeground(Color.WHITE);
 		paymentB.setBackground(Color.RED);
 		paymentB.setFont(paymentBF);
-		
-		
+
+
 		// --- 결제창 하단패널 구성
-		
+
 		paymentPosName.setPreferredSize(new Dimension(300,130));
 		paymentPosName.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createEmptyBorder(-1,-1,-1,0),
 				BorderFactory.createLineBorder(Color.GRAY)));
 		paymentLP.setBorder(BorderFactory.createEmptyBorder(0,5,0,0));
-		
+
 		paymentPosName.setOpaque(false);
 		paymentNameAge.setOpaque(false);
 		paymentLP.setOpaque(false);
@@ -639,38 +661,38 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentInfoBLP.setOpaque(false);
 		paymentSCenterP.setOpaque(false);
 		paymentSouthP.setBackground(Color.BLACK);
-		
+
 		paymentInfoBLP.add(paymentInfoLP);
-		
+
 		paymentNameAge.add(paymentName); 			  	paymentNameAge.add(paymentAge);
-		
+
 		paymentPosName.add(paymentPoster);				paymentPosName.add(paymentNameAge);
-		
+
 		paymentSCenterP.add(paymentPosName); 			paymentSCenterP.add(paymentLP);
 		paymentSCenterP.add(paymentInfoBLP); 			
-		
+
 		paymentSouthP.add(seatChoicePrev,"West");   	
 		paymentSouthP.add(paymentB,"East");				paymentSouthP.add(paymentSCenterP,"Center");
-		
+
 		// --- 결제창 상단패널 구성
-		
+
 		Font priceFont=new Font("맑은 고딕",Font.BOLD,20);
 		int formatNum=Integer.parseInt(setPriceL.getText().trim());
-		
+
 		// --- 결제창 금액부 패널 구성
-		
+
 		paymentPriceP.setPreferredSize(new Dimension(200,0));
-		
+
 		paymentPriceinfo.setHorizontalAlignment(JLabel.CENTER);
 		paymentPriceinfo.setFont(priceFont);
 		paymentPriceinfo.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		paymentOption.setHorizontalAlignment(JLabel.CENTER);
 		paymentOption.setFont(new Font("맑은 고딕",Font.PLAIN,13));
-		
+
 		paymentOptionPrice.setHorizontalAlignment(JLabel.CENTER);
 		paymentOptionPrice.setFont(new Font("맑은 고딕",Font.PLAIN,13));
-		
+
 		paymentPrice.setFont(priceFont);
 		paymentPrice.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		paymentPrice.setText(commas.format(formatNum)+"원");
@@ -679,51 +701,48 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentPrice.setBackground(Color.BLACK);
 		paymentPrice.setForeground(Color.WHITE);
 		paymentPrice.setEditable(false);
-		
+
 		// --- 결제창 수단선택부 패널 구성
 		paymentCard.setEnabled(false);
-		
+
 		paymentChoiceInfo.setFont(new Font("맑은 고딕",Font.PLAIN,13));
 		paymentChoiceInfo.setForeground(Color.RED);
 		paymentInfoL.setFont(new Font("맑은 고딕",Font.PLAIN,13));
 		paymentInfoL.setForeground(Color.RED);
-		
-		
-		
-		
+
 		paymentChoiceCard.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.GRAY),
 				BorderFactory.createEmptyBorder(0,20,0,0)));
 		paymentChoice.setBorder(BorderFactory.createLineBorder(Color.GRAY));	
-		
+
 		paymentBG.add(paymentCash); 						paymentBG.add(paymentCard); 
 		paymentSiteBG.add(paymentSiteCash); 				paymentSiteBG.add(paymentSiteCard);
-		
+
 		paymentChoice.add(paymentCash); paymentChoice.add(paymentCard); paymentChoice.add(paymentChoiceInfo);
-		
+
 		paymentCashP.add(paymentSiteCash); paymentCashP.add(paymentSiteCard); paymentCashP.add(paymentInfoL);
-		
+
 		paymentChoiceCard.add(paymentCashP,"cash"); 		paymentChoiceCard.add(paymentCardP,"card");
-		
+
 		paymentP.add(paymentChoice,"North"); 				paymentP.add(paymentChoiceCard,"Center");
-		
+
 		paymentP.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		paymentPriceP.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		paymentOptionP.add(paymentOption);					paymentOptionP.add(paymentOptionPrice);
-		
+
 		paymentLayout.add(paymentPriceinfo); 				paymentLayout.add(paymentPrice);
 		paymentLayout.add(paymentOptionP);
-		
+
 		paymentPriceP.add(paymentLayout);
-		
+
 		paymentCenterP.add(paymentP);					paymentCenterP.add(paymentPriceP,"East");
-		
+
 		// -- 결제창 전체 패널 구성
-		
+
 		paymentMainP.add(paymentCenterP,"Center");
 		paymentMainP.add(paymentSouthP,"South");
-		
+
 		paymentD.add(paymentMainP);
 		return paymentD;
 	}
@@ -735,7 +754,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// --- 시간 버튼
 		for(i=0;i<timeBList.size();i++) {
 			if(obj==timeBList.get(i)) {
-				setTimesL.setText(" "+timeBList.get(i).getText());			
+				setTimesL.setText(" "+timeBList.get(i).getText());				
 				for(int j=0;j<adultB.length;j++) {
 					adultB[j].setEnabled(true);
 					childB[j].setEnabled(true);					
@@ -979,7 +998,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		}// if
 		for(i=0;i<calDate.length;i++) {
 			// --- 캘린더 버튼 클릭시
-			if(obj==calDate[i]) {
+			if(obj==calDate[i]) {				
 				setDaysL.setText(calYear.getText()+"년"+calMonth.getText()+"월 "+calDate[i].getText()+"일");
 				secretDate.setText(calDate[i].getText());
 				// 날짜 시간 리스트 생성
@@ -1008,9 +1027,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				}// for
 			}// if
 		}// for
-		
+
 		// --- 타임코드 생성용 인덱스 설정
-		
 		if(obj==timeBList.get(0)) {
 			timeCount=1;
 		}else if(obj==timeBList.get(1)) {
@@ -1032,14 +1050,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				seatBackB.setVisible(true);
 				seatPaymentB.setVisible(true);
 				CARD.next(reservCard);
-				
-				String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
-				seat_status=bdao.getBookingSeat(seat_Num,time_code);
-				
-				System.out.println(seat_Num);
-				System.out.println(time_code);
-				System.out.println(seat_status);
-				
+				time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
+				int seat_status=bdao.getBookingSeat(seat_Num,time_code);
 				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
 				if((sV != null) && sV.size()>0) {
 					for(i=0;i<sV.size();i++) {
@@ -1068,14 +1080,13 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 							rightArea.add(seatButton.get(i));
 							seatPanel.add(rightArea,"East");
 						}// if else if
-						String bookedSeat=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();
-						if(seat_status==1 && bookedSeat.equals(seat_Num)) {
-							seatButton.get(i).setEnabled(false);
-							System.out.println("됨");
-						}else if(seat_status==0 && bookedSeat.equals(seat_Num)) {
-							seatButton.get(i).setEnabled(true);
-							System.out.println("안됨");
-						}// if else if
+						for(int j=0;j<seat_Num.size();j++) {
+							if(seat_status==1 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
+								seatButton.get(i).setEnabled(false);
+							}else if(seat_status==0 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
+								seatButton.get(i).setEnabled(true);					
+							}// if else
+						}// for
 					} // for
 				}// if				
 			}// if else
@@ -1087,7 +1098,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			CARD.previous(reservCard);
 		}// if
 		if(obj==seatPaymentB) {
-			setPaymentDialog().setVisible(true);
+			setPaymentDialog().setVisible(true);					
 		}// if
 		// --- 좌석 선택 버튼
 		for(i=0;i<seatButton.size();i++) {
@@ -1100,7 +1111,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						seatList.get(index).setText(seatButton.get(i).getText());
 						seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
 						setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()+" "));
-						seat_Num=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();	
 						secretSeatNum.setText(seatButton.get(i).getText());
 						seatPaymentB.setEnabled(false);
 						index++;
@@ -1130,21 +1140,35 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		if(obj==seatChoicePrev) {
 			paymentD.dispose();
 		}// if
-		if(obj==paymentB) {
+		if(obj==paymentB) {			
+
+			// --- Booking 저장
 			bvo.setPrice(Integer.parseInt(setPriceL.getText().trim()));
 			bvo.setSeatcount(adultCount+childCount);
 			bvo.setMovie_code(movie_code);
 			bvo.setMember_id(AppManager.getInstance().getMainUi().myPageC.idCL.getText());
-			bvo.setTime_code(cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount);
-			
+			bvo.setTime_code(cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount);		
 			int insertRe=bdao.setBooking(bvo);			
-			
+
+			// --- day_seat 예약좌석 변경
+			String[] seatArr=setSeatL.getText().split("\\s");
 			String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
-			String seat_Num=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();			
-			
-			int updateRe=bdao.setBookingSeat(seat_Num,time_code);
-			
-			if(insertRe==1 && updateRe==1) {
+			dvo.setTime_code(time_code);
+			dvo.setScreen((String)cinemaList.getSelectedValue());
+			int updateRe=bdao.setBookingSeat(seatArr,dvo);
+
+			// --- booking_code 마지막 인덱스값을 가져옴
+			if(booking_code.isEmpty()==false) {
+				int lastBooking_code=booking_code.get(booking_code.size()-1);
+				System.out.println(lastBooking_code);
+				bsvo.setBooking_code(lastBooking_code);
+			}else {
+				bsvo.setBooking_code(1);
+			}// if else
+			bsvo.setScreen((String)cinemaList.getSelectedValue()+"");
+			int insertBookedRe=bdao.setBookedSeat(bsvo,seatArr);
+
+			if(insertRe==1 && updateRe==1 && insertBookedRe==1) {
 				JOptionPane.showMessageDialog(this,"결제가 완료되었습니다.");
 			}else {
 				JOptionPane.showMessageDialog(this,"결제에 실패했습니다.");
@@ -1194,7 +1218,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						Image originImg = mainposter.getImage();
 						Image changeImg = originImg.getScaledInstance(263,300,Image.SCALE_SMOOTH);		
 						ImageIcon poster = new ImageIcon(changeImg);
-						
+
 						moviePosterB.setIcon(poster);
 					}// if
 				}// for

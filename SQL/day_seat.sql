@@ -31,5 +31,6 @@ end;
 
 select * from day_seat where time_code='1관08261'
 
-UPDATE day_seat SET seat_status=0 WHERE seat_Num='1관F10' AND time_code='1관08261';
+UPDATE day_seat SET seat_status=0 WHERE seat_Num='1관J12' AND time_code='1관08263';
+UPDATE day_seat SET seat_status=0 WHERE seat_status=1;
 

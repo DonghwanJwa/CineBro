@@ -10,3 +10,5 @@ create table member(						--회원 테이블
 alter table member modify(member_pwd varchar2(150));
 
 select * from member
+
+DELETE FROM member;

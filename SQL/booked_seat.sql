@@ -5,3 +5,7 @@ booking_code NUMBER(38) REFERENCES Booking(booking_code)	--예매코드
 );
 
 drop table booked_seat;
+
+SELECT * FROM BOOKED_SEAT ORDER BY seat_Num;
+
+DELETE FROM BOOKED_SEAT;
