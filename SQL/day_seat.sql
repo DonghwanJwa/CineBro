@@ -9,13 +9,13 @@ seat_status NUMBER(5) NOT NULL								--예매유무(0,1)
 
 -- alt+c 단축키로 실행 !!
 declare
-	dat NUMBER(20);		--0823~0825에서 3~5만
+	dat NUMBER(20);		--0826~0828에서 6~8만
 	scr NUMBER(20);		--관 번호
-	tco NUMBER(20);		--회차 (08231~08235에서 1~5만)
+	tco NUMBER(20);		--회차 (08261~08265에서 1~5만)
 	row NUMBER(20);		--좌석 행
 	col NUMBER(20);		--좌석 열
 begin
-for dat in 3..5 LOOP
+for dat in 6..8 LOOP
 	for scr in 1..12 LOOP
 		for tco in 1..5 LOOP
 			for row in 65..76 LOOP
@@ -29,5 +29,5 @@ for dat in 3..5 LOOP
 end LOOP;
 end; 
 
-select * from day_seat where time_code='1관08231';
+select * from day_seat where time_code='1관08261';
 
