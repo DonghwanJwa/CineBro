@@ -141,7 +141,7 @@ public class BookingDAO {
 		daoManager.connectDB();
 		
 		int re=-1;
-		String sql="INSERT INTO Booking VALUES(booked_seq,?,?,?,?,?)";
+		String sql="INSERT INTO Booking VALUES(booked_seq.nextval,?,?,?,?,?)";
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
 			daoManager.pt.setInt(1,b.getPrice());
@@ -156,5 +156,44 @@ public class BookingDAO {
 		}catch(Exception e) {e.printStackTrace();}
 		
 		return re;
-	}// setBooking
-}
+	}// setBooking()
+	
+	// 좌석 예매
+	public int setBookingSeat(String seat_Num,String time_code) {
+		daoManager.connectDB();
+		
+		int re=-1;
+		String sql="UPDATE day_seat SET seat_status=1 WHERE seat_Num=? AND time_code=?";
+		try {
+			daoManager.pt=daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,seat_Num);
+			daoManager.pt.setString(2,time_code);
+			
+			re=daoManager.pt.executeUpdate();
+			
+			daoManager.closeDB();
+		}catch(Exception e) {e.printStackTrace();}
+		
+		return re;
+	}// setBookingSeat()
+	
+	public int getBookingSeat(String seat_Num,String time_code) {
+		daoManager.connectDB();
+		
+		int booking=0;
+		String sql="SELECT seat_status FROM day_seat WHERE seat_Num=? AND time_code=?";
+		try {
+			daoManager.pt=daoManager.con.prepareStatement(sql);
+			daoManager.pt.setString(1,seat_Num);
+			daoManager.pt.setString(2,time_code);
+			rs=daoManager.pt.executeQuery();
+			if(rs.next()) {
+				booking=rs.getInt("seat_status");
+			}// while
+			if(rs != null) rs.close();
+			daoManager.closeDB();
+		}catch(Exception e) {e.printStackTrace();}
+		
+		return booking;
+	}// getBookingSeat()
+}// BookingDAO class

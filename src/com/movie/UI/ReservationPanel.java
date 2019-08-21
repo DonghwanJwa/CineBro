@@ -141,7 +141,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JLabel dayChoiceLabel=new JLabel("    날짜");
 
 	// --------------------------------- 좌석 패널
-
+	
+//	private String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
+	private String seat_Num;
+	private int seat_status;
 	private JPanel seatPanel=new JPanel(new BorderLayout(10,0)); // 좌석 구역 패널
 	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
 	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1)); // 중앙 구역 좌석
@@ -149,9 +152,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel areaLine=new JPanel(new GridLayout(12,1,1,7)); // 좌석 열표시
 	private JPanel seatChoice=new JPanel(new BorderLayout());
 	private JPanel seatChoiceP=new JPanel(new GridLayout(4,2,3,2));
-
 	private JPanel lineSeatP=new JPanel(new BorderLayout(20,30));
-
+	
 	protected List<JButton> seatButton=new ArrayList<>();	
 	protected JButton seatReset=new JButton("좌석초기화");
 
@@ -159,6 +161,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private int seatIndex=0; // 좌석버튼 액션 이벤트 등록 위한 인덱스
 	private ArrayList<JLabel> seatList=new ArrayList<>(); // 좌석 리스트
 	private JLabel screen=new JLabel("SCREEN");
+	private JLabel secretSeatNum=new JLabel(); // 선택한 좌석번호 저장용 라벨
 	protected JLabel[] seatChoiceL=new JLabel[8];
 	protected JLabel[] seatLine=new JLabel[12]; // 좌석 열 번호
 
@@ -1029,6 +1032,52 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				seatBackB.setVisible(true);
 				seatPaymentB.setVisible(true);
 				CARD.next(reservCard);
+				
+				String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
+				seat_status=bdao.getBookingSeat(seat_Num,time_code);
+				
+				System.out.println(seat_Num);
+				System.out.println(time_code);
+				System.out.println(seat_status);
+				
+				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
+				if((sV != null) && sV.size()>0) {
+					for(i=0;i<sV.size();i++) {
+						SeatVO svo=sV.get(i);
+						seatButton.add(new JButton());
+						seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+						seatButton.get(i).setMargin(new Insets(2,0,2,0));
+						seatButton.get(i).setBackground(Color.BLACK);
+						seatButton.get(i).setForeground(Color.WHITE);			
+						if(seatIndex<sV.size()) {
+							seatButton.get(i).addActionListener(this);
+						}// if
+						seatIndex++;
+						int seatPlace=Integer.parseInt(seatButton.get(i).getText().replaceAll(("[^0-9]"), ""));
+						if(seatPlace<=5) {
+							seatButton.get(i).setMargin(new Insets(2,3,2,3));
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							leftArea.add(seatButton.get(i));
+							seatPanel.add(leftArea,"West");			
+						}else if(5<seatPlace && seatPlace<=15) {
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							centerArea.add(seatButton.get(i));
+							seatPanel.add(centerArea,"Center");
+						}else if(seatPlace<=20) {
+							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
+							rightArea.add(seatButton.get(i));
+							seatPanel.add(rightArea,"East");
+						}// if else if
+						String bookedSeat=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();
+						if(seat_status==1 && bookedSeat.equals(seat_Num)) {
+							seatButton.get(i).setEnabled(false);
+							System.out.println("됨");
+						}else if(seat_status==0 && bookedSeat.equals(seat_Num)) {
+							seatButton.get(i).setEnabled(true);
+							System.out.println("안됨");
+						}// if else if
+					} // for
+				}// if				
 			}// if else
 		}// if
 		if(obj==seatBackB) {
@@ -1051,6 +1100,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						seatList.get(index).setText(seatButton.get(i).getText());
 						seatList.get(index).setHorizontalAlignment(JLabel.CENTER);
 						setSeatL.setText(setSeatL.getText().concat(seatList.get(index).getText()+" "));
+						seat_Num=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();	
+						secretSeatNum.setText(seatButton.get(i).getText());
 						seatPaymentB.setEnabled(false);
 						index++;
 						if(index == adultCount+childCount) {
@@ -1059,6 +1110,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					}else {
 						JOptionPane.showMessageDialog(this,"모두 선택되었습니다!");
 					}// if else if
+					// --- 재선택된 좌석 지우기
 				}else if(seatButton.get(i).getBackground()==Color.RED) {
 					seatButton.get(i).setBackground(Color.BLACK);
 					for(int k=0;k<seatList.size();k++) {						
@@ -1085,14 +1137,18 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			bvo.setMember_id(AppManager.getInstance().getMainUi().myPageC.idCL.getText());
 			bvo.setTime_code(cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount);
 			
-			System.out.println(bvo.getPrice());
-			System.out.println(bvo.getSeatcount());
-			System.out.println(bvo.getMovie_code());
-			System.out.println(bvo.getMember_id());
-			System.out.println(bvo.getTime_code());
+			int insertRe=bdao.setBooking(bvo);			
 			
-//			int re=bdao.setBooking(bvo);
-//			if(re==1) JOptionPane.showMessageDialog(this,"결제가 완료되었습니다.");			
+			String time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
+			String seat_Num=cinemaList.getSelectedValue()+secretSeatNum.getText().trim();			
+			
+			int updateRe=bdao.setBookingSeat(seat_Num,time_code);
+			
+			if(insertRe==1 && updateRe==1) {
+				JOptionPane.showMessageDialog(this,"결제가 완료되었습니다.");
+			}else {
+				JOptionPane.showMessageDialog(this,"결제에 실패했습니다.");
+			}// if else
 		}// if
 		if(obj==seatReset) {
 			for(i=0;i<seatButton.size();i++) {
@@ -1154,47 +1210,15 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					cinemaList.setListData(cinemaVector);
 				}// if
 				// 상영관리스트 선택했을 시
-			}else if(obj==cinemaList) {			
+			}else if(obj==cinemaList) {		
 				setCinemaL.setText((String)cinemaList.getSelectedValue());
 				// 좌석 배치
-				screenNum=cinemaList.getSelectedValue()+"";
-				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
-				if((sV != null) && sV.size()>0) {
-					for(int i=0;i<sV.size();i++) {
-						SeatVO svo=sV.get(i);
-						seatButton.add(new JButton());
-						seatButton.get(i).setText(svo.getSeatcol());
-						seatButton.get(i).setMargin(new Insets(2,0,2,0));
-						seatButton.get(i).setBackground(Color.BLACK);
-						seatButton.get(i).setForeground(Color.WHITE);
-
-						if(seatIndex<sV.size()) {
-							seatButton.get(i).addActionListener(this);
-						}// if
-						seatIndex++;
-
-						int seatPlace=Integer.parseInt(seatButton.get(i).getText());
-						if(seatPlace<=5) {
-							seatButton.get(i).setMargin(new Insets(2,3,2,3));
-							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
-							leftArea.add(seatButton.get(i));
-							seatPanel.add(leftArea,"West");			
-						}else if(5<seatPlace && seatPlace<=15) {
-							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
-							centerArea.add(seatButton.get(i));
-							seatPanel.add(centerArea,"Center");
-						}else if(seatPlace<=20) {
-							seatButton.get(i).setText(svo.getSeatrow()+svo.getSeatcol());
-							rightArea.add(seatButton.get(i));
-							seatPanel.add(rightArea,"East");
-						}// if else if
-					} // for
-				}// if
+				screenNum=cinemaList.getSelectedValue()+"";				
 				Vector<MovietimeVO> mL=bdao.dayList(screenNum);
 				if((mL != null) && mL.size()>0) {
 					for(int i=0;i<mL.size();i++) {
 						MovietimeVO mtvo=mL.get(i);
-						dateList.add(mtvo.getScreendate());		
+						dateList.add(mtvo.getScreendate());
 					}
 				}// if ==> 날짜리스트 if
 				for(int i=0;i<dateList.size();i++) {
