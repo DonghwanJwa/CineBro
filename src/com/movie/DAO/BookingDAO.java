@@ -27,7 +27,7 @@ public class BookingDAO {
 		daoManager.connectDB();
 
 		Vector<MovieVO> nameList=new Vector<MovieVO>();
-		String sql="SELECT movie_code,movie_nameK,movie_img FROM MovieData";
+		String sql="SELECT movie_code,movie_nameK,movie_img,age FROM MovieData";
 
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
@@ -37,6 +37,7 @@ public class BookingDAO {
 				m.setMovie_code(rs.getInt("movie_code"));
 				m.setMovie_nameK(rs.getString("movie_nameK"));
 				m.setMovie_img(rs.getString("movie_img"));
+				m.setAge(rs.getString("age"));
 				nameList.add(m);
 			} // while
 			if(rs != null) rs.close();
