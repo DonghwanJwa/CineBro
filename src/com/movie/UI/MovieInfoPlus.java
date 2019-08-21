@@ -3,6 +3,7 @@ package com.movie.UI;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -60,7 +61,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JLabel appearancepanelL;					//출연자 이름 라벨
 	private JLabel viewtitleL;							//누적관객 라벨
 	private JLabel viewL;								//누적관객수 라벨
-
+	
 
 
 	private JButton reserveB;						//예매하기 버튼
@@ -68,19 +69,23 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JButton videoB2;						//리뷰 동영상 두번쨰
 	private JButton videoB3;						//리뷰 동영상 세번째
 	private JButton videoB4;						//리뷰 동영상 네번쨰
-
+	
+	
+	
+	
+	
 	MyActionListener my = AppManager.getInstance().getMyListener();
 	MovieDAO dao = AppManager.getInstance().getDAOManager().getMovieDAO();	//싱글톤입력
 	MainUI main = AppManager.getInstance().getMainUi();
 
 
 	public MovieInfoPlus(int i) {
-
+		
 
 		setposterpanel(dao.getMovieInfo(i));	// setposterpanel 메서드에 getMovieInfo가져오기
 		setinfopanel(dao.getMovieInfo(i));		// setinfopanel메서드에 getMovieInfo가져오기
 		seriespanel(dao.getMovieInfo(i));		// seriespanel메서드에 getMovieInfo가져오기 
-
+		
 
 		/** 패널 위에 올릴 패널 **/
 
@@ -108,7 +113,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		setSize(new Dimension(900,800));							//제일큰패널 사이즈 지정
 		getContentPane().setBackground(Color.BLACK);				//배경색 지정
 		setLocationRelativeTo(null);								//창이 켜졌을때 어디에 배치 할지 정함 Null값은 중앙
+		setModal(true);												//setModal() true면 그창이켜질시 딴거 클릭금지
 		setVisible(true);											//패널을 보이게함
+	
 	}//MovieInfoPlus생성자
 
 
@@ -187,9 +194,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		reserveB.setBackground(Color.red); 			//버튼배경
 		reserveB.setForeground(Color.black);		//버튼글짜색
 		reserveB.setFocusPainted(false); 			//클릭테두리색
-		reserveB.setBorderPainted(false);			//그냥테두리색
+		reserveB.setBorderPainted(true);			//그냥테두리색
 		reserveB.setOpaque(true);					//투명도 true면 불투명 false면 투명
-
+		
 		posterpanel.add(reserveB);					//포스터패널에 reserveB 버튼 넣음
 
 
