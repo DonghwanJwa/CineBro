@@ -12,6 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import com.movie.DAO.BCheckDAO;
+import com.movie.VO.BookingVO;
+import com.movie.VO.MovieNowVO;
+import com.movie.VO.MovietimeVO;
+import com.movie.main.AppManager;
+
 public class MovieCancelPanel extends JOptionPane implements ActionListener{
 	/**JOptionPane은 actionListener 메서드안에 들어가는 컨테이너중 하나**/
 	/**새로운 경고 윈도우를 호출한다. 일반적인 버튼추가나, Frame메서드 사용 불가능**/
@@ -33,19 +39,19 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 
 	JLabel number_titleL = new JLabel("예매번호 : ");//예약 정보 타이틀 라벨
 	JLabel movie_titleL = new JLabel("영화명 : ");  
-//	JLabel payment_titleL = new JLabel("금액 : ");
+	JLabel payment_titleL = new JLabel("금액 : ");
 	JLabel date_titleL = new JLabel("날짜 : ");
 	JLabel time_titleL = new JLabel("시간 : ");
 	JLabel screen_titleL = new JLabel("상영관 : ");
-	JLabel people_titleL = new JLabel("인원 : ");
+	JLabel seat_titleL = new JLabel("좌석 : ");
 
 	JLabel number_compL = new JLabel();           //예약 정보 출력 라벨   
 	JLabel movie_compL = new JLabel();            //setText() 메서드 사용하여
-//	JLabel payment_compL = new JLabel();          //예약정보마다 다른 정보 출력
+	JLabel payment_compL = new JLabel();          //예약정보마다 다른 정보 출력
 	JLabel date_compL = new JLabel(); 
 	JLabel time_compL = new JLabel();
 	JLabel screen_compL = new JLabel();
-	JLabel people_compL = new JLabel();
+	JLabel seat_compL = new JLabel();
 
 	ImageIcon preImg; //포스터 초기 이미지아이콘
 	ImageIcon poster; //수정된 포스터 이미지아이콘
@@ -53,9 +59,10 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 	int result; //Dialog의 예,아니오 버튼 이벤트를 위한 객체
 	
 	Font font = new Font("맑은 고딕",Font.BOLD,15); //라벨에 적용시킬 폰트
-	
+	BCheckDAO bdao = AppManager.getInstance().getDAOManager().getBCheckDAO();
 
-	public MovieCancelPanel(FakeReserveVO vo) {
+	public MovieCancelPanel(BookingVO vo) {
+		
 		/*포스터 이미지 아이콘 사이즈 변환*/
 		preImg = new ImageIcon(setPoster(vo));//포스터 넣는란
 		Image originImg = preImg.getImage();//ImageIcon을 Image로 전환
@@ -85,27 +92,27 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 
 		number_titleL.setPreferredSize(new Dimension(80,25));  //예약 정보 타이틀 라벨 크기지정
 		movie_titleL.setPreferredSize(new Dimension(80,25));   
-//		payment_titleL.setPreferredSize(new Dimension(80,25));
+		payment_titleL.setPreferredSize(new Dimension(80,25));
 		date_titleL.setPreferredSize(new Dimension(80,25));
 		time_titleL.setPreferredSize(new Dimension(80,25));
 		screen_titleL.setPreferredSize(new Dimension(80,25));
-		people_titleL.setPreferredSize(new Dimension(80,25));
+		seat_titleL.setPreferredSize(new Dimension(80,25));
 
 		number_compL.setPreferredSize(new Dimension(420,25));  //예약 정보 출력 라벨 크기지정
 		movie_compL.setPreferredSize(new Dimension(170,25));   
-//		payment_compL.setPreferredSize(new Dimension(170,25));
+		payment_compL.setPreferredSize(new Dimension(170,25));
 		date_compL.setPreferredSize(new Dimension(170,25));
 		time_compL.setPreferredSize(new Dimension(170,25));
 		screen_compL.setPreferredSize(new Dimension(170,25));
-		people_compL.setPreferredSize(new Dimension(170,25));
+		seat_compL.setPreferredSize(new Dimension(170,25));
 
 		infoP.add(number_titleL); infoP.add(number_compL);      //infoP에 예약 정보 라벨 추가
 		infoP.add(movie_titleL);  infoP.add(movie_compL);
-//		infoP.add(payment_titleL);infoP.add(payment_compL);
+		infoP.add(payment_titleL);infoP.add(payment_compL);
 		infoP.add(date_titleL);   infoP.add(date_compL);
 		infoP.add(time_titleL);   infoP.add(time_compL);
 		infoP.add(screen_titleL); infoP.add(screen_compL);
-		infoP.add(people_titleL); infoP.add(people_compL);
+		infoP.add(seat_titleL); infoP.add(seat_compL);
 
 		setComp(vo); //DB정보를 불러와서 라벨에 입력하는 메서드
 
@@ -113,11 +120,11 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 		announ1L.setFont(font);       announ2L.setFont(font);
 		number_titleL.setFont(font);  number_compL.setFont(font);
 		movie_titleL.setFont(font);   movie_compL.setFont(font);
-//		payment_titleL.setFont(font); payment_compL.setFont(font);
+		payment_titleL.setFont(font); payment_compL.setFont(font);
 		date_titleL.setFont(font);    date_compL.setFont(font);
 		time_titleL.setFont(font);    time_compL.setFont(font);
 		screen_titleL.setFont(font);  screen_compL.setFont(font);
-		people_titleL.setFont(font);  people_compL.setFont(font);
+		seat_titleL.setFont(font);  seat_compL.setFont(font);
 
 		/*경고창 생성*/
 		result = showConfirmDialog(null,mainP,"예매취소",
@@ -126,20 +133,35 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 		//메시지창 제목(String),버튼옵션 종류,메세지 경고스티커 종류,메시지창 좌측에 넣을 이미지(경고이미지였으나 포스터로 바꿈));
 	}//생성자
 
-	public String setPoster(FakeReserveVO vo) {           //DB 예약정보중 포스터 입력 메서드
+	public String setPoster(BookingVO vo) {           //DB 예약정보중 포스터 입력 메서드
+		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		/* 영화예매 DAO 메서드 */
-		return vo.getMovie_poster();
+		return mn.getImg();
 	}
 
-	public void setComp(FakeReserveVO vo) {               //DB 예약정보 입력하기
+	public void setComp(BookingVO vo) {               //DB 예약정보 입력하기
+		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
+		MovietimeVO mt = bdao.getMovietimeInfo(vo);
+		String seatNum = bdao.getMovieSeatNum(vo);
+		String[] moviedate = mt.getScreendate().split("-");
+		String bcode = vo.getBooking_code()+"";		
+		
+		if(vo.getBooking_code()<10) {
+			bcode = "000"+bcode;
+		}else if(vo.getBooking_code()<99) {
+			bcode = "00"+bcode;
+		}else if(vo.getBooking_code()<999) {
+			bcode = "0"+bcode;
+		}
+		
 		/* 영화예매 DAO 메서드 */
-		number_compL.setText(vo.getRes_num());
-		movie_compL.setText(vo.getMovie_name());
-//		payment_compL.setText(vo.get);
-		date_compL.setText(vo.getRes_date());
-		time_compL.setText(vo.getRes_time());
-		screen_compL.setText(vo.getRes_cinema());
-		people_compL.setText(vo.getRes_ticketnum());	
+		number_compL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
+		movie_compL.setText(mn.getMovie_nameK());
+		payment_compL.setText(vo.getPrice()+"원");
+		date_compL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
+		time_compL.setText(mt.getScreentime());
+		screen_compL.setText(mt.getScreen());
+		seat_compL.setText(seatNum);	
 	}
 
 	@Override
