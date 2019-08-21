@@ -1,6 +1,8 @@
 package com.movie.DAO;
 
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Properties;
@@ -44,9 +46,9 @@ public class MemberDAO {
 
 			//--------------------아이디와 비밀번호가 DB와 일치하면 회원정보를 불러와 저장-------------------//
 			if(rs.next()) {
-				if(memberVO.getPwd().equals(rs.getString("member_pwd"))) {
+				if(sha256(memberVO.getPwd()).equals(rs.getString("member_pwd"))) {
 					memberVO.setId(rs.getString("member_id"));
-					memberVO.setPwd(rs.getString("member_pwd"));
+					memberVO.setPwd(sha256(rs.getString("member_pwd")));
 					memberVO.setName(rs.getString("member_name"));
 					memberVO.setSex(rs.getString("member_sex"));
 					memberVO.setBirth(rs.getString("member_birth"));
@@ -75,7 +77,7 @@ public class MemberDAO {
 			sql = "insert into member values(?,?,?,?,?,?)";
 			daoManager.pt = daoManager.con.prepareStatement(sql);
 			daoManager.pt.setString(1, m.getId());
-			daoManager.pt.setString(2, m.getPwd());
+			daoManager.pt.setString(2, sha256(m.getPwd()));
 			daoManager.pt.setString(3, m.getName());
 			daoManager.pt.setString(4, m.getSex());
 			daoManager.pt.setString(5, m.getBirth());
@@ -225,7 +227,7 @@ public class MemberDAO {
 		String sql = "update member set member_pwd=? where member_id=? and member_name=? and member_email=?";
 		try {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
-			daoManager.pt.setString(1, pass);
+			daoManager.pt.setString(1, sha256(pass));
 			daoManager.pt.setString(2, id);
 			daoManager.pt.setString(3, name);
 			daoManager.pt.setString(4, email);
@@ -252,7 +254,7 @@ public class MemberDAO {
 		String sql = "update member set member_pwd=?,member_sex=?,member_birth=?,member_email=? where member_id=?";
 		try {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
-			daoManager.pt.setString(1,memberVO.getPwd());
+			daoManager.pt.setString(1,sha256(memberVO.getPwd()));
 			daoManager.pt.setString(2,memberVO.getSex());
 			daoManager.pt.setString(3,memberVO.getBirth());
 			daoManager.pt.setString(4,memberVO.getEmail());
@@ -282,7 +284,7 @@ public class MemberDAO {
 			daoManager.pt.setString(1,id);
 			rs = daoManager.pt.executeQuery();
 			if(rs.next()) {
-				pwd = rs.getString("member_pwd");
+				pwd =rs.getString("member_pwd");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -385,4 +387,35 @@ public class MemberDAO {
 			msg_e.printStackTrace();
 		}//try~catch
 	}//
+
+	/************ 비밀번호 암호화 *******************/
+	public static String sha256(String password)// throws NoSuchAlgorithmException
+	{
+		//NoSuchAlgorithmException - 특정 암호알고리즘이 요청되었지만 환경에서 사용할 수 없을떄 사용됨
+		MessageDigest md = null;
+		try {
+			//MessageDigest 인스턴스 생성	
+			md = MessageDigest.getInstance("SHA-256");
+		}catch(Exception e){	e.printStackTrace();	}
+
+		String resultString;
+
+		byte[] byteArr;//바이트 값 배열 생성
+
+		String temp= "";
+
+		byteArr = md.digest(password.getBytes());//지정된 바이트 데이터를 사용해 다이제스트 갱신
+
+		for (int i=0; i<byteArr.length; i++) {
+			resultString = ""+ Integer.toHexString((int)byteArr[i] & 0x000000ff);
+			//toHexString -> 10진수를 16진수로 변경
+			//0x000000ff -> 255를 의미하며 -값을 연산하기 위해 &와 같이 사용됨(해당되는 양수값 그대로 나오게 됨)
+
+			if(resultString.length() < 2) {
+				resultString = "0" + resultString;
+			}
+			temp = temp +resultString;
+		}
+		return temp;
+	}
 }
