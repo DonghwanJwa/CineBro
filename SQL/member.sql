@@ -8,3 +8,5 @@ create table member(						--회원 테이블
 );
 --암호화 과정 데이터 넣는 과정에서 예상보다 많은 데이터가 들어가므로 사이즈변경
 alter table member modify(member_pwd varchar2(150));
+
+select * from member

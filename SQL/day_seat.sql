@@ -29,5 +29,7 @@ for dat in 6..8 LOOP
 end LOOP;
 end; 
 
-select * from day_seat where time_code='1관08261';
+select * from day_seat where time_code='1관08261'
+
+UPDATE day_seat SET seat_status=0 WHERE seat_Num='1관F10' AND time_code='1관08261';
 
