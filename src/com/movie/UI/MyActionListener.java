@@ -441,6 +441,12 @@ public class MyActionListener {
 							mainUi.log_regBP.setVisible(false);
 							mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
 							mainUi.after_loginLP.setVisible(true);
+							/* (2) */
+							mainUi.checkC.setMainP();
+							mainUi.checkC.movieP.removeAll();
+							mainUi.checkC.movieBackgroundP.add(mainUi.checkC.setMovieP());
+							mainUi.checkC.movieBackgroundP.revalidate();
+							mainUi.checkC.movieBackgroundP.repaint();
 							/* (3) */
 							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
 							/* (4) */
