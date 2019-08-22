@@ -100,7 +100,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	private JPanel adultP=new JPanel(new BorderLayout(0,5));
 	private JPanel childP=new JPanel(new BorderLayout(0,5));
 
-	private List<JToggleButton> timeBList=new ArrayList<>();
+	protected List<JToggleButton> timeBList=new ArrayList<>();
 	private int timeCount; // 시간버튼 선택시 반환인덱스 설정용
 	private int adultCount; // 성인버튼 선택시 반환 카운트 설정용 ( 좌석 갯수 )
 	private int childCount; // 청소년버튼 선택시 반환 카운트 설정용 ( 좌석 갯수 )
@@ -119,7 +119,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// ------------------------------------- 홈패널
 
 	/* 카드레이아웃 패널 */
-	private JPanel reservCard=new JPanel(CARD);
+	protected JPanel reservCard=new JPanel(CARD);
 	private JPanel homeCard=new JPanel(new BorderLayout()); // 홈 카드패널
 	private JPanel seatCard=new JPanel(new FlowLayout(FlowLayout.CENTER,0,70)); // 좌석 카드패널
 
