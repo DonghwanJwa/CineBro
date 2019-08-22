@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 
+import com.movie.DAO.BCheckDAO;
 import com.movie.DAO.BookingDAO;
 import com.movie.DAO.DAOManager;
 import com.movie.DAO.MemberDAO;
@@ -50,6 +51,7 @@ public class MyActionListener {
 	BookingVO bookingvo = new BookingVO();
 	BookingDAO bookingDAO = new BookingDAO();
 	BookedseatVO bookedseatvo = new BookedseatVO();
+	BCheckDAO bcheckdao = new BCheckDAO();
 	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
 	SignUpFrame signUp;
@@ -430,30 +432,15 @@ public class MyActionListener {
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 							loginP.dispose();
-							/* 로그인 됐을때 실행할 문장 */
-							/* 1. 메인 frame 로그인버튼,회원가입 버튼 setVisible(false),
-							 *    아이디 출력되는 Label에 setText(); "어서오세요, ~회원님"
-							 * 2. 예매 정보를 reservation panel에 부름(where id,order by booking_code)
-							 * 3. 개인 정보를 mypage panel에 부름(where id)
-							 * 4. loginFlag => true로 
-							 */
-							/* (1) */
-							mainUi.log_regBP.setVisible(false);
+							
+							mainUi.log_regBP.setVisible(false);								//메인프레임 로그인버튼 변경
 							mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
 							mainUi.after_loginLP.setVisible(true);
-							/* (2) */
-							mainUi.checkC.setMainP();
-							mainUi.checkC.movieP.removeAll();
-							mainUi.checkC.movieBackgroundP.add(mainUi.checkC.setMovieP());
-							mainUi.checkC.movieBackgroundP.revalidate();
-							mainUi.checkC.movieBackgroundP.repaint();
-							/* (3) */
-							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
-							/* (4) */
-							mainUi.loginFlag=true;
+							mainUi.myPageC.setInfoLabel(); 									//현재 로그인 회원 정보를 mypage에 세팅하는 메서드
+							mainUi.loginFlag=true;											//로그인상태 true
 
 						}else { // 정확하지 않은 id가 적혔을때
-							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력
+							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); 				// error문구 출력
 							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
 							loginP.idField.requestFocus(); // 포커스를 idField에 둠
 							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // passwordField 테두리색 변경
@@ -532,12 +519,16 @@ public class MyActionListener {
 			}//if
 			if(obj==mainUi.checkB) {
 				if(mainUi.loginFlag==true) {
+					mainUi.checkC.movieP.removeAll();
+					mainUi.checkC.setMovieP();
+					mainUi.checkC.movieBackgroundP.revalidate();
+					mainUi.checkC.movieBackgroundP.repaint();
 					mainUi.homeB.setBackground(Color.GRAY.brighter());
 					mainUi.movieB.setBackground(Color.GRAY.brighter());
 					mainUi.reservB.setBackground(Color.GRAY.brighter());
 					mainUi.checkB.setBackground(Color.RED);
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
-					mainUi.card.show(mainUi.mainC,"checkB");
+					mainUi.card.show(mainUi.mainC,"checkB");	
 				}else {
 					loginP = new LoginPage();
 					loginListenerSet();
@@ -577,39 +568,29 @@ public class MyActionListener {
 
 				}else if(logoutresult == mainUi.dialog.YES_OPTION) {
 					mainUi.dialog.showMessageDialog(null, "감사합니다. 다음에 또 뵙겠습니다^^");
-					/* 로그아웃 시
-					 * 1. 로그인,회원가입 버튼 복구/웰컴라벨 텍스트 제거 및 숨기기
-					 * 2. 예약정보 지우기 & reservation vo를 null로 초기화
-					 * 3. 회원정보 페이지 정보 지우기 & member vo를 null로 초기화
-					 * 4. mainframe의 home panel로 이동
-					 * 5. MainUi의 loginflag => false;
-					 */
-					/* (1) */
-					mainUi.after_loginLP.setVisible(false);
+
+					mainUi.after_loginLP.setVisible(false);		//메인 프레임 로그아웃 버튼 변경
 					mainUi.welcomeL.setText("");
 					mainUi.log_regBP.setVisible(true);
-
-					/* (3) */
 					mainUi.myPageC.clearInfoLabel();	//회원정보 라벨 비움
 					membervo.resetMemberVO();			//membervo 정보 비움
-					/* (4) */
+					
 					mainUi.homeB.setBackground(Color.RED); // 버튼클릭시 클릭한 버튼 배경색 변경
 					mainUi.movieB.setBackground(Color.GRAY.brighter());
 					mainUi.reservB.setBackground(Color.GRAY.brighter());
 					mainUi.checkB.setBackground(Color.GRAY.brighter());
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
 					mainUi.card.show(mainUi.mainC,"homeB"); // "homeB"키가 적용된 카드레이아웃 보여줌
-					/* (5) */
-					mainUi.loginFlag=false;
+					mainUi.loginFlag=false;					// 로그인상태 false
 				}
 			}
 		}//ap()
 	}// MainActionL class
 
 	public void loginListenerSet() 	 {		  loginP.addLoginListener(logL);		 
-	loginP.addLoginKeyListener(logL);		 }
+											loginP.addLoginKeyListener(logL);		 }
 	public void mainListenerSet() 	 {		  mainUi.addMainListener(mainL);	 	 }
 	public void signupListenerSet()  {		  signUp.addSignupListener(signupL);
-	signUp.addSignupFocusListener(signupL);}
+											  signUp.addSignupFocusListener(signupL);}
 	public void findListenerSet()	 {		  findF.addFindListener(findL); 		 }
 }//MyActionListener class

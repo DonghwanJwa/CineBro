@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -18,18 +19,7 @@ import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovietimeVO;
 import com.movie.main.AppManager;
 
-public class MovieCancelPanel extends JOptionPane implements ActionListener{
-	/**JOptionPane은 actionListener 메서드안에 들어가는 컨테이너중 하나**/
-	/**새로운 경고 윈도우를 호출한다. 일반적인 버튼추가나, Frame메서드 사용 불가능**/
-	/* 리스너 내부에서 if로 분기점을 만들어줘야됨
-	 * 여기서는 메시지창 내부에 버튼을 YES_NO_OPTION 으로 만들어줌
-	 * 
-	 * 리스너 메서드 내부에서 쓰일 if구문)
-	 * if(result == JOptionPane.CLOSED_OPTION)   //그냥 닫기버튼을 눌렀을때
-	 * else if(result == JOptionPane.YES_OPTION) //Yes버튼을 눌렀을 때
-	 * else if(result == JOptionPane.NO_OPTION)  //NO버튼을 눌렀을떄(그냥 else써도됨)
-	 */
-	/* 변수 생성 */
+public class MovieCancelPanel extends JOptionPane{
 	JPanel mainP = new JPanel(); //예매문구(라벨)를 넣을 패널생성
 	JPanel infoP = new JPanel(); //영화명,금액,날짜 등 예매 정보를 출력할 패널
 
@@ -129,8 +119,6 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 		/*경고창 생성*/
 		result = showConfirmDialog(null,mainP,"예매취소",
 				JOptionPane.YES_NO_OPTION,PLAIN_MESSAGE,poster);
-		//showConfirmDialog(메시지창 다이얼로그가 어떤 Frame에서 나타나게 될 것인지를 정해주는 변수,출력할 메세지(Object),
-		//메시지창 제목(String),버튼옵션 종류,메세지 경고스티커 종류,메시지창 좌측에 넣을 이미지(경고이미지였으나 포스터로 바꿈));
 	}//생성자
 
 	public String setPoster(BookingVO vo) {           //DB 예약정보중 포스터 입력 메서드
@@ -142,10 +130,14 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 	public void setComp(BookingVO vo) {               //DB 예약정보 입력하기
 		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		MovietimeVO mt = bdao.getMovietimeInfo(vo);
-		String[] seatNC = bdao.getMovieSeatNum(vo).split("관");
-		String seatNum = seatNC[1];
+		List<String> seat = bdao.getMovieSeatNum(vo);
 		String[] moviedate = mt.getScreendate().split("-");
-		String bcode = vo.getBooking_code()+"";		
+		String bcode = vo.getBooking_code()+"";
+		String seatN = null;
+		
+		for(int i=0;i<seat.size();i++) {
+			seatN+=seat.get(i).substring(2,seat.get(i).length())+" ";
+		}
 		
 		if(vo.getBooking_code()<10) {
 			bcode = "000"+bcode;
@@ -162,18 +154,7 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 		date_compL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
 		time_compL.setText(mt.getScreentime());
 		screen_compL.setText(mt.getScreen());
-		seat_compL.setText(seatNum);	
+		seat_compL.setText(seatN);	
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(result == JOptionPane.CLOSED_OPTION) {    //그냥 닫기버튼을 눌렀을때
-			
-		}else if(result == JOptionPane.YES_OPTION) {//Yes버튼을 눌렀을 때
-			//DAO delete 실행 
-		}else if(result == JOptionPane.NO_OPTION)  {//NO버튼을 눌렀을떄(그냥 else써도됨)
-			
-		}//=> 실행문장은 Reserveinfo class파일에 있음
-	}//ap()
 
 }//MovieCancelPanel class
