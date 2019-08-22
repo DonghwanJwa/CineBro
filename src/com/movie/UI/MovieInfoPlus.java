@@ -113,6 +113,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		setSize(new Dimension(900,800));							//제일큰패널 사이즈 지정
 		getContentPane().setBackground(Color.BLACK);				//배경색 지정
 		setLocationRelativeTo(null);								//창이 켜졌을때 어디에 배치 할지 정함 Null값은 중앙
+		setResizable(false); 									// 프레임 사이즈 수정 불가
 		setModal(true);												//setModal() true면 그창이켜질시 딴거 클릭금지
 		setVisible(true);											//패널을 보이게함
 	
