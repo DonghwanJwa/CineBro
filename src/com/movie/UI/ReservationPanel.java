@@ -94,6 +94,11 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 	// ------------------------------------- 버튼그룹 메서드
 
+	private JPanel adultButtonP=new JPanel();
+	private JPanel childButtonP=new JPanel();
+	private JPanel adultP=new JPanel(new BorderLayout(0,5));
+	private JPanel childP=new JPanel(new BorderLayout(0,5));
+
 	private List<JToggleButton> timeBList=new ArrayList<>();
 	private int timeCount; // 시간버튼 선택시 반환인덱스 설정용
 	private int adultCount; // 성인버튼 선택시 반환 카운트 설정용 ( 좌석 갯수 )
@@ -148,6 +153,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// --------------------------------- 좌석 패널
 
 	private List<String> seat_Num=new ArrayList<>();
+	private List<String> seatNum=new ArrayList<>(); 
 	private List<Integer> seat_status=new ArrayList<>();
 	private JPanel seatPanel=new JPanel(new BorderLayout(10,0)); // 좌석 구역 패널
 	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
@@ -350,22 +356,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// for
 		}// if
 
-//		// --- seat_Num 저장한 리스트 불러옴
-//		List<BookedseatVO> sN=bdao.bookingList();
-//		if((sN != null) && sN.size()>0) {
-//			for(int i=0;i<sN.size();i++) {
-//				BookedseatVO bdvo=sN.get(i);
-//				seat_Num.add(bdvo.getSeat_Num());
-//			}// for
-//		}// if
-		// --- booking_code 저장한 리스트 불러오기
-		List<BookingVO> b_code=bdao.getBookingCode();
-		if((b_code != null) && b_code.size()>0) {
-			for(int i=0;i<b_code.size();i++) {
-				BookingVO bvo=b_code.get(i);
-				booking_code.add(bvo.getBooking_code());
-			}// for
-		}// if
 		// --- 리스트 스크롤생성
 
 		JScrollPane movieListSp=new JScrollPane(movieList,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -438,6 +428,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		timeGroup.setPreferredSize(new Dimension(600,123));
 		timeGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		timeGroup.setOpaque(false);
+		
 		return timeGroup;
 	}//setTimeButton()
 
@@ -445,10 +436,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	public Component setPeopleButton() {
 		UIManager.put("ToggleButton.select", Color.RED); // 토글버튼 선택모델 색상 변경
 		Font ageLabelFont=new Font("맑은 고딕",Font.BOLD,13);
-		JPanel adultP=new JPanel(new BorderLayout(0,5));
-		JPanel adultButtonP=new JPanel();
-		JPanel childP=new JPanel(new BorderLayout(0,5));
-		JPanel childButtonP=new JPanel();
 
 		peopleGroup.setPreferredSize(new Dimension(230,150));
 		peopleGroup.setOpaque(false);
@@ -641,6 +628,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		seatChoicePrev.setBackground(Color.GRAY);
 		seatChoicePrev.setFont(paymentBF);		
 		paymentB.setPreferredSize(new Dimension(200,0));
+		paymentB.setEnabled(false);
 		paymentB.setForeground(Color.WHITE);
 		paymentB.setBackground(Color.RED);
 		paymentB.setFont(paymentBF);
@@ -703,6 +691,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentPrice.setEditable(false);
 
 		// --- 결제창 수단선택부 패널 구성
+
 		paymentCard.setEnabled(false);
 
 		paymentChoiceInfo.setFont(new Font("맑은 고딕",Font.PLAIN,13));
@@ -745,7 +734,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		paymentD.add(paymentMainP);
 		return paymentD;
-	}
+	}// setPaymentDialog()
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -987,15 +976,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// if
 		}// for
 		// --- 캘린더 버튼 이벤트
-		if(obj==nextMonth) {
-			month++;
-			calMonth.setText(month+"");
-			calendar.removeAll();
-			calendar.revalidate();
-			calendar.add(calP,"Center");
-			calendar.add(monthCalP,"Center");
-			calendar.repaint();
-		}// if
 		for(i=0;i<calDate.length;i++) {
 			// --- 캘린더 버튼 클릭시
 			if(obj==calDate[i]) {				
@@ -1023,7 +1003,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					timeGroup.add(timeBList.get(j));
 					if(j==4) {
 						time.clear();
-					}
+					}// if
+					timeBList.get(j).setVisible(true);
 				}// for
 			}// if
 		}// for
@@ -1050,23 +1031,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				seatBackB.setVisible(true);
 				seatPaymentB.setVisible(true);
 				CARD.next(reservCard);
-				// --- seat_Num 저장한 리스트 불러옴
-				List<BookedseatVO> sN=bdao.bookingList();
-				if((sN != null) && sN.size()>0) {
-					for(i=0;i<sN.size();i++) {
-						BookedseatVO bdvo=sN.get(i);
-						seat_Num.add(bdvo.getSeat_Num());
-						System.out.println(seat_Num.get(i));
-					}// for
-				}// if
 				time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
-				
-				List<DayseatVO> sS=bdao.getBookingSeat(seat_Num,time_code);
+
+				List<DayseatVO> sS=bdao.getBookingSeat(time_code);
 				if((sS != null) && sS.size()>0) {
 					for(i=0;i<sS.size();i++) {
 						DayseatVO dvo=sS.get(i);
 						seat_status.add(dvo.getSeat_status());
-						System.out.println(seat_status.get(i));
+						seat_Num.add(dvo.getSeat_Num());
 					}// for
 				}// if				
 				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
@@ -1097,23 +1069,27 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 							rightArea.add(seatButton.get(i));
 							seatPanel.add(rightArea,"East");
 						}// if else if
-						for(int j=0;j<seat_Num.size();j++) {
-							if(seat_status.get(j)==1 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
-								seatButton.get(i).setEnabled(false);
-							}else if(seat_status.get(j)==0){
-								seatButton.get(i).setEnabled(true);
-							}// if else
-						}// for
+						if(seat_status.get(i)==1 && seat_Num.get(i).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
+							seatButton.get(i).setEnabled(false);
+						}else if(seat_status.get(i)==0){
+							seatButton.get(i).setEnabled(true);
+						}// if else
 					} // for
 				}// if				
 			}// if else
 		}// if
+		// 이전단계 버튼
 		if(obj==seatBackB) {
 			infoNextB.setVisible(true);
 			seatPaymentB.setVisible(false);
 			seatBackB.setVisible(false);
 			CARD.previous(reservCard);
+
+			seat_status.clear();
+			seat_Num.clear();
+			seatButtonReset();
 		}// if
+		// 결제단계 버튼
 		if(obj==seatPaymentB) {
 			setPaymentDialog().setVisible(true);
 		}// if
@@ -1154,11 +1130,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				}// if else
 			}// 좌석버튼 클릭 시
 		}// outer for
+		// 좌석 초기화 버튼
+		if(obj==seatReset) {
+			seatButtonReset();
+		}// if
+		// 결제 다이얼로그 닫기 버튼
 		if(obj==seatChoicePrev) {
 			paymentD.dispose();
 		}// if
-		if(obj==paymentB) {			
-
+		// --- 결제하기 버튼 눌렀을 때
+		if(obj==paymentB) {
 			// --- Booking 저장
 			bvo.setPrice(Integer.parseInt(setPriceL.getText().trim()));
 			bvo.setSeatcount(adultCount+childCount);
@@ -1174,34 +1155,45 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			dvo.setScreen((String)cinemaList.getSelectedValue());
 			int updateRe=bdao.setBookingSeat(seatArr,dvo);
 
+			// --- booking_code 저장한 리스트 불러오기
+			List<BookingVO> b_code=bdao.getBookingCode();
+			if((b_code != null) && b_code.size()>0) {
+				for(i=0;i<b_code.size();i++) {
+					BookingVO bvo=b_code.get(i);
+					booking_code.add(bvo.getBooking_code());
+				}// for
+			}// if
+
 			// --- booking_code 마지막 인덱스값을 가져옴
-			if(booking_code.isEmpty()==false) {
+			if(!(booking_code.isEmpty())) {
 				int lastBooking_code=booking_code.get(booking_code.size()-1);
 				bsvo.setBooking_code(lastBooking_code);
 			}else {
 				bsvo.setBooking_code(1);
 			}// if else
-			bsvo.setScreen((String)cinemaList.getSelectedValue()+"");
+			bsvo.setScreen((String)cinemaList.getSelectedValue());
 			int insertBookedRe=bdao.setBookedSeat(bsvo,seatArr);
 
 			if(insertRe==1 && updateRe==1 && insertBookedRe==1) {
 				JOptionPane.showMessageDialog(this,"결제가 완료되었습니다.");
+				paymentD.dispose();
 			}else {
 				JOptionPane.showMessageDialog(this,"결제에 실패했습니다.");
 			}// if else
-		}// if
-		if(obj==seatReset) {
-			for(i=0;i<seatButton.size();i++) {
-				seatButton.get(i).setBackground(Color.BLACK);
-			}// outer for
-			for(int k=0;k<seatList.size();k++) {
-				seatChoiceP.removeAll();
-				seatList.remove(k);
-				seatChoiceP.revalidate();
-				seatChoiceP.repaint();
-			}//for
-			setSeatL.setText("");
-			index=0;
+			
+			// --- 버튼 초기화
+			infoNextB.setEnabled(false);
+			infoNextB.setVisible(true);
+			seatPaymentB.setVisible(false);
+			seatBackB.setVisible(false);
+			
+			// --- 초기화
+			listReset();
+			calendarButtonReset();
+			timeButtonReset();
+			peopleButtonReset();
+			seatButtonReset();
+			CARD.show(reservCard,"home");
 		}// if
 		if(obj==paymentCash) {
 			CARD.show(paymentChoiceCard,"cash");
@@ -1211,10 +1203,13 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		if(obj==paymentSiteCash) {
 			paymentOption.setText(paymentSiteCash.getText());
 			paymentOptionPrice.setText(paymentPrice.getText());
+			paymentB.setEnabled(true);
 		}else if(obj==paymentSiteCard) {
 			paymentOption.setText(paymentSiteCard.getText());
 			paymentOptionPrice.setText(paymentPrice.getText());
+			paymentB.setEnabled(true);
 		}
+
 	}//aP()
 
 	@Override
@@ -1223,6 +1218,9 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		if(!e.getValueIsAdjusting()) {
 			// 영화 리스트 선택 했을 시
 			if(obj==movieList) {
+				if(movieList.getSelectedValue()==null) {
+					return;
+				}
 				movieNameL.setText((String)movieList.getSelectedValue()); // 영화이름제목 라벨 작성
 				for(int i=0;i<movieVector.size();i++) {
 					if(movieNameL.getText().equals(movieVector.get(i))){
@@ -1238,7 +1236,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 						moviePosterB.setIcon(poster);
 					}// if
 				}// for
-				cinemaList.revalidate();
 				// 상영관 리스트 출력
 				Vector<CinemaVO> cV=bdao.cinemaList(movie_code);
 				if((cV != null) && cV.size()>0) {
@@ -1271,4 +1268,117 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// if else => 상영관 리스트 선택 시
 		}// 리스트 항목에서 버튼을 뗐을 때
 	}//vC()
+	// 인원선택 버튼 리셋
+	public void peopleButtonReset() {
+		// 성인 버튼
+		adultButtonP.removeAll();
+		for(int i=0;i<adultB.length;i++) {
+			adultB[i]=new JToggleButton(i+"");
+			adultBG.add(adultB[i]);
+			adultB[i].setFont(new Font("맑은 고딕",Font.BOLD,10));
+			adultB[i].setMargin(new Insets(0,3,0,3));
+			adultB[i].setBackground(Color.BLACK);
+			adultB[i].setForeground(Color.WHITE);
+			adultB[i].addActionListener(this);
+			adultB[i].setEnabled(false);
+			adultButtonP.add(adultB[i]);
+			SwingUtilities.updateComponentTreeUI(adultB[i]); // 토글버튼 선택모델 적용
+		}//for
+		adultP.revalidate();
+		adultP.repaint();
+		// 청소년 버튼
+		childButtonP.removeAll();
+		for(int i=0;i<childB.length;i++) {
+			childB[i]=new JToggleButton(i+"");
+			childBG.add(childB[i]);
+			childB[i].setFont(new Font("맑은 고딕",Font.BOLD,10));
+			childB[i].setMargin(new Insets(0,3,0,3));
+			childB[i].setBackground(Color.BLACK);
+			childB[i].setForeground(Color.WHITE);
+			childB[i].addActionListener(this);
+			childB[i].setEnabled(false);
+			childButtonP.add(childB[i]);
+		}//for
+		childP.revalidate();
+		childP.repaint();
+
+		setPriceL.setText("");
+		setAdultL.setText("");
+		setChildL.setText("");
+	}//peopleButtonReset()
+
+	// 좌석선택 버튼 리셋
+	public void seatButtonReset() {
+		for(int i=0;i<seatButton.size();i++) {
+			seatButton.get(i).setBackground(Color.BLACK);
+		}// outer for
+		for(int k=0;k<seatList.size();k++) {
+			seatChoiceP.removeAll();
+			seatList.remove(k);
+			seatChoiceP.revalidate();
+			seatChoiceP.repaint();
+		}//for
+		setSeatL.setText("");
+		index=0;
+	}// seatButtonReset()
+
+	public void timeButtonReset() {
+		for(int i=0;i<5;i++) {
+			timeBList.get(i).setVisible(false);
+		}// for
+		setTimesL.setText("");
+		timeBG.clearSelection();
+	}// timeButtonReset();
+	// 달력 버튼 초기화
+	public void calendarButtonReset() {
+		indexDay=1;
+
+		calP.removeAll();
+		for(int i=0;i<calDate.length;i++) {
+			String sday="";
+			if(i<10) {
+				sday=" "+i;
+			}else {
+				sday=""+i;
+			}
+			calDate[i]=new JToggleButton(sday);
+			calDate[i].setEnabled(false);
+			calDateBG.add(calDate[i]);
+		}//for
+		for(int i=0;i<calWeek.length;i++) {
+			calWeekL[i]=new JLabel(calWeek[i]);
+			calWeekL[i].setHorizontalAlignment(JLabel.CENTER);
+			calP.add(calWeekL[i]);
+		}//for
+		for(int i=1;i<startDay;i++) {
+			calP.add(new JLabel(""));
+			sunday++;
+		}//for
+		for(int j=0;j<lastDay;j++) {
+			if(sunday%7==1) calDate[indexDay].setForeground(Color.RED);
+			else if(sunday%7==0) calDate[indexDay].setForeground(Color.BLUE);
+			else calDate[indexDay].setForeground(Color.BLACK);
+			sunday++;
+			calP.add(calDate[indexDay++]);
+		}//for
+		while(calP.getComponentCount()<49) {
+			calP.add(new JLabel(""));
+		}//while
+		for(int i=0;i<calDate.length;i++) {
+			calDate[i].setBackground(Color.WHITE);
+			calDate[i].addActionListener(this);
+		}//for
+		monthCalP.add(calP);
+		monthCalP.revalidate();
+		monthCalP.repaint();
+		setDaysL.setText("");
+	}// calendarButtonReset();
+	public void listReset() {
+		cinemaList.clearSelection();
+		movieList.clearSelection();
+		movieNameL.setText("영화 제목");
+		moviePosterB.setIcon(null);
+		moviePosterB.revalidate();
+		moviePosterB.repaint();
+	}// listReset()
 }//Reservation class

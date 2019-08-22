@@ -251,23 +251,21 @@ public class BookingDAO {
 		return re;
 	}// setBookingSeat()	
 
-	public List<DayseatVO> getBookingSeat(List<String> seat_Num,String time_code) {
+	public List<DayseatVO> getBookingSeat(String time_code) {
 		daoManager.connectDB();
 
 		List<DayseatVO> booking = new ArrayList<>();
-		String sql="SELECT seat_status FROM day_seat WHERE seat_Num=? AND time_code=?";
+		String sql="SELECT * FROM day_seat WHERE time_code=?";
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
-			for(int i=0;i<seat_Num.size();i++){
-				daoManager.pt.setString(1,seat_Num.get(i));
-				daoManager.pt.setString(2,time_code);
+				daoManager.pt.setString(1,time_code);
 				rs=daoManager.pt.executeQuery();
 				while(rs.next()) {
 					DayseatVO dvo=new DayseatVO();
 					dvo.setSeat_status(rs.getInt("seat_status"));
+					dvo.setSeat_Num(rs.getString("seat_Num"));
 					booking.add(dvo);
 				}// if
-			}// for
 			if(rs != null) rs.close();
 			daoManager.closeDB();
 		}catch(Exception e) {e.printStackTrace();}
