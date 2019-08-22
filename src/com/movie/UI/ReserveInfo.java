@@ -27,15 +27,6 @@ import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovietimeVO;
 import com.movie.main.AppManager;
 
-/** 예매 확인 페이지의 기능을 확인하기 위해서 **/
-/** Fake(가짜) VO,DAO 만듦                    **/
-/* -------------- MainUi 내부클래스 컴포넌트 --------------- */
-
-//제목(2D,3D,4D,IMAX) 예매번호 : 0000-0000-0000-000
-//관람일시 년월일시분, 상영관 몇관
-//관람 극장(장소)(극장정보버튼), 관람 좌석번호 몇열 몇번
-//결제 날짜 년월일, 매수 몇매 
-//맨 아래 오른쪽에 예매취소버튼
 public class ReserveInfo extends JPanel implements ActionListener{
 	private List<MovieUi> reserveP;
 
@@ -45,15 +36,17 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	protected JPanel movieBackgroundP = new JPanel();
 	private JLabel titleL;
 
+	JOptionPane dialog = new JOptionPane();
 	Font labelFont = new Font("맑은 고딕",Font.BOLD,30);
 	JScrollPane scroll;
-	
+
 	BCheckDAO bdao = AppManager.getInstance().getDAOManager().getBcheckDAO();
-	MainUI mu;
+	MainUI mu = AppManager.getInstance().getMainUi();
 	List<BookingVO> rlist; 
-	
+
 	public ReserveInfo() {
 		setOpaque(false);
+		setMainP();
 	}//생성자
 
 	public Component setTitleL() {
@@ -63,7 +56,7 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		return titleL;
 	}//setTitleL() : 타이틀 라벨 생성 메서드
 
-	public Component setMovieP() {
+	public void setMovieP() {
 		mu = AppManager.getInstance().getMainUi();
 		rlist = bdao.getBookingCode(mu.myPageC.idCL.getText());
 		reserveP = new ArrayList<MovieUi>();
@@ -78,7 +71,7 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));
 		// panel_m 패널 하나의 높이가 220, 나중에 예약 하나당 220씩 증가하는식으로 수정해야함->스크롤바 때문
 
-		return movieP;
+		movieBackgroundP.add(movieP);
 	}//setMovieP각각의 예매정보 패널 
 
 	public void setMainP() {
@@ -90,7 +83,6 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		mainP.add(setTitleL(),BorderLayout.NORTH);
 		movieBackgroundP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		movieBackgroundP.setOpaque(false);
-		movieBackgroundP.add(setMovieP());
 		/* 스크롤 만들기 */
 		scroll=new JScrollPane(movieBackgroundP,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // 내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김		
@@ -114,13 +106,22 @@ public class ReserveInfo extends JPanel implements ActionListener{
 				}else if(mcpanel.result==JOptionPane.NO_OPTION) {
 					return;
 				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
-					/**이부분 수정들어가야됨**/
-					bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code());
-					bdao.cancelReserveBooking(rlist.get(i).getBooking_code());
-					movieP.removeAll();
-					movieBackgroundP.add(setMovieP());
-					movieBackgroundP.revalidate();
-					movieBackgroundP.repaint();
+					
+					List<String> seat = bdao.getMovieSeatNum(rlist.get(i));
+					if(bdao.cancelReserveDayseat(seat, rlist.get(i))==1 &&
+					   bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code())==1 &&
+				       bdao.cancelReserveBooking(rlist.get(i).getBooking_code())==1) {
+						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);
+						bdao.cancelReserveDayseat(seat, rlist.get(i));
+						bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code());
+						bdao.cancelReserveBooking(rlist.get(i).getBooking_code());						
+						movieP.removeAll();
+						setMovieP();
+						movieBackgroundP.revalidate();
+						movieBackgroundP.repaint();
+					}else {
+						dialog.showMessageDialog(null, "예매취소 실패하였습니다.", "안내", dialog.CLOSED_OPTION);
+					}
 				}
 			}//if
 		}//for
@@ -151,7 +152,7 @@ class MovieUi extends JPanel{
 
 	JButton cancleB = new JButton("예매취소");
 	BCheckDAO bdao = AppManager.getInstance().getDAOManager().getBcheckDAO();
-	
+
 	public MovieUi(BookingVO vo) {
 		setOpaque(false);
 		add(setReservePanel(vo));
@@ -196,11 +197,15 @@ class MovieUi extends JPanel{
 	public Component setInfo(BookingVO vo) {
 		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		MovietimeVO mt = bdao.getMovietimeInfo(vo);
-		String[] seatNC = bdao.getMovieSeatNum(vo).split("관");
-		String seatNum = seatNC[1];
+		List<String> seat = bdao.getMovieSeatNum(vo);
 		String[] moviedate = mt.getScreendate().split("-");
 		String bcode = vo.getBooking_code()+"";
-		
+		String seatN = "";
+
+		for(int i=0;i<seat.size();i++) {
+			seatN+=seat.get(i).substring(2,seat.get(i).length())+" ";
+		}
+
 		if(vo.getBooking_code()<10) {
 			bcode = "000"+bcode;
 		}else if(vo.getBooking_code()<99) {
@@ -208,15 +213,15 @@ class MovieUi extends JPanel{
 		}else if(vo.getBooking_code()<999) {
 			bcode = "0"+bcode;
 		}
-		
+
 		/* 라벨 객체생성 */
 		movieNameL.setText(mn.getMovie_nameK());
 		reserveNumL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
 		dateL.setText("상영일    : "+moviedate[0]+"년 "+moviedate[1]+"월 "+moviedate[2]+"일");
 		timeL.setText("상영시간 : "+mt.getScreentime());
-		screenL.setText("상영관    :"+mt.getScreen());
-		priceL.setText("결제금액 :"+vo.getPrice()+"원");
-		seatL.setText("좌석번호 :"+seatNum);
+		screenL.setText("상영관    : "+mt.getScreen());
+		priceL.setText("결제금액 : "+vo.getPrice()+"원");
+		seatL.setText("좌석번호 : "+seatN);
 
 		/* 버튼 설정*/
 		cancleB.setPreferredSize(new Dimension(90,30));
