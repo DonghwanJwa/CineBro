@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 
+import com.movie.DAO.BCheckDAO;
 import com.movie.DAO.BookingDAO;
 import com.movie.DAO.DAOManager;
 import com.movie.DAO.MemberDAO;
@@ -37,12 +38,12 @@ public class MyActionListener {
 	 */
 	DataManager dataManager = new DataManager();	
 	DAOManager daoManager = new DAOManager();		
+	MemberVO membervo = new MemberVO();
+	MemberDAO memberdao = new MemberDAO();
 	MovieVO movievo = new MovieVO();				
 	MovieDAO moviedao = new MovieDAO();
 	MovieNowVO movienowvo= new MovieNowVO();
 	MovieNowDAO movienowdao= new MovieNowDAO();
-	MemberVO membervo = new MemberVO();
-	MemberDAO memberdao = new MemberDAO();
 	CinemaVO cinemavo = new CinemaVO();
 	SeatVO seatvo = new SeatVO();
 	MovietimeVO movietimevo = new MovietimeVO();
@@ -50,6 +51,7 @@ public class MyActionListener {
 	BookingVO bookingvo = new BookingVO();
 	BookingDAO bookingDAO = new BookingDAO();
 	BookedseatVO bookedseatvo = new BookedseatVO();
+	BCheckDAO bcheckdao = new BCheckDAO();
 	MainUI mainUi=new MainUI();						
 	LoginPage loginP;
 	SignUpFrame signUp;
@@ -445,6 +447,11 @@ public class MyActionListener {
 							mainUi.myPageC.setInfoLabel(); //현재 로그인 회원 정보를 mypage에 세팅하는 메서드
 							/* (4) */
 							mainUi.loginFlag=true;
+							mainUi.checkC.setMainP();
+							mainUi.checkC.movieP.removeAll();
+							mainUi.checkC.movieBackgroundP.add(mainUi.checkC.setMovieP());
+							mainUi.checkC.movieBackgroundP.revalidate();
+							mainUi.checkC.movieBackgroundP.repaint();
 
 						}else { // 정확하지 않은 id가 적혔을때
 							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); // error문구 출력

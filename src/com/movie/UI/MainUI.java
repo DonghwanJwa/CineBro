@@ -82,11 +82,11 @@ public class MainUI {
 	/* 카드레이아웃 패널 */
 	protected final CardLayout card=new CardLayout();
 	JPanel mainC=new JPanel(card);
+	MyPagePanel myPageC=new MyPagePanel();
 	HomePanel homeC=new HomePanel();
 	MoviePage movieC=new MoviePage();
 	ReservationPanel reservC=new ReservationPanel();
 	ReserveInfo checkC=new ReserveInfo();
-	MyPagePanel myPageC=new MyPagePanel();
 	
 	public MainUI() {
 		AppManager.getInstance().setMainUi(this);

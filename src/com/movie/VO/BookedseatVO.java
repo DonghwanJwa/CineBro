@@ -9,7 +9,7 @@ public class BookedseatVO {
 	private String seat_Num;	//좌석번호
 	
 	public BookedseatVO() {
-		AppManager.getInstance().getDataManager();
+		AppManager.getInstance().getDataManager().setBookedseatVO(this);;
 	}
 	
 	/* getter */

@@ -136,13 +136,14 @@ public class MovieCancelPanel extends JOptionPane implements ActionListener{
 	public String setPoster(BookingVO vo) {           //DB 예약정보중 포스터 입력 메서드
 		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		/* 영화예매 DAO 메서드 */
-		return mn.getImg();
+		return "pic/"+mn.getImg();
 	}
 
 	public void setComp(BookingVO vo) {               //DB 예약정보 입력하기
 		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		MovietimeVO mt = bdao.getMovietimeInfo(vo);
-		String seatNum = bdao.getMovieSeatNum(vo);
+		String[] seatNC = bdao.getMovieSeatNum(vo).split("관");
+		String seatNum = seatNC[1];
 		String[] moviedate = mt.getScreendate().split("-");
 		String bcode = vo.getBooking_code()+"";		
 		

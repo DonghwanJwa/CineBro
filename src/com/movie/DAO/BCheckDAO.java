@@ -68,7 +68,7 @@ public class BCheckDAO {
 			
 			if(rs.next()) {
 				mo.setMovie_nameK(rs.getString("movie_nameK"));
-				mo.setImg(rs.getString("img"));
+				mo.setImg(rs.getString("movie_img"));
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -121,7 +121,7 @@ public class BCheckDAO {
 	public String getMovieSeatNum(BookingVO vo) {
 		String seatNum = "";
 		daoManager.connectDB();
-		sql = "select * from booked_seat where time_code=?";
+		sql = "select * from booked_seat where booking_code=?";
 		
 		try {
 			daoManager.pt = daoManager.con.prepareStatement(sql);
@@ -142,5 +142,46 @@ public class BCheckDAO {
 			}//try~catch
 		}//finally
 		return seatNum;
+	}
+	
+	// --- 예약된 영화 취소 메서드(booked_seat)
+	public int cancelReserveBookedseat(int booking_code) {
+		int re = -1;
+		daoManager.connectDB();
+		sql = "delete from booked_seat where booking_code=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setInt(1,booking_code);
+			re = daoManager.pt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				daoManager.closeDB();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}//try~catch
+		}//finally	
+		return re;		
+	}
+	// --- 예약된 영화 취소 메서드(booking)
+	public int cancelReserveBooking(int booking_code) {
+		int re = -1;
+		daoManager.connectDB();
+		sql = "delete from Booking where booking_code=?";
+		try {
+			daoManager.pt = daoManager.con.prepareStatement(sql);
+			daoManager.pt.setInt(1,booking_code);
+			re = daoManager.pt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				daoManager.closeDB();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}//try~catch
+		}//finally	
+		return re;	
 	}
 }
