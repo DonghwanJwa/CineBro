@@ -21,6 +21,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.movie.DAO.BCheckDAO;
+import com.movie.VO.BookingVO;
+import com.movie.VO.MovieNowVO;
+import com.movie.VO.MovietimeVO;
+import com.movie.main.AppManager;
+
 /** 예매 확인 페이지의 기능을 확인하기 위해서 **/
 /** Fake(가짜) VO,DAO 만듦                    **/
 /* -------------- MainUi 내부클래스 컴포넌트 --------------- */
@@ -35,18 +41,19 @@ public class ReserveInfo extends JPanel implements ActionListener{
 
 	/* 패널 생성 */
 	private JPanel mainP = new JPanel();
-	private JPanel movieP = new JPanel();
+	protected JPanel movieP = new JPanel();
+	protected JPanel movieBackgroundP = new JPanel();
 	private JLabel titleL;
 
 	Font labelFont = new Font("맑은 고딕",Font.BOLD,30);
 	JScrollPane scroll;
-
-	FakeReserveDAO rdao = new FakeReserveDAO();
-	List<FakeReserveVO> rlist = rdao.list;
-
+	
+	BCheckDAO bdao = AppManager.getInstance().getDAOManager().getBcheckDAO();
+	MainUI mu;
+	List<BookingVO> rlist; 
+	
 	public ReserveInfo() {
 		setOpaque(false);
-		add(setMainP());
 	}//생성자
 
 	public Component setTitleL() {
@@ -57,6 +64,8 @@ public class ReserveInfo extends JPanel implements ActionListener{
 	}//setTitleL() : 타이틀 라벨 생성 메서드
 
 	public Component setMovieP() {
+		mu = AppManager.getInstance().getMainUi();
+		rlist = bdao.getBookingCode(mu.myPageC.idCL.getText());
 		reserveP = new ArrayList<MovieUi>();
 		movieP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		movieP.setOpaque(false);
@@ -72,15 +81,18 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		return movieP;
 	}//setMovieP각각의 예매정보 패널 
 
-	public Component setMainP() {
+	public void setMainP() {
 		/* 메인패널 설정 */
 		mainP.setOpaque(false);
 		mainP.setPreferredSize(new Dimension(1400,810));		
 		mainP.setBorder(BorderFactory.createEmptyBorder(0,40,80,260));//메인패널 패딩
 		mainP.setLayout(new BorderLayout());
 		mainP.add(setTitleL(),BorderLayout.NORTH);
+		movieBackgroundP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+		movieBackgroundP.setOpaque(false);
+		movieBackgroundP.add(setMovieP());
 		/* 스크롤 만들기 */
-		scroll=new JScrollPane(setMovieP(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		scroll=new JScrollPane(movieBackgroundP,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // 내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김		
 		scroll.getVerticalScrollBar().setUnitIncrement(16);// 스크롤 속도 지정
 		scroll.getViewport().setBackground(Color.BLACK);
@@ -89,16 +101,7 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		/* 스크롤패널 추가 */
 		mainP.add(scroll,BorderLayout.CENTER); // 메인패널에 스크롤패널 추가
 
-		return mainP;
-	}
-
-	/**getter**/	
-	public FakeReserveDAO getRdao() {
-		return rdao;
-	}
-	/**setter**/
-	public void setRdao(FakeReserveDAO rdao) {
-		this.rdao = rdao;
+		add(mainP);
 	}
 
 	@Override
@@ -111,12 +114,13 @@ public class ReserveInfo extends JPanel implements ActionListener{
 				}else if(mcpanel.result==JOptionPane.NO_OPTION) {
 					return;
 				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
-					reserveP.get(i).removeAll();	//해당하는 예매 내용을 삭제
-					reserveP.remove(i);				//배열 삭제
-					rlist.remove(i);				//DB삭제
-					revalidate();					//화면 재정리
-					repaint();						//화면 다시그리기
-					movieP.setPreferredSize(new Dimension(1100,320*reserveP.size()));//스크롤사이즈 재조정
+					/**이부분 수정들어가야됨**/
+					bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code());
+					bdao.cancelReserveBooking(rlist.get(i).getBooking_code());
+					movieP.removeAll();
+					movieBackgroundP.add(setMovieP());
+					movieBackgroundP.revalidate();
+					movieBackgroundP.repaint();
 				}
 			}//if
 		}//for
@@ -131,29 +135,29 @@ class MovieUi extends JPanel{
 	JPanel cancleP = new JPanel();
 
 	/* 라벨 생성 */
-	JLabel posterName;			//포스터명
-	JLabel posterL;				//포스터를 올릴 라벨
-	JLabel titleL;				//영화명
-	JLabel reservationnumberL;	//예약번호
-	JLabel dateL;				//상영날짜
-	JLabel theaterL;			//상영극장
-	JLabel viewingplaceL;		//상영관
-	JLabel seatnumberL;			//좌석번호
-	JLabel paymentdateL;		//결제날짜
-	JLabel sheetofpaperL;		//티켓수
+	JLabel posterName=new JLabel();			//포스터명
+	JLabel posterL=new JLabel();			//포스터를 올릴 라벨
+	JLabel movieNameL=new JLabel();				//영화명
+	JLabel reserveNumL=new JLabel();			//예약번호
+	JLabel dateL=new JLabel();				//상영날짜
+	JLabel timeL=new JLabel();				//상영시간
+	JLabel screenL=new JLabel();				//상영관
+	JLabel priceL=new JLabel();				//금액
+	JLabel seatL=new JLabel();				//좌석번호
 
 	/* 폰트 객체생성&폰트만드는 곳 */
 	Font titleFont = new Font("맑은 고딕",Font.BOLD,30);
 	Font subLabelFont = new Font("맑은 고딕",Font.BOLD,20);
 
 	JButton cancleB = new JButton("예매취소");
-
-	public MovieUi(FakeReserveVO vo) {
+	BCheckDAO bdao = AppManager.getInstance().getDAOManager().getBcheckDAO();
+	
+	public MovieUi(BookingVO vo) {
 		setOpaque(false);
 		add(setReservePanel(vo));
 	}//생성자
 
-	public Component setReservePanel(FakeReserveVO vo) {
+	public Component setReservePanel(BookingVO vo) {
 		/* 메인패널 */
 		panel_m.setOpaque(false);
 		panel_m.setLayout(new FlowLayout());
@@ -165,17 +169,17 @@ class MovieUi extends JPanel{
 		return panel_m;
 	}
 
-	public Component setPoster(FakeReserveVO vo){
-
+	public Component setPoster(BookingVO vo){
+		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
 		/* 포스터 이미지 아이콘 사이즈 변환 */
-		ImageIcon preImg = new ImageIcon(vo.getMovie_poster());//포스터 넣는란
+		ImageIcon preImg = new ImageIcon("pic/"+mn.getImg());//포스터 넣는란
 		Image originImg = preImg.getImage();//ImageIcon을 Image로 전환
 		Image changeImg = originImg.getScaledInstance(210,300,java.awt.Image.SCALE_SMOOTH);
 		// 이미지 사이즈 가로210,세로300,이미지를 스무스하게
 		ImageIcon poster = new ImageIcon(changeImg);
 
 		/* 라벨 객체 생성*/
-		posterL = new JLabel(poster);
+		posterL.setIcon(poster);
 
 		/* 포스터패널 */
 		posterP.setBackground(Color.white);
@@ -189,16 +193,30 @@ class MovieUi extends JPanel{
 		return posterP;
 	}//setPoster()
 
-	public Component setInfo(FakeReserveVO vo) {
+	public Component setInfo(BookingVO vo) {
+		MovieNowVO mn = bdao.getMovieBasicInfo(vo);
+		MovietimeVO mt = bdao.getMovietimeInfo(vo);
+		String[] seatNC = bdao.getMovieSeatNum(vo).split("관");
+		String seatNum = seatNC[1];
+		String[] moviedate = mt.getScreendate().split("-");
+		String bcode = vo.getBooking_code()+"";
+		
+		if(vo.getBooking_code()<10) {
+			bcode = "000"+bcode;
+		}else if(vo.getBooking_code()<99) {
+			bcode = "00"+bcode;
+		}else if(vo.getBooking_code()<999) {
+			bcode = "0"+bcode;
+		}
+		
 		/* 라벨 객체생성 */
-		titleL = new JLabel(vo.getMovie_name());
-		reservationnumberL = new JLabel(vo.getRes_num());
-		dateL = new JLabel(vo.getRes_date());
-		theaterL = new JLabel(vo.getRes_theater());
-		viewingplaceL = new JLabel(vo.getRes_cinema());
-		seatnumberL = new JLabel(vo.getRes_seat());
-		paymentdateL = new JLabel(vo.getRes_date());
-		sheetofpaperL = new JLabel(vo.getRes_ticketnum());
+		movieNameL.setText(mn.getMovie_nameK());
+		reserveNumL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
+		dateL.setText("상영일    : "+moviedate[0]+"년 "+moviedate[1]+"월 "+moviedate[2]+"일");
+		timeL.setText("상영시간 : "+mt.getScreentime());
+		screenL.setText("상영관    :"+mt.getScreen());
+		priceL.setText("결제금액 :"+vo.getPrice()+"원");
+		seatL.setText("좌석번호 :"+seatNum);
 
 		/* 버튼 설정*/
 		cancleB.setPreferredSize(new Dimension(90,30));
@@ -218,19 +236,19 @@ class MovieUi extends JPanel{
 		cancleP.add(cancleB);
 
 		/* 라벨폰트 지정 */
-		titleL.setFont(titleFont);         reservationnumberL.setFont(subLabelFont);
-		dateL.setFont(subLabelFont);         theaterL.setFont(subLabelFont);
-		viewingplaceL.setFont(subLabelFont); seatnumberL.setFont(subLabelFont);
-		paymentdateL.setFont(subLabelFont);  sheetofpaperL.setFont(subLabelFont);
+		movieNameL.setFont(titleFont);        	 reserveNumL.setFont(subLabelFont);
+		dateL.setFont(subLabelFont);         timeL.setFont(subLabelFont);
+		screenL.setFont(subLabelFont); 		 seatL.setFont(subLabelFont);
+		priceL.setFont(subLabelFont);  	
 
 		/* 라벨을 인포패널에 추가 */
-		infoP.add(titleL);
-		infoP.add(reservationnumberL);
+		infoP.add(movieNameL);
+		infoP.add(reserveNumL);
 		infoP.add(dateL);
-		infoP.add(viewingplaceL); // 관람극장
-		infoP.add(theaterL); // 상영관
-		infoP.add(paymentdateL);
-		infoP.add(seatnumberL);
+		infoP.add(timeL); 
+		infoP.add(screenL); 
+		infoP.add(priceL);
+		infoP.add(seatL);
 		infoP.add(cancleP);
 
 		return infoP;       
@@ -241,135 +259,3 @@ class MovieUi extends JPanel{
 	}//addFindListener()
 
 }//MovieUi class
-
-/**삭제가 제대로 이루어지는지 확인하기 위해서 만든 클래스입니다.**/
-class FakeReserveVO {
-	private String movie_poster;
-	private String movie_name;
-	private String res_num;
-	private String res_time;
-	private String res_theater;
-	private String res_cinema;
-	private String res_seat;
-	private String res_date;
-	private String res_ticketnum;
-
-	/**이 부분은 원래 VO가 아닙니다. 가상입니다.**/
-	public FakeReserveVO() {}//기본생성자
-	public FakeReserveVO(int num) {
-		if(num ==1 ) {
-			movie_poster = "aladdin.jpg";
-			movie_name="알라딘 IMAX";
-			res_num="예매 번호 : 1111-1";
-			res_time="상영 시간  10시 20분";
-			res_theater="관람 극장   CGV용산";
-			res_cinema="상영관   5관 IMAX관";
-			res_seat="G열 15번";
-			res_date="결제 날짜   2019년 07월 20일";
-			res_ticketnum="매수  2매";
-		}else if(num==2) {
-			movie_poster = "spiderman.jpg";
-			movie_name="스파이더맨 2D";
-			res_num="예매 번호 : 2222-2";
-			res_time="상영 시간  12시 20분";
-			res_theater="관람 극장   CGV용산";
-			res_cinema="상영관   3관 2D관";
-			res_seat="D열 13번";
-			res_date="결제 날짜   2019년 07월 20일";
-			res_ticketnum="매수  2매";			
-		}else if(num==3) {
-			movie_poster = "toystory.jpg";
-			movie_name="토이스토리 2D";
-			res_num="예매 번호 : 3333-3";
-			res_time="상영 시간  17시 20분";
-			res_theater="관람 극장   CGV용산";
-			res_cinema="상영관   1관 2D관";
-			res_seat="E열 10번";
-			res_date="결제 날짜   2019년 07월 20일";
-			res_ticketnum="매수  2매";			
-		}else if(num==4) {
-			movie_poster = "parasite.jpg";
-			movie_name="기생충";
-			res_num="예매 번호 : 4444-4";
-			res_time="상영 시간  20시 10분";
-			res_theater="관람 극장   CGV용산";
-			res_cinema="상영관  4관 2D관";
-			res_seat="G열 15번";
-			res_date="결제 날짜   2019년 07월 20일";
-			res_ticketnum="매수  2매";			
-		}
-	}
-
-	/** getter **/
-	public String getMovie_poster() {
-		return movie_poster;
-	}
-	public String getMovie_name() {
-		return movie_name;
-	}
-	public String getRes_num() {
-		return res_num;
-	}
-	public String getRes_time() {
-		return res_time;
-	}
-	public String getRes_theater() {
-		return res_theater;
-	}
-	public String getRes_cinema() {
-		return res_cinema;
-	}
-	public String getRes_seat() {
-		return res_seat;
-	}
-	public String getRes_date() {
-		return res_date;
-	}
-	public String getRes_ticketnum() {
-		return res_ticketnum;
-	}
-
-	/**setter**/
-	public void setMovie_poster(String movie_poster) {
-		this.movie_poster = movie_poster;
-	}
-	public void setMovie_name(String movie_name) {
-		this.movie_name = movie_name;
-	}
-	public void setRes_num(String res_num) {
-		this.res_num = res_num;
-	}
-	public void setRes_time(String res_time) {
-		this.res_time = res_time;
-	}
-	public void setRes_theater(String res_theater) {
-		this.res_theater = res_theater;
-	}
-	public void setRes_cinema(String res_cinema) {
-		this.res_cinema = res_cinema;
-	}
-	public void setRes_seat(String res_seat) {
-		this.res_seat = res_seat;
-	}
-	public void setRes_date(String res_date) {
-		this.res_date = res_date;
-	}
-	public void setRes_ticketnum(String res_ticketnum) {
-		this.res_ticketnum = res_ticketnum;
-	}
-}
-class FakeReserveDAO {
-	/**여기있는 부분은 정말 DAO가 아닙니다**/
-	List<FakeReserveVO> list = new ArrayList<>();
-
-	public FakeReserveDAO() {
-
-		list.add(new FakeReserveVO(1));
-		list.add(new FakeReserveVO(2));
-		list.add(new FakeReserveVO(3));
-		list.add(new FakeReserveVO(4));
-
-	}//생성자
-
-}
-
