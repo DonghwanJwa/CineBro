@@ -407,49 +407,49 @@ public class MyActionListener {
 	}//FindActionL inner class
 
 	class LoginActionL implements ActionListener,KeyListener{
-		
-		public void loginFunction() {
-				if(loginP.idField.getText().equals("")) {
-					loginP.error.setText("아이디를 입력해주세요!");
-					loginP.idField.requestFocus();
-					loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // 외곽선 설정 오류시 붉은선
-					loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // 정상작동시 검은선
-					return;
-				}else {
-					/* 비밀번호를 적지 않았을 때 */
-					if(loginP.passwordField.getText().equals("")) {
-						loginP.error.setText("비밀번호를 입력해주세요!");
-						loginP.passwordField.requestFocus();
-						loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2));
-						loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-					}else {
-						/* 확인 이벤트 */
-						membervo.setId(loginP.idField.getText());
-						membervo.setPwd(loginP.passwordField.getText());
-						/* 아아디 비밀번호가 제대로 입력 되었을 때 */
-						if(memberdao.login()) { 
-							loginP.error.setText(""); // error문구 없음
-							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-							loginP.dispose();
-							
-							mainUi.log_regBP.setVisible(false);								//메인프레임 로그인버튼 변경
-							mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
-							mainUi.after_loginLP.setVisible(true);
-							mainUi.myPageC.setInfoLabel(); 									//현재 로그인 회원 정보를 mypage에 세팅하는 메서드
-							mainUi.loginFlag=true;											//로그인상태 true
 
-						}else { // 정확하지 않은 id가 적혔을때
-							loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); 				// error문구 출력
-							loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
-							loginP.idField.requestFocus(); // 포커스를 idField에 둠
-							loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // passwordField 테두리색 변경
-						}// 아이디,비밀번호 오입력시 
-					}// 비밀번호 미입력시
-					return;
-				}// 아이디 미입력시
+		public void loginFunction() {
+			if(loginP.idField.getText().equals("")) {
+				loginP.error.setText("아이디를 입력해주세요!");
+				loginP.idField.requestFocus();
+				loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // 외곽선 설정 오류시 붉은선
+				loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // 정상작동시 검은선
+				return;
+			}else {
+				/* 비밀번호를 적지 않았을 때 */
+				if(loginP.passwordField.getText().equals("")) {
+					loginP.error.setText("비밀번호를 입력해주세요!");
+					loginP.passwordField.requestFocus();
+					loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2));
+					loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				}else {
+					/* 확인 이벤트 */
+					membervo.setId(loginP.idField.getText());
+					membervo.setPwd(loginP.passwordField.getText());
+					/* 아아디 비밀번호가 제대로 입력 되었을 때 */
+					if(memberdao.login()) { 
+						loginP.error.setText(""); // error문구 없음
+						loginP.idField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+						loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+						loginP.dispose();
+
+						mainUi.log_regBP.setVisible(false);								//메인프레임 로그인버튼 변경
+						mainUi.welcomeL.setText("환영합니다, "+membervo.getName()+" 님!");
+						mainUi.after_loginLP.setVisible(true);
+						mainUi.myPageC.setInfoLabel(); 									//현재 로그인 회원 정보를 mypage에 세팅하는 메서드
+						mainUi.loginFlag=true;											//로그인상태 true
+
+					}else { // 정확하지 않은 id가 적혔을때
+						loginP.error.setText("아이디 또는 비밀번호를 잘못 입력하셨습니다!"); 				// error문구 출력
+						loginP.idField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // idFeild 테두리색 변경
+						loginP.idField.requestFocus(); // 포커스를 idField에 둠
+						loginP.passwordField.setBorder(BorderFactory.createLineBorder(Color.RED,2)); // passwordField 테두리색 변경
+					}// 아이디,비밀번호 오입력시 
+				}// 비밀번호 미입력시
+				return;
+			}// 아이디 미입력시
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object obj=e.getSource();
@@ -512,6 +512,18 @@ public class MyActionListener {
 					mainUi.checkB.setBackground(Color.GRAY.brighter());
 					mainUi.myPageB.setBackground(Color.GRAY.brighter());
 					mainUi.card.show(mainUi.mainC,"reservB");
+					mainUi.reservC.infoNextB.setEnabled(false);
+					mainUi.reservC.infoNextB.setVisible(true);
+					mainUi.reservC.seatPaymentB.setVisible(false);
+					mainUi.reservC.seatBackB.setVisible(false);
+					mainUi.reservC.listReset();
+					mainUi.reservC.calendarButtonReset();
+					if(!mainUi.reservC.timeBList.isEmpty()) {
+						mainUi.reservC.timeButtonReset();
+					}
+					mainUi.reservC.peopleButtonReset();
+					mainUi.reservC.seatButtonReset();
+					mainUi.reservC.CARD.show(mainUi.reservC.reservCard,"home");
 				}else {
 					loginP = new LoginPage();
 					loginListenerSet();
@@ -574,7 +586,17 @@ public class MyActionListener {
 					mainUi.log_regBP.setVisible(true);
 					mainUi.myPageC.clearInfoLabel();	//회원정보 라벨 비움
 					membervo.resetMemberVO();			//membervo 정보 비움
-					
+
+					mainUi.reservC.infoNextB.setEnabled(false);
+					mainUi.reservC.infoNextB.setVisible(true);
+					mainUi.reservC.seatPaymentB.setVisible(false);
+					mainUi.reservC.seatBackB.setVisible(false);
+					mainUi.reservC.listReset();
+					mainUi.reservC.calendarButtonReset();
+					mainUi.reservC.timeButtonReset();
+					mainUi.reservC.peopleButtonReset();
+					mainUi.reservC.seatButtonReset();
+
 					mainUi.homeB.setBackground(Color.RED); // 버튼클릭시 클릭한 버튼 배경색 변경
 					mainUi.movieB.setBackground(Color.GRAY.brighter());
 					mainUi.reservB.setBackground(Color.GRAY.brighter());

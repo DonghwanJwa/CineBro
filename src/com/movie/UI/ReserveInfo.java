@@ -108,13 +108,11 @@ public class ReserveInfo extends JPanel implements ActionListener{
 				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
 					
 					List<String> seat = bdao.getMovieSeatNum(rlist.get(i));
+					System.out.println(i);
+					System.out.println(rlist.get(i).getBooking_code());
 					if(bdao.cancelReserveDayseat(seat, rlist.get(i))==1 &&
-					   bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code())==1 &&
 				       bdao.cancelReserveBooking(rlist.get(i).getBooking_code())==1) {
-						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);
-						bdao.cancelReserveDayseat(seat, rlist.get(i));
-						bdao.cancelReserveBookedseat(rlist.get(i).getBooking_code());
-						bdao.cancelReserveBooking(rlist.get(i).getBooking_code());						
+						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);					
 						movieP.removeAll();
 						setMovieP();
 						movieBackgroundP.revalidate();
