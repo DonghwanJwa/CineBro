@@ -148,7 +148,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	// --------------------------------- 좌석 패널
 
 	private List<String> seat_Num=new ArrayList<>();
-	private int seat_status;
+	private List<Integer> seat_status=new ArrayList<>();
 	private JPanel seatPanel=new JPanel(new BorderLayout(10,0)); // 좌석 구역 패널
 	private JPanel leftArea=new JPanel(new GridLayout(12,5,1,1)); // 왼쪽 구역 좌석
 	private JPanel centerArea=new JPanel(new GridLayout(12,10,1,1)); // 중앙 구역 좌석
@@ -350,14 +350,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			}// for
 		}// if
 
-		// --- seat_Num 저장한 리스트 불러옴
-		List<BookedseatVO> sN=bdao.bookingList();
-		if((sN != null) && sN.size()>0) {
-			for(int i=0;i<sN.size();i++) {
-				BookedseatVO bdvo=sN.get(i);
-				seat_Num.add(bdvo.getSeat_Num());
-			}// for
-		}// if
+//		// --- seat_Num 저장한 리스트 불러옴
+//		List<BookedseatVO> sN=bdao.bookingList();
+//		if((sN != null) && sN.size()>0) {
+//			for(int i=0;i<sN.size();i++) {
+//				BookedseatVO bdvo=sN.get(i);
+//				seat_Num.add(bdvo.getSeat_Num());
+//			}// for
+//		}// if
 		// --- booking_code 저장한 리스트 불러오기
 		List<BookingVO> b_code=bdao.getBookingCode();
 		if((b_code != null) && b_code.size()>0) {
@@ -1050,8 +1050,25 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				seatBackB.setVisible(true);
 				seatPaymentB.setVisible(true);
 				CARD.next(reservCard);
+				// --- seat_Num 저장한 리스트 불러옴
+				List<BookedseatVO> sN=bdao.bookingList();
+				if((sN != null) && sN.size()>0) {
+					for(i=0;i<sN.size();i++) {
+						BookedseatVO bdvo=sN.get(i);
+						seat_Num.add(bdvo.getSeat_Num());
+						System.out.println(seat_Num.get(i));
+					}// for
+				}// if
 				time_code=cinemaList.getSelectedValue()+calMonth.getText()+secretDate.getText()+timeCount;
-				int seat_status=bdao.getBookingSeat(seat_Num,time_code);
+				
+				List<DayseatVO> sS=bdao.getBookingSeat(seat_Num,time_code);
+				if((sS != null) && sS.size()>0) {
+					for(i=0;i<sS.size();i++) {
+						DayseatVO dvo=sS.get(i);
+						seat_status.add(dvo.getSeat_status());
+						System.out.println(seat_status.get(i));
+					}// for
+				}// if				
 				List<SeatVO> sV=bdao.setScreenSeat(screenNum);
 				if((sV != null) && sV.size()>0) {
 					for(i=0;i<sV.size();i++) {
@@ -1081,10 +1098,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 							seatPanel.add(rightArea,"East");
 						}// if else if
 						for(int j=0;j<seat_Num.size();j++) {
-							if(seat_status==1 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
+							if(seat_status.get(j)==1 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
 								seatButton.get(i).setEnabled(false);
-							}else if(seat_status==0 && seat_Num.get(j).equals(cinemaList.getSelectedValue()+seatButton.get(i).getText())) {
-								seatButton.get(i).setEnabled(true);					
+							}else if(seat_status.get(j)==0){
+								seatButton.get(i).setEnabled(true);
 							}// if else
 						}// for
 					} // for
@@ -1098,7 +1115,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			CARD.previous(reservCard);
 		}// if
 		if(obj==seatPaymentB) {
-			setPaymentDialog().setVisible(true);					
+			setPaymentDialog().setVisible(true);
 		}// if
 		// --- 좌석 선택 버튼
 		for(i=0;i<seatButton.size();i++) {
@@ -1160,7 +1177,6 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			// --- booking_code 마지막 인덱스값을 가져옴
 			if(booking_code.isEmpty()==false) {
 				int lastBooking_code=booking_code.get(booking_code.size()-1);
-				System.out.println(lastBooking_code);
 				bsvo.setBooking_code(lastBooking_code);
 			}else {
 				bsvo.setBooking_code(1);
