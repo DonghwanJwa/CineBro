@@ -108,11 +108,9 @@ public class ReserveInfo extends JPanel implements ActionListener{
 				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
 					
 					List<String> seat = bdao.getMovieSeatNum(rlist.get(i));
-					System.out.println(i);
-					System.out.println(rlist.get(i).getBooking_code());
 					if(bdao.cancelReserveDayseat(seat, rlist.get(i))==1 &&
 				       bdao.cancelReserveBooking(rlist.get(i).getBooking_code())==1) {
-						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);					
+						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);						
 						movieP.removeAll();
 						setMovieP();
 						movieBackgroundP.revalidate();
@@ -140,6 +138,7 @@ class MovieUi extends JPanel{
 	JLabel reserveNumL=new JLabel();			//예약번호
 	JLabel dateL=new JLabel();				//상영날짜
 	JLabel timeL=new JLabel();				//상영시간
+	
 	JLabel screenL=new JLabel();				//상영관
 	JLabel priceL=new JLabel();				//금액
 	JLabel seatL=new JLabel();				//좌석번호
