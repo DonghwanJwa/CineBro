@@ -24,8 +24,8 @@ public class MovieCancelPanel extends JOptionPane{
 	JPanel infoP = new JPanel(); //영화명,금액,날짜 등 예매 정보를 출력할 패널
 
 	JLabel questionL = new JLabel("예매를 취소하시겠습니까?");                  //예매취소 확인창 문구들
-	JLabel announ1L = new JLabel("※ 인터넷 예매 취소는 상영시간 20분 전까지 가능하며,");
-	JLabel announ2L = new JLabel("예매 가능은 상영시간 30분 전까지 가능합니다.");
+	JLabel announ1L = new JLabel("※ 예매 취소시 복구가 불가능 합니다.");
+	JLabel announ2L = new JLabel("	신중하게 취소를 선택해 주세요.");
 
 	JLabel number_titleL = new JLabel("예매번호 : ");//예약 정보 타이틀 라벨
 	JLabel movie_titleL = new JLabel("영화명 : ");  
@@ -133,7 +133,7 @@ public class MovieCancelPanel extends JOptionPane{
 		List<String> seat = bdao.getMovieSeatNum(vo);
 		String[] moviedate = mt.getScreendate().split("-");
 		String bcode = vo.getBooking_code()+"";
-		String seatN = null;
+		String seatN = "";
 		
 		for(int i=0;i<seat.size();i++) {
 			seatN+=seat.get(i).substring(2,seat.get(i).length())+" ";
