@@ -29,7 +29,7 @@ public class BookingDAO {
 		daoManager.connectDB();
 
 		Vector<MovieVO> nameList=new Vector<MovieVO>();
-		String sql="SELECT movie_code,movie_nameK,movie_img,age FROM MovieData";
+		String sql="SELECT movie_code,movie_nameK,movie_img,age FROM MovieData ORDER BY movie_code";
 
 		try {
 			daoManager.pt=daoManager.con.prepareStatement(sql);
