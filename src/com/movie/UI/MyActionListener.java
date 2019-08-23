@@ -593,7 +593,9 @@ public class MyActionListener {
 					mainUi.reservC.seatBackB.setVisible(false);
 					mainUi.reservC.listReset();
 					mainUi.reservC.calendarButtonReset();
-					mainUi.reservC.timeButtonReset();
+					if(!mainUi.reservC.timeBList.isEmpty()) {
+						mainUi.reservC.timeButtonReset();
+					}
 					mainUi.reservC.peopleButtonReset();
 					mainUi.reservC.seatButtonReset();
 
