@@ -67,34 +67,34 @@ public class MovieCancelPanel extends JOptionPane{
 		}//이미지 불러오기 실패시 공란으로 패널 출력
 
 		/*예매 문구 넣기*/
-		mainP.setPreferredSize(new Dimension(500, 225));       //패널의 크기 지정
+		mainP.setPreferredSize(new Dimension(500, 250));       //패널의 크기 지정
 		mainP.setLayout(new FlowLayout(FlowLayout.CENTER,0,5));//패널내부 레이아웃 지정: 플로우 중앙
 
 		questionL.setPreferredSize(new Dimension(500,25));     //라벨 크기 설정(mainP의 가로에 딱맞게)
 		announ1L.setPreferredSize(new Dimension(500,25));
 		announ2L.setPreferredSize(new Dimension(500,25));
 
-		infoP.setPreferredSize(new Dimension(500,125));         //infoP 크기 및 레이아웃 설정
+		infoP.setPreferredSize(new Dimension(500,150));         //infoP 크기 및 레이아웃 설정
 		infoP.setLayout(new FlowLayout(FlowLayout.LEFT,0,5));
 
 		mainP.add(questionL);   mainP.add(infoP);              //메인패널에 예약취소 라벨 및 패널 추가
 		mainP.add(announ1L);    mainP.add(announ2L);
 
 		number_titleL.setPreferredSize(new Dimension(80,25));  //예약 정보 타이틀 라벨 크기지정
-		movie_titleL.setPreferredSize(new Dimension(80,25));   
-		payment_titleL.setPreferredSize(new Dimension(80,25));
-		date_titleL.setPreferredSize(new Dimension(80,25));
-		time_titleL.setPreferredSize(new Dimension(80,25));
-		screen_titleL.setPreferredSize(new Dimension(80,25));
-		seat_titleL.setPreferredSize(new Dimension(80,25));
+		movie_titleL.setPreferredSize(new Dimension(80,30));   
+		payment_titleL.setPreferredSize(new Dimension(80,30));
+		date_titleL.setPreferredSize(new Dimension(80,30));
+		time_titleL.setPreferredSize(new Dimension(80,30));
+		screen_titleL.setPreferredSize(new Dimension(80,40));
+		seat_titleL.setPreferredSize(new Dimension(80,40));
 
 		number_compL.setPreferredSize(new Dimension(420,25));  //예약 정보 출력 라벨 크기지정
-		movie_compL.setPreferredSize(new Dimension(170,25));   
-		payment_compL.setPreferredSize(new Dimension(170,25));
-		date_compL.setPreferredSize(new Dimension(170,25));
-		time_compL.setPreferredSize(new Dimension(170,25));
-		screen_compL.setPreferredSize(new Dimension(170,25));
-		seat_compL.setPreferredSize(new Dimension(170,25));
+		movie_compL.setPreferredSize(new Dimension(170,30));   
+		payment_compL.setPreferredSize(new Dimension(170,30));
+		date_compL.setPreferredSize(new Dimension(170,30));
+		time_compL.setPreferredSize(new Dimension(170,30));
+		screen_compL.setPreferredSize(new Dimension(170,40));
+		seat_compL.setPreferredSize(new Dimension(170,40));
 
 		infoP.add(number_titleL); infoP.add(number_compL);      //infoP에 예약 정보 라벨 추가
 		infoP.add(movie_titleL);  infoP.add(movie_compL);
@@ -136,8 +136,12 @@ public class MovieCancelPanel extends JOptionPane{
 		String seatN = "";
 		
 		for(int i=0;i<seat.size();i++) {
+			if(i==4) {
+				seatN+="<br>";
+			}
 			seatN+=seat.get(i).substring(2,seat.get(i).length())+" ";
 		}
+		seatN+="</body></html>";
 		
 		if(vo.getBooking_code()<10) {
 			bcode = "000"+bcode;
@@ -151,10 +155,10 @@ public class MovieCancelPanel extends JOptionPane{
 		number_compL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
 		movie_compL.setText(mn.getMovie_nameK());
 		payment_compL.setText(vo.getPrice()+"원");
-		date_compL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
+		date_compL.setText(moviedate[0]+"년 "+moviedate[1]+"월 "+moviedate[2]+"일");
 		time_compL.setText(mt.getScreentime());
 		screen_compL.setText(mt.getScreen());
-		seat_compL.setText(seatN);	
+		seat_compL.setText("<html><body>"+seatN);	
 	}
 
 }//MovieCancelPanel class

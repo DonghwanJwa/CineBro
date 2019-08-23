@@ -84,7 +84,7 @@ public class ReserveInfo extends JPanel implements ActionListener{
 		movieBackgroundP.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 		movieBackgroundP.setOpaque(false);
 		/* 스크롤 만들기 */
-		scroll=new JScrollPane(movieBackgroundP,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		scroll=new JScrollPane(movieBackgroundP,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // 내부 패널에 스크롤 적용 후 상하스크롤 항상 보이게, 좌우스크롤 항상 숨김		
 		scroll.getVerticalScrollBar().setUnitIncrement(16);// 스크롤 속도 지정
 		scroll.getViewport().setBackground(Color.BLACK);
@@ -106,15 +106,19 @@ public class ReserveInfo extends JPanel implements ActionListener{
 				}else if(mcpanel.result==JOptionPane.NO_OPTION) {
 					return;
 				}else if(mcpanel.result==JOptionPane.YES_OPTION) {
-					
+
 					List<String> seat = bdao.getMovieSeatNum(rlist.get(i));
-					if(bdao.cancelReserveDayseat(seat, rlist.get(i))==1 &&
-				       bdao.cancelReserveBooking(rlist.get(i).getBooking_code())==1) {
-						dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);						
-						movieP.removeAll();
-						setMovieP();
-						movieBackgroundP.revalidate();
-						movieBackgroundP.repaint();
+					if(bdao.cancelReserveDayseat(seat, rlist.get(i))==1) {
+						for(int j=0;j<99999;j++) {}
+						if( bdao.cancelReserveBooking(rlist.get(i).getBooking_code())==1) {
+							dialog.showMessageDialog(null, "예매취소 되었습니다.", "안내", dialog.CLOSED_OPTION);						
+							movieP.removeAll();
+							setMovieP();
+							movieBackgroundP.revalidate();
+							movieBackgroundP.repaint();
+						}else {
+							dialog.showMessageDialog(null, "예매취소 실패하였습니다.", "안내", dialog.CLOSED_OPTION);
+						}
 					}else {
 						dialog.showMessageDialog(null, "예매취소 실패하였습니다.", "안내", dialog.CLOSED_OPTION);
 					}
@@ -138,7 +142,7 @@ class MovieUi extends JPanel{
 	JLabel reserveNumL=new JLabel();			//예약번호
 	JLabel dateL=new JLabel();				//상영날짜
 	JLabel timeL=new JLabel();				//상영시간
-	
+
 	JLabel screenL=new JLabel();				//상영관
 	JLabel priceL=new JLabel();				//금액
 	JLabel seatL=new JLabel();				//좌석번호
@@ -200,8 +204,12 @@ class MovieUi extends JPanel{
 		String seatN = "";
 
 		for(int i=0;i<seat.size();i++) {
+			if(i==4) {
+				seatN+="<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			}
 			seatN+=seat.get(i).substring(2,seat.get(i).length())+" ";
 		}
+		seatN+="</body></html>";
 
 		if(vo.getBooking_code()<10) {
 			bcode = "000"+bcode;
@@ -218,7 +226,7 @@ class MovieUi extends JPanel{
 		timeL.setText("상영시간 : "+mt.getScreentime());
 		screenL.setText("상영관    : "+mt.getScreen());
 		priceL.setText("결제금액 : "+vo.getPrice()+"원");
-		seatL.setText("좌석번호 : "+seatN);
+		seatL.setText("<html><body>좌석번호 : "+seatN);
 
 		/* 버튼 설정*/
 		cancleB.setPreferredSize(new Dimension(90,30));
