@@ -61,7 +61,7 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JLabel appearancepanelL;					//출연자 이름 라벨
 	private JLabel viewtitleL;							//누적관객 라벨
 	private JLabel viewL;								//누적관객수 라벨
-	
+
 
 
 	private JButton reserveB;						//예매하기 버튼
@@ -69,23 +69,23 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 	private JButton videoB2;						//리뷰 동영상 두번쨰
 	private JButton videoB3;						//리뷰 동영상 세번째
 	private JButton videoB4;						//리뷰 동영상 네번쨰
-	
-	
-	
-	
-	
+
+
+
+
+
 	MyActionListener my = AppManager.getInstance().getMyListener();
 	MovieDAO dao = AppManager.getInstance().getDAOManager().getMovieDAO();	//싱글톤입력
 	MainUI main = AppManager.getInstance().getMainUi();
 
 
 	public MovieInfoPlus(int i) {
-		
+
 
 		setposterpanel(dao.getMovieInfo(i));	// setposterpanel 메서드에 getMovieInfo가져오기
 		setinfopanel(dao.getMovieInfo(i));		// setinfopanel메서드에 getMovieInfo가져오기
 		seriespanel(dao.getMovieInfo(i));		// seriespanel메서드에 getMovieInfo가져오기 
-		
+
 
 		/** 패널 위에 올릴 패널 **/
 
@@ -114,8 +114,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		getContentPane().setBackground(Color.BLACK);				//배경색 지정
 		setLocationRelativeTo(null);								//창이 켜졌을때 어디에 배치 할지 정함 Null값은 중앙
 		setResizable(false); 									// 프레임 사이즈 수정 불가
+		
 		setVisible(true);											//패널을 보이게함
-	
+
 	}//MovieInfoPlus생성자
 
 
@@ -199,10 +200,11 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		
 		posterpanel.add(reserveB);					//포스터패널에 reserveB 버튼 넣음
 
+		/** 예매하기 눌렀을때 예매하기 페이지 이동 **/
 
-		reserveB.addActionListener(new ActionListener(){			//예매하기 버튼에 이벤트 등록			
+		reserveB.addActionListener(new ActionListener(){				//예매하기 버튼에 이벤트 등록			
 			@Override
-			public void actionPerformed(ActionEvent e) {			//ActionPerformed메서드 호출
+			public void actionPerformed(ActionEvent e) {				//ActionPerformed메서드 호출
 				if(AppManager.getInstance().getMainUi().loginFlag==true) {
 					dispose();											//예매하기 눌렀을때 상세정보페이지 꺼짐
 					main.homeB.setBackground(Color.gray.brighter());	//꺼진뒤 HOME버튼 회색
@@ -212,7 +214,11 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 					main.myPageB.setBackground(Color.GRAY.brighter());	//My Page 회색
 					main.card.show(main.mainC,"reservB"); 				//예매페이지를 보여주게 만듬!
 				}else {
+					setModal(false);
+					
 					my.loginP = new LoginPage();
+					my.loginP.setDefaultCloseOperation(my.loginP.DISPOSE_ON_CLOSE);
+					setModalityType(ModalityType.DOCUMENT_MODAL);
 					my.loginListenerSet();
 				}
 			}
