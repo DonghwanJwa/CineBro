@@ -221,7 +221,7 @@ class MovieUi extends JPanel{
 
 		/* 라벨 객체생성 */
 		movieNameL.setText(mn.getMovie_nameK());
-		reserveNumL.setText("0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
+		reserveNumL.setText("예매번호 : 0120-"+moviedate[1]+moviedate[2]+"-"+bcode);
 		dateL.setText("상영일    : "+moviedate[0]+"년 "+moviedate[1]+"월 "+moviedate[2]+"일");
 		timeL.setText("상영시간 : "+mt.getScreentime());
 		screenL.setText("상영관    : "+mt.getScreen());
