@@ -254,7 +254,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 	protected JLabel setDaysL=new JLabel();
 	protected JLabel setTimesL=new JLabel();
 	protected JLabel cinemaL=new JLabel("상영관");
-	protected JLabel setCinemaL=new JLabel("3");
+	protected JLabel setCinemaL=new JLabel("");
 	protected JLabel seatL=new JLabel("좌석");
 	protected JLabel setSeatL=new JLabel(""); 
 	protected JLabel peopleL=new JLabel("인원");
