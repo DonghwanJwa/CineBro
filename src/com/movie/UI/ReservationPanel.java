@@ -1313,7 +1313,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			dvo.setTime_code(time_code);
 			dvo.setScreen((String)cinemaList.getSelectedValue());
 			int updateRe=bdao.setBookingSeat(seatArr,dvo);
-
+			for(int j=0;j<900000;j++) {}
+			if(updateRe==1) {
 			// --- booking_code 저장한 리스트 불러오기
 			List<BookingVO> b_code=bdao.getBookingCode();
 			if((b_code != null) && b_code.size()>0) {
@@ -1333,7 +1334,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			bsvo.setScreen((String)cinemaList.getSelectedValue());
 			int insertBookedRe=bdao.setBookedSeat(bsvo,seatArr);
 
-			if(insertRe==1 && updateRe==1 && insertBookedRe==1) {
+			if(updateRe==1 && insertBookedRe==1) {
 				JOptionPane.showMessageDialog(this,"결제가 완료되었습니다.");
 				// --- 초기화
 				listReset();
@@ -1344,6 +1345,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				paymentSiteBG.clearSelection();
 				CARD.show(reservCard,"home");
 				paymentD.dispose(); // 결제창 종료
+			}
 			}else {
 				JOptionPane.showMessageDialog(this,"결제에 실패했습니다.");
 			}// if else
