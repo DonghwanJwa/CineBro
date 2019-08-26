@@ -1241,7 +1241,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 			seatPaymentB.setVisible(false);
 			seatBackB.setVisible(false);
 			CARD.previous(reservCard);
-
+			
 			seat_status.clear();
 			seat_Num.clear();
 			seatButtonReset();
@@ -1479,6 +1479,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		setPriceL.setText("");
 		setAdultL.setText("");
 		setChildL.setText("");
+		adultCount=0;
+		childCount=0;
 	}//peopleButtonReset()
 
 	// 좌석선택 버튼 리셋
