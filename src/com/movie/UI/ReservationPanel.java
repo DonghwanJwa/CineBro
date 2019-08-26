@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,7 +45,6 @@ import com.movie.VO.BookedseatVO;
 import com.movie.VO.BookingVO;
 import com.movie.VO.CinemaVO;
 import com.movie.VO.DayseatVO;
-import com.movie.VO.MovieNowVO;
 import com.movie.VO.MovieVO;
 import com.movie.VO.MovietimeVO;
 import com.movie.VO.SeatVO;
@@ -384,7 +384,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// ------ 상단 패널 구축
 
 		cinemaList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 리스트 설정 단일선택 모델
-//		cinemaList.setPreferredSize(new Dimension(200,650)); // 리스트 크기 지정
+		//		cinemaList.setPreferredSize(new Dimension(200,650)); // 리스트 크기 지정
 		movieList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //
 		movieList.setPreferredSize(new Dimension(200,650));
 		calendar.setPreferredSize(new Dimension(400,380)); // 달력 패널 크기지정
@@ -511,18 +511,18 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		peopleGroup.setPreferredSize(new Dimension(230,150));
 		peopleGroup.setOpaque(false);
 		peopleGroup.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		
+
 		adultInfoP.setPreferredSize(new Dimension(230,20));
 		childInfoP.setPreferredSize(new Dimension(230,20));
 		adultButtonP.setPreferredSize(new Dimension(230,30));
 		childButtonP.setPreferredSize(new Dimension(230,30));
-		
+
 		adultL.setFont(ageLabelFont); childL.setFont(ageLabelFont);
 		adultPrice.setFont(ageLabelFont); childPrice.setFont(ageLabelFont);
-		
+
 		adultInfoP.add(adultL);       adultInfoP.add(adultPrice);
 		adultInfoP.setOpaque(false);  childInfoP.setOpaque(false);
-		
+
 		adultP.add(adultInfoP,"North");
 		adultP.add(adultButtonP,"Center");
 		for(int i=0;i<adultB.length;i++) {
@@ -806,10 +806,10 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// --- 결제창 수단선택부 패널 구성
 
 		paymentCard.setEnabled(false);
-		
+
 		paymentCash.setFont(paymentLF);
 		paymentCard.setFont(paymentLF);
-		
+
 		paymentSiteCash.setFont(paymentLF);
 		paymentSiteCard.setFont(paymentLF);
 
@@ -848,7 +848,7 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 
 		paymentMainP.add(paymentCenterP,"Center");
 		paymentMainP.add(paymentSouthP,"South");
-		
+
 		paymentP.setOpaque(false);		
 		paymentCenterP.setOpaque(false);
 		paymentChoice.setOpaque(false);
@@ -858,16 +858,16 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		paymentSiteCard.setOpaque(false);
 		paymentSiteCash.setOpaque(false);
 		paymentCard.setOpaque(false);
-		
+
 		paymentPriceP.setOpaque(false);
 		paymentOptionP.setOpaque(false);
 		paymentLayout.setOpaque(false);
-		
+
 		paymentMainP.setBackground(Color.WHITE);
 		paymentD.setModal(true);
 		paymentD.add(paymentMainP);
 		paymentD.setResizable(false);
-		
+
 		return paymentD;
 	}// setPaymentDialog()
 
@@ -1135,12 +1135,14 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 		// --- 캘린더 버튼 이벤트
 		for(i=0;i<calDate.length;i++) {
 			// --- 캘린더 버튼 클릭시
-			if(obj==calDate[i]) {				
+			if(obj==calDate[i]) {
+				java.util.Date nowCal = new java.util.Date();		
 				setDaysL.setText(calYear.getText()+"년"+calMonth.getText()+"월 "+calDate[i].getText()+"일");
 				secretDate.setText(calDate[i].getText());
 				// 날짜 시간 리스트 생성
 				screendate=Date.valueOf(calYear.getText()+"-"+calMonth.getText()+"-"+calDate[i].getText());
 				screenNum=(String)cinemaList.getSelectedValue();
+
 				List<MovietimeVO> mL=bdao.dayTimeList(screendate,screenNum);
 				if((mL != null) && mL.size()>0) {
 					for(int j=0;j<mL.size();j++) {
@@ -1149,19 +1151,29 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					}// for
 				}// if
 				for(int j=0;j<time.size();j++) {
-					if(timeGroup.getComponentCount()<=5) {
-						timeBList.add(new JToggleButton());
-					}// if
-					timeBList.get(j).setBackground(Color.BLACK);
-					timeBList.get(j).setForeground(Color.WHITE);
-					timeBList.get(j).setText(time.get(j));
-					timeBList.get(j).addActionListener(this);
-					timeBG.add(timeBList.get(j));
-					timeGroup.add(timeBList.get(j));
-					if(j==4) {
-						time.clear();
-					}// if
-					timeBList.get(j).setVisible(true);
+					String movieTime = calYear.getText()+calMonth.getText()+calDate[i].getText()+time.get(j).replaceAll("[^0-9]","");
+					try {
+						SimpleDateFormat dateFormat=new SimpleDateFormat("yyyyMMddHHmm");
+						java.util.Date movieStart = dateFormat.parse(movieTime);
+						if(timeGroup.getComponentCount()<=5) {
+							timeBList.add(new JToggleButton());
+						}// if
+						timeBList.get(j).setBackground(Color.BLACK);
+						timeBList.get(j).setForeground(Color.WHITE);
+						timeBList.get(j).setText(time.get(j));
+						timeBList.get(j).addActionListener(this);
+						timeBG.add(timeBList.get(j));
+						timeGroup.add(timeBList.get(j));
+						if(j==4) {
+							time.clear();
+						}// if
+						if(nowCal.getTime() >= movieStart.getTime()) {
+							timeBList.get(j).setEnabled(false);
+						}else if(nowCal.getTime() < movieStart.getTime()){
+							timeBList.get(j).setEnabled(true);
+						}// if else
+						timeBList.get(j).setVisible(true);
+					}catch(Exception de) {de.printStackTrace();}
 				}// for
 			}// if
 		}// for	
@@ -1401,23 +1413,30 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 					infoNextB.setEnabled(false);
 				}// if
 				// 상영관리스트 선택했을 시
-			}else if(obj==cinemaList) {		
+			}else if(obj==cinemaList) {
+				java.util.Date nowTime=new java.util.Date();
 				setCinemaL.setText((String)cinemaList.getSelectedValue());
 				// 좌석 배치
+
 				screenNum=cinemaList.getSelectedValue()+"";				
 				Vector<MovietimeVO> mL=bdao.dayList(screenNum);
 				if((mL != null) && mL.size()>0) {
 					for(int i=0;i<mL.size();i++) {
 						MovietimeVO mtvo=mL.get(i);
 						dateList.add(mtvo.getScreendate());
-					}
+					}// for
 				}// if ==> 날짜리스트 if
 				for(int i=0;i<dateList.size();i++) {
-					for(int j=0;j<calDate.length;j++) {
-						if(dateList.get(i).substring(8,10).equals(calDate[j].getText())) {
-							calDate[j].setEnabled(true);
-						}// if
-					}// inner for
+					try {
+						String movieTime=dateList.get(i).replaceAll("[^0-9]","").substring(0,8)+235959;
+						SimpleDateFormat dateFormat=new SimpleDateFormat("yyyyMMddHHmmss");
+						java.util.Date movieStart = dateFormat.parse(movieTime);
+						for(int j=0;j<calDate.length;j++) {
+							if((nowTime.getTime() < movieStart.getTime()) && (dateList.get(i).substring(8,10).equals(calDate[j].getText()))) {
+								calDate[j].setEnabled(true);
+							}// if
+						}// inner for
+					}catch(Exception de) {de.printStackTrace();}
 				}// outer for
 			}// if else => 상영관 리스트 선택 시
 		}// 리스트 항목에서 버튼을 뗐을 때
