@@ -1142,7 +1142,8 @@ public class ReservationPanel extends JPanel implements ActionListener,ListSelec
 				// 날짜 시간 리스트 생성
 				screendate=Date.valueOf(calYear.getText()+"-"+calMonth.getText()+"-"+calDate[i].getText());
 				screenNum=(String)cinemaList.getSelectedValue();
-
+				timeBG.clearSelection();
+				setTimesL.setText("");
 				List<MovietimeVO> mL=bdao.dayTimeList(screendate,screenNum);
 				if((mL != null) && mL.size()>0) {
 					for(int j=0;j<mL.size();j++) {
