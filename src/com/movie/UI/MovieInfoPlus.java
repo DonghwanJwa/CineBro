@@ -81,11 +81,9 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 
 	public MovieInfoPlus(int i) {
 
-
 		setposterpanel(dao.getMovieInfo(i));	// setposterpanel 메서드에 getMovieInfo가져오기
 		setinfopanel(dao.getMovieInfo(i));		// setinfopanel메서드에 getMovieInfo가져오기
 		seriespanel(dao.getMovieInfo(i));		// seriespanel메서드에 getMovieInfo가져오기 
-
 
 		/** 패널 위에 올릴 패널 **/
 
@@ -103,7 +101,6 @@ public class MovieInfoPlus extends JDialog implements ActionListener {
 		toppanel.setBackground(Color.BLACK);						//탑패널 배경색 지정
 
 		/** 	패널2와 시리즈패널을 메인 패널에 올리기	**/
-
 		seriespanel.setPreferredSize(new Dimension(900,700));		//동영상패널과 동영상글자패널을 올릴 시리즈 패널 생성
 		seriespanel.setBackground(Color.BLACK);						//시리즈 패널 배경색 검정
 		add(toppanel); 												//시리즈 패널에 탑패널 올림

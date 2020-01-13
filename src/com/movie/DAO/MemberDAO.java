@@ -400,7 +400,7 @@ public class MemberDAO {
 
 		String resultString;
 
-		byte[] byteArr;//바이트 값 배열 생성
+		byte[] byteArr;	//바이트 값 배열 생성
 
 		String temp= "";
 
