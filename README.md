@@ -17,7 +17,7 @@
 <img width="400" src="https://user-images.githubusercontent.com/52551356/72488419-44bf0880-3854-11ea-96ff-4a55df8961ed.JPG">
 
 
-Main 
+↑Main
    
   
 - Movie info
