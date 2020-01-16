@@ -17,8 +17,8 @@ public class DAOManager {
 	// ------- DB 커넥트 변수 ------- //
 	String driver="oracle.jdbc.OracleDriver";
 	String url="jdbc:oracle:thin:@localhost:1521:xe";
-	String user="cinema";
-	String password="swing";
+	String user="DB User명";
+	String password="비밀번호";
 
 	Connection con=null;
 	PreparedStatement pt=null;

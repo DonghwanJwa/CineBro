@@ -341,8 +341,8 @@ public class MemberDAO {
 	}//randomAuthNum()
 
 	public void Auth_Email(String email,String security){	//인증번호 보내기
-		String id = "cine190823@gmail.com";
-		String pw = "swing190823!";
+		String id = "구글계정메일주소";
+		String pw = "비밀번호 입력";
 
 		//STMP 서버 정보를 설정
 		Properties p = System.getProperties();
