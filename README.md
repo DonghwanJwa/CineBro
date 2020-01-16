@@ -6,12 +6,7 @@
 - Database : Oracle 11g
 - UI : JAVA Swing, AWT
 
-<h4>2.Program Image
-  
-  <br/>
-  
-  
-  
+<h4>2.Program Image</h4>
   
 
 <img width="400" src="https://user-images.githubusercontent.com/52551356/72488419-44bf0880-3854-11ea-96ff-4a55df8961ed.JPG">
@@ -68,6 +63,20 @@
 
 ▶ My Info
 
+
+<h4>3.Collaborators</h4>
+
+
+- https://github.com/dlth888
+
+
+- https://github.com/Rohhun
+
+
+- https://github.com/tkekd00
+
+
+- https://github.com/gkrdud0822
 
 
 Notice : We delete some sources which contain our personal information, and also delete all image file because of copyright.
