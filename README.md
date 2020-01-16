@@ -1,6 +1,6 @@
 <h4>1.Project Name : CineBro(시네브로)</h4>
 
-- 2019.07~2019.08 - 6week with 5 members during semester
+- 2019.07~2019.08 - 6weeks with 5 members during semester
 - CineBro is a movie booking program
 - Language : JAVA
 - Database : Oracle 11g
